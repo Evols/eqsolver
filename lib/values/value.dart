@@ -13,7 +13,7 @@ abstract class Value implements Comparable {
 
   bool isEquivalentTo(Value other) {
     return getNormalized() == other.getNormalized();
-  } 
+  }
 
   @override
   bool operator==(Object other) {
