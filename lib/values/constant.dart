@@ -18,8 +18,8 @@ class Constant extends Value {
   }
 
   @override
-  bool isEqualTo(Value other) {
-    return other is Constant && other.number == number;
+  Value getNormalized() {
+    return this;
   }
 
   @override
@@ -27,7 +27,12 @@ class Constant extends Value {
     if (!(other is Constant)) {
       return compareToClass(other);
     }
-    return other.number.compareTo(number);
+    return number.compareTo(other.number);
+  }
+
+  @override
+  String toString() {
+    return 'Constant($number)';
   }
 
 }

@@ -18,11 +18,21 @@ class Variable extends Value {
   }
 
   @override
+  Value getNormalized() {
+    return this;
+  }
+
+  @override
   int compareTo(other) {
     if (!(other is Variable)) {
       return compareToClass(other);
     }
-    return other.id.compareTo(id);
+    return id.compareTo(other.id);
+  }
+
+  @override
+  String toString() {
+    return 'Variable($id)';
   }
 
 }

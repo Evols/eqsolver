@@ -1,6 +1,8 @@
 
 import 'package:formula_transformator/values/value.dart';
 
+import '../utils.dart';
+
 class Addition extends Value {
 
   final List<Value> children;
@@ -18,20 +20,23 @@ class Addition extends Value {
   }
 
   @override
+  Value getNormalized() {
+    final childrenNormalized = children.map((e) => e.getNormalized()).toList();
+    childrenNormalized.sort();
+    return Addition(childrenNormalized);
+  }
+
+  @override
   int compareTo(other) {
     if (!(other is Addition)) {
       return compareToClass(other);
     }
-    if (other.children.length != children.length) {
-      return other.children.compareTo(children.length);
-    }
-    for (var i = 0; i < children.length; i++) {
-      final comp = other.children[i].compareTo(children[i]);
-      if (comp != 0) {
-        return comp;
-      }
-    }
-    return 0;
+    return compareLists(children, other.children);
+  }
+
+  @override
+  String toString() {
+    return 'Addition( ${children.map((e) => e.toString()).toList().join(', ')} )';
   }
 
 }
