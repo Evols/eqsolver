@@ -15,6 +15,7 @@ abstract class Value implements Comparable {
     return getNormalized() == other.getNormalized();
   } 
 
+  @override
   bool operator==(Object other) {
     if (!(other is Value)) {
       return true;
