@@ -9,5 +9,5 @@ int compareLists<E extends Comparable>(List<E> first, List<E> second) {
       return comp;
     }
   }
-  return 0;  
+  return 0;
 }
