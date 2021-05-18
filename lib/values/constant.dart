@@ -16,4 +16,18 @@ class Constant extends Value {
   Value deepClone() {
     return Constant(number);
   }
+
+  @override
+  bool isEqualTo(Value other) {
+    return other is Constant && other.number == number;
+  }
+
+  @override
+  int compareTo(other) {
+    if (!(other is Constant)) {
+      return compareToClass(other);
+    }
+    return other.number.compareTo(number);
+  }
+
 }

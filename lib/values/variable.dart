@@ -16,4 +16,13 @@ class Variable extends Value {
   Value deepClone() {
     return Variable(id);
   }
+
+  @override
+  int compareTo(other) {
+    if (!(other is Variable)) {
+      return compareToClass(other);
+    }
+    return other.id.compareTo(id);
+  }
+
 }
