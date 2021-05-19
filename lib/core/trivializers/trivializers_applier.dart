@@ -17,7 +17,7 @@ const trivializers = <Trivializer>[
   ConstantComputationTrivializer(),
 ];
 
-Value apply_trivializers(Value value) {
+Value applyTrivializers(Value value) {
   var tempValue = value;
   var applied = true;
   while (applied) {
