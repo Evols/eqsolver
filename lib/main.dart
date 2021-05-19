@@ -5,6 +5,7 @@ import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
+import 'package:formula_transformator/utils.dart';
 import 'package:formula_transformator/widgets/equation_widget.dart';
 
 void main() {
@@ -82,7 +83,31 @@ class MyHomePage extends StatelessWidget {
                   itemBuilder: (context, index) => Card(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: EquationWidget(state.equations[index]),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          EquationWidget(state.equations[index]),
+                          Row(
+                            children: [
+                              latexToWidget('(${index+1})', 0.8),
+                              DropdownButton<String>(
+                                selectedItemBuilder: (context) => [ Container() ],
+                                iconSize: 24,
+                                elevation: 16,
+                                style: const TextStyle(color: Colors.deepPurple),
+                                underline: Container(),
+                                onChanged: (String? newValue) {},
+                                items: ['One', 'Two', 'Free', 'Four']
+                                  .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  ))
+                                  .toList(),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
