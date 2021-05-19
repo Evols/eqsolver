@@ -33,12 +33,36 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final eq = Addition([
+    // y=p=7789 ; q=2281 ; c=pq=17766709, a=2^7=128 ; b=q%a=2281%128=105
+
+    // Right one
+    final eq1 = Addition([
       Multiplication([
-        Constant(2),
-        Variable("x"),
+        Variable("y"),
+        Addition([
+          Multiplication([
+            Constant(128),
+            Variable("x"),
+          ]),
+          Constant(105),
+        ]),
       ]),
-      Constant(1),
+      Constant(-17766709),
+    ]);
+
+    // Wrong one
+    final eq2 = Addition([
+      Multiplication([
+        Variable("y"),
+        Addition([
+          Multiplication([
+            Constant(128),
+            Variable("x"),
+          ]),
+          Constant(97),
+        ]),
+      ]),
+      Constant(-17766709),
     ]);
 
     return Scaffold(
@@ -47,7 +71,7 @@ class MyHomePage extends StatelessWidget {
       ),
       body: MultiBlocProvider(
         providers: [
-          BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq ])),
+          BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1, eq2 ])),
         ],
         child: Column(
           children: [

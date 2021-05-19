@@ -53,7 +53,7 @@ class Multiplication extends Value {
       children: children
       .map((e) =>
         e is Addition
-        ? Row(children: [ latexToWidget('('), e.toLatex(), latexToWidget('(') ])
+        ? Row(children: [ latexToWidget('('), e.toLatex(), latexToWidget(')') ])
         : e.toLatex()
       )
       .foldIndexed<List<Widget>>([],
@@ -63,15 +63,4 @@ class Multiplication extends Value {
       .toList()
     );
   }
-
-  // @override
-  // Widget toLatex() {
-  //   return Row(
-  //     children: children.map((e) =>
-  //       e is Addition
-  //       ? Row(children: [ latexToWidget('('), e.toLatex(), latexToWidget('(') ])
-  //       : e.toLatex()
-  //     ).toList()
-  //   );
-  // }
 }
