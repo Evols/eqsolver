@@ -6,6 +6,8 @@ import 'package:formula_transformator/values/value.dart';
 
 class AddZeroTrivializer implements Trivializer {
 
+  const AddZeroTrivializer();
+
   @override
   Value? transform(Value value) {
     if (value is Addition) {

@@ -20,6 +20,11 @@ class Multiplication extends Value {
   }
 
   @override
+  Value deepCloneWithChildren(List<Value> newChildren) {
+    return Multiplication(newChildren);
+  }
+
+  @override
   Value getNormalized() {
     final childrenNormalized = children.map((e) => e.getNormalized()).toList();
     childrenNormalized.sort();

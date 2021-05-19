@@ -6,6 +6,8 @@ import 'package:formula_transformator/values/value.dart';
 
 class MultOneTrivializer implements Trivializer {
 
+  const MultOneTrivializer();
+
   @override
   Value? transform(Value value) {
     if (value is Multiplication) {

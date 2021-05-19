@@ -1,12 +1,16 @@
 
-import 'package:formula_transformator/trivializers/mult_one_trivializer.dart';
+import 'package:formula_transformator/trivializers/trivializers_applier.dart';
+import 'package:formula_transformator/values/addition.dart';
 import 'package:formula_transformator/values/constant.dart';
 import 'package:formula_transformator/values/multiplication.dart';
 
 void main(List<String> arguments) {
-  const a = Multiplication([
-    Constant(50),
-    Constant(1),
+  const a = Addition([
+    Constant(0.0),
+    Multiplication([
+      Constant(50.0),
+      Constant(1.0),
+    ]),
   ]);
-  print(MultOneTrivializer().transform(a));
+  print(apply_trivializers(a));
 }

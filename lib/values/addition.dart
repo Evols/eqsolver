@@ -20,6 +20,11 @@ class Addition extends Value {
   }
 
   @override
+  Value deepCloneWithChildren(List<Value> newChildren) {
+    return Addition(newChildren);
+  }
+
+  @override
   Value getNormalized() {
     final childrenNormalized = children.map((e) => e.getNormalized()).toList();
     childrenNormalized.sort();

@@ -18,6 +18,11 @@ class Variable extends Value {
   }
 
   @override
+  Value deepCloneWithChildren(List<Value> newChildren) {
+    return Variable(id);
+  }
+
+  @override
   Value getNormalized() {
     return this;
   }

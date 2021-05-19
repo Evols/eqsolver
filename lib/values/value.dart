@@ -3,8 +3,11 @@ import 'package:formula_transformator/values/utils.dart';
 
 abstract class Value implements Comparable {
 
+  const Value();
+
   List<Value> getChildren();
   Value deepClone();
+  Value deepCloneWithChildren(List<Value> newChildren);
   Value getNormalized();
 
   int compareToClass(Value other) {
@@ -22,7 +25,5 @@ abstract class Value implements Comparable {
     }
     return compareTo(other) == 0;
   }
-
-  const Value();
 
 }

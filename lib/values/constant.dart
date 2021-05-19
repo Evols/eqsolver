@@ -18,6 +18,11 @@ class Constant extends Value {
   }
 
   @override
+  Value deepCloneWithChildren(List<Value> newChildren) {
+    return Constant(number);
+  }
+
+  @override
   Value getNormalized() {
     return this;
   }
