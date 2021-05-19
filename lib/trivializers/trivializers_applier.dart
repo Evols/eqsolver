@@ -1,8 +1,9 @@
 
-import 'package:formula_transformator/trivializers/mult_one_trivializer.dart';
-import 'package:formula_transformator/trivializers/mult_zero_trivializer.dart';
-import 'package:formula_transformator/trivializers/single_child_trivializer.dart';
-import 'package:formula_transformator/trivializers/trivializer.dart';
+import 'constant_computation_trivializer.dart';
+import 'mult_one_trivializer.dart';
+import 'mult_zero_trivializer.dart';
+import 'single_child_trivializer.dart';
+import 'trivializer.dart';
 import 'package:formula_transformator/utils.dart';
 import 'package:formula_transformator/values/value.dart';
 
@@ -13,6 +14,7 @@ const trivializers = <Trivializer>[
   MultOneTrivializer(),
   MultZeroTrivializer(),
   SingleChildTrivializer(),
+  ConstantComputationTrivializer(),
 ];
 
 Value apply_trivializers(Value value) {
