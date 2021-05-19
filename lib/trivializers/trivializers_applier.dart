@@ -17,7 +17,6 @@ Value apply_trivializers(Value value) {
   var tempValue = value;
   var applied = true;
   while (applied) {
-    // print('apply_trivializers loop: $tempValue');
     applied = false;
     for (var trivializer in trivializers) {
       var transformed = mountValueAt(tempValue, (e) => trivializer.transform(e));
