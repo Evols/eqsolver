@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
-import 'package:formula_transformator/widgets/value_widget.dart';
+import 'package:formula_transformator/widgets/equation_widget.dart';
 
 void main() {
   runApp(MyApp());
@@ -83,17 +82,7 @@ class MyHomePage extends StatelessWidget {
                   itemBuilder: (context, index) => Card(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          ValueWidget(state.equations[index]),
-                          Container(width: 4.0),
-                          Math.tex(
-                            r'=0',
-                            mathStyle: MathStyle.display,
-                            textScaleFactor: 1.4,
-                          ),
-                        ],
-                      ),
+                      child: EquationWidget(state.equations[index]),
                     ),
                   ),
                 ),
