@@ -9,6 +9,7 @@ abstract class Value implements Comparable {
   Value deepClone();
   Value deepCloneWithChildren(List<Value> newChildren);
   Value getNormalized();
+  String toLatex();
 
   int compareToClass(Value other) {
     return getValueClassId(this).compareTo(getValueClassId(other));

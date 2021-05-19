@@ -44,4 +44,9 @@ class Addition extends Value {
     return 'Addition( ${children.map((e) => e.toString()).toList().join(', ')} )';
   }
 
+  @override
+  String toLatex() {
+    return children.map((e) => e.toLatex()).toList().join(' + ');
+  }
+
 }

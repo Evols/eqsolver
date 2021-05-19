@@ -40,4 +40,9 @@ class Variable extends Value {
     return 'Variable($id)';
   }
 
+  @override
+  String toLatex() {
+    return id;
+  }
+
 }

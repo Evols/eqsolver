@@ -2,6 +2,7 @@
 import 'package:formula_transformator/core/values/value.dart';
 
 import '../utils.dart';
+import 'addition.dart';
 
 class Multiplication extends Value {
 
@@ -42,6 +43,11 @@ class Multiplication extends Value {
   @override
   String toString() {
     return 'Multiplication( ${children.map((e) => e.toString()).toList().join(', ')} )';
+  }
+
+  @override
+  String toLatex() {
+    return children.map((e) => e is Addition ? '(' + e.toLatex() + ')' : e.toLatex()).toList().join('');
   }
 
 }

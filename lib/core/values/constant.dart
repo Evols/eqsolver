@@ -3,7 +3,7 @@ import 'package:formula_transformator/core/values/value.dart';
 
 class Constant extends Value {
 
-  final double number;
+  final int number;
 
   const Constant(this.number);
 
@@ -38,6 +38,11 @@ class Constant extends Value {
   @override
   String toString() {
     return 'Constant($number)';
+  }
+
+  @override
+  String toLatex() {
+    return '$number';
   }
 
 }
