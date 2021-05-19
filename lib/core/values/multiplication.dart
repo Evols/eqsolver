@@ -1,11 +1,7 @@
 
-import 'package:flutter/widgets.dart';
 import 'package:formula_transformator/core/values/value.dart';
-import 'package:formula_transformator/utils.dart';
 
 import '../utils.dart';
-import 'addition.dart';
-import 'package:formula_transformator/extensions.dart';
 
 class Multiplication extends Value {
 
@@ -47,20 +43,5 @@ class Multiplication extends Value {
   String toString() {
     return 'Multiplication( ${children.map((e) => e.toString()).toList().join(', ')} )';
   }
-  @override
-  Widget toLatex() {
-    return Row(
-      children: children
-      .map((e) =>
-        e is Addition
-        ? Row(children: [ latexToWidget('('), e.toLatex(), latexToWidget(')') ])
-        : e.toLatex()
-      )
-      .foldIndexed<List<Widget>>([],
-        (previousValue, element, idx) => [
-          ...previousValue,
-          ...(idx == 0 ? [ element ] : [ Container(width: 2.0), element ])])
-      .toList()
-    );
-  }
+
 }

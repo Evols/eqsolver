@@ -6,6 +6,7 @@ import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
+import 'package:formula_transformator/widgets/value_widget.dart';
 
 void main() {
   runApp(MyApp());
@@ -84,7 +85,8 @@ class MyHomePage extends StatelessWidget {
                       padding: EdgeInsets.all(8.0),
                       child: Row(
                         children: [
-                          state.equations[index].toLatex(),
+                          ValueWidget(state.equations[index]),
+                          Container(width: 4.0),
                           Math.tex(
                             r'=0',
                             mathStyle: MathStyle.display,
