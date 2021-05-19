@@ -94,7 +94,6 @@ class MyHomePage extends StatelessWidget {
                                 selectedItemBuilder: (context) => [ Container() ],
                                 iconSize: 24,
                                 elevation: 16,
-                                style: const TextStyle(color: Colors.deepPurple),
                                 underline: Container(),
                                 onChanged: (String? newValue) {},
                                 items: ['One', 'Two', 'Free', 'Four']
