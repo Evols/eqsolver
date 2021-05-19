@@ -43,8 +43,6 @@ class MyHomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(title),
       ),
       body: MultiBlocProvider(
@@ -60,14 +58,22 @@ class MyHomePage extends StatelessWidget {
                   itemBuilder: (context, index) => Card(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Math.tex(
-                        state.equations[index].toLatex(),
-                        mathStyle: MathStyle.display, textScaleFactor: 1.4
+                      child: Row(
+                        children: [
+                          Math.tex(
+                            state.equations[index].toLatex(),
+                            mathStyle: MathStyle.display, textScaleFactor: 1.4
+                          ),
+                          Math.tex(
+                            r'=0',
+                            mathStyle: MathStyle.display, textScaleFactor: 1.4
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              )
+              ),
             ),
             Container(
               color: Colors.black12,
