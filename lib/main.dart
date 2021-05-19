@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/variable.dart';
+import 'package:formula_transformator/cubit/equations_cubit.dart';
 
 void main() {
   runApp(MyApp());
@@ -45,18 +47,35 @@ class MyHomePage extends StatelessWidget {
         // the App.build method, and use it to set our appbar title.
         title: Text(title),
       ),
-      body: Column(
-        // mainAxisAlignment: ,
-        children: [
-          Expanded(
-            child: Math.tex(eq.toLatex(), mathStyle: MathStyle.display, textScaleFactor: 1.4)
-          ),
-          Container(
-            color: Colors.black12,
-            padding: EdgeInsets.all(8.0),
-            child: TextField(),
-          ),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq ])),
         ],
+        child: Column(
+          children: [
+            Expanded(
+              child: BlocBuilder<EquationsCubit, EquationsState>(
+                builder: (context, state) => ListView.builder(
+                  itemCount: state.equations.length,
+                  itemBuilder: (context, index) => Card(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Math.tex(
+                        state.equations[index].toLatex(),
+                        mathStyle: MathStyle.display, textScaleFactor: 1.4
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ),
+            Container(
+              color: Colors.black12,
+              padding: EdgeInsets.all(8.0),
+              child: TextField(),
+            ),
+          ],
+        ),
       ),
     );
   }
