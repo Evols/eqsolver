@@ -1,4 +1,6 @@
 
+import 'package:flutter/widgets.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
 class Variable extends Value {
@@ -41,8 +43,12 @@ class Variable extends Value {
   }
 
   @override
-  String toLatex() {
-    return id;
+  Widget toLatex() {
+    return Math.tex(
+      id,
+      mathStyle: MathStyle.display,
+      textScaleFactor: 1.4,
+    );
   }
 
 }

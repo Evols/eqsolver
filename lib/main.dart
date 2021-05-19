@@ -60,13 +60,11 @@ class MyHomePage extends StatelessWidget {
                       padding: EdgeInsets.all(8.0),
                       child: Row(
                         children: [
-                          Math.tex(
-                            state.equations[index].toLatex(),
-                            mathStyle: MathStyle.display, textScaleFactor: 1.4
-                          ),
+                          state.equations[index].toLatex(),
                           Math.tex(
                             r'=0',
-                            mathStyle: MathStyle.display, textScaleFactor: 1.4
+                            mathStyle: MathStyle.display,
+                            textScaleFactor: 1.4,
                           ),
                         ],
                       ),

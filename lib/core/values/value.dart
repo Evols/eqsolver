@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:formula_transformator/core/values/utils.dart';
 
 abstract class Value implements Comparable {
@@ -9,7 +10,7 @@ abstract class Value implements Comparable {
   Value deepClone();
   Value deepCloneWithChildren(List<Value> newChildren);
   Value getNormalized();
-  String toLatex();
+  Widget toLatex();
 
   int compareToClass(Value other) {
     return getValueClassId(this).compareTo(getValueClassId(other));

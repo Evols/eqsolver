@@ -1,5 +1,7 @@
 
+import 'package:flutter/widgets.dart';
 import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/utils.dart';
 
 class Constant extends Value {
 
@@ -41,8 +43,8 @@ class Constant extends Value {
   }
 
   @override
-  String toLatex() {
-    return '$number';
+  Widget toLatex() {
+    return latexToWidget('$number');
   }
 
 }
