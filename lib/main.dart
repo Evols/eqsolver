@@ -40,11 +40,11 @@ class MyHomePage extends StatelessWidget {
     // Right one
     final eq1 = Addition([
       Multiplication([
-        Variable("y"),
+        Variable('y'),
         Addition([
           Multiplication([
             Constant(128),
-            Variable("x"),
+            Variable('x'),
           ]),
           Constant(105),
         ]),
@@ -55,11 +55,11 @@ class MyHomePage extends StatelessWidget {
     // Wrong one
     final eq2 = Addition([
       Multiplication([
-        Variable("y"),
+        Variable('y'),
         Addition([
           Multiplication([
             Constant(128),
-            Variable("x"),
+            Variable('x'),
           ]),
           Constant(97),
         ]),

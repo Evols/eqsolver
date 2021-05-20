@@ -37,9 +37,9 @@ class EquationEditorDevelop extends EquationEditorEditing {
   @override
   String getStepName() {
     switch (step) {
-      case DevelopStep.SelectMult: return "Select the multiplication to develop";
-      case DevelopStep.SelectTerms: return "Select the terms to develop";
-      default: return "";
+      case DevelopStep.SelectMult: return 'Select the multiplication to develop';
+      case DevelopStep.SelectTerms: return 'Select the terms to develop';
+      default: return '';
     }
   }
 
