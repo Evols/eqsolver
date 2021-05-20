@@ -9,6 +9,8 @@ class EquationsCubit extends Cubit<EquationsState> {
   
   EquationsCubit(List<Value> equations) : super(EquationsState(equations));
 
-  void addEquation(Value equation) => emit(EquationsState([ ...state.equations, equation ]));
+  void addEquation(Value equation) {
+    emit(EquationsState([ ...state.equations, equation ]));
+  }
 
 }

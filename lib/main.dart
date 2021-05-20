@@ -4,6 +4,7 @@ import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/variable.dart';
+import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/utils.dart';
 import 'package:formula_transformator/widgets/equation_widget.dart';
@@ -73,39 +74,42 @@ class MyHomePage extends StatelessWidget {
       body: MultiBlocProvider(
         providers: [
           BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1, eq2 ])),
+          BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
         ],
         child: Column(
           children: [
             Expanded(
               child: BlocBuilder<EquationsCubit, EquationsState>(
-                builder: (context, state) => ListView.builder(
-                  itemCount: state.equations.length,
-                  itemBuilder: (context, index) => Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          EquationWidget(state.equations[index]),
-                          Row(
-                            children: [
-                              latexToWidget('(${index+1})', 0.8),
-                              DropdownButton<String>(
-                                selectedItemBuilder: (context) => [ Container() ],
-                                iconSize: 24,
-                                elevation: 16,
-                                underline: Container(),
-                                onChanged: (String? newValue) {},
-                                items: ['One', 'Two', 'Free', 'Four']
-                                  .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  ))
-                                  .toList(),
-                              ),
-                            ],
-                          )
-                        ],
+                builder: (context, state) => BlocBuilder<EquationEditorCubit, EquationEditorState>(
+                  builder: (context, editorState) => ListView.builder(
+                    itemCount: state.equations.length,
+                    itemBuilder: (context, index) => Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            EquationWidget(state.equations[index]),
+                            Row(
+                              children: [
+                                latexToWidget('(${index+1})', 0.8),
+                                DropdownButton<String>(
+                                  selectedItemBuilder: (context) => [ Container() ],
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  underline: Container(),
+                                  onChanged: (String? newValue) {},
+                                  items: ['One', 'Two', 'Free', 'Four']
+                                    .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    ))
+                                    .toList(),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
