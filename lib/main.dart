@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
-import 'package:formula_transformator/utils.dart';
 import 'package:formula_transformator/widgets/equation_widget.dart';
 
 void main() {
@@ -91,25 +91,52 @@ class MyHomePage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            EquationWidget(state.equations[index]),
+                            EquationWidget(
+                              state.equations[index],
+                              bottomWidgetBuilder: (value) {
+                                if (editorState is EquationEditorEditing) {
+                                  final selectable = editorState.isSelectable(value);
+                                  switch (selectable) {
+                                  case Selectable.SingleEmpty:
+                                  case Selectable.SingleSelected:
+                                    return Radio<bool>(
+                                      splashRadius: 0.0,
+                                      value: selectable == Selectable.SingleSelected,
+                                      groupValue: true,
+                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(value),
+                                    );
+                                  case Selectable.MultipleEmpty:
+                                  case Selectable.MultipleSelected:
+                                    return Checkbox(
+                                      splashRadius: 0.0,
+                                      value: selectable == Selectable.MultipleSelected,
+                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(value),
+                                    );
+                                  }
+                                }
+                                return null;
+                              },
+                            ),
                             Row(
                               children: [
-                                latexToWidget('(${index+1})', 0.8),
-                                ...(editorState is EquationEditorEditing ? [] : [
-                                  DropdownButton<void Function()>(
-                                    selectedItemBuilder: (context) => [ Container() ],
-                                    iconSize: 24,
-                                    elevation: 16,
-                                    underline: Container(),
-                                    onChanged: (void Function()? newValue) => newValue?.call(),
-                                    items: [
-                                      DropdownMenuItem<void Function()>(
-                                        value: () => BlocProvider.of<EquationEditorCubit>(context).startDevelopping(index),
-                                        child: Text('Develop'),
-                                      ),
-                                    ],
-                                  ),
-                                ]),
+                                Math.tex(
+                                  '(${index+1})',
+                                  mathStyle: MathStyle.display,
+                                  textScaleFactor: 1.2,
+                                ),
+                                DropdownButton<void Function()>(
+                                  selectedItemBuilder: (context) => [ Container() ],
+                                  iconSize: 24,
+                                  elevation: 16,
+                                  underline: Container(),
+                                  onChanged: (void Function()? newValue) => newValue?.call(),
+                                  items: editorState is EquationEditorEditing ? [] : [
+                                    DropdownMenuItem<void Function()>(
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startDevelopping(index),
+                                      child: Text('Develop'),
+                                    ),
+                                  ],
+                                ),
                               ],
                             )
                           ],
