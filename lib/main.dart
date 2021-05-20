@@ -67,16 +67,18 @@ class MyHomePage extends StatelessWidget {
       Constant(-17766709),
     ]);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1, eq2 ])),
-          BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
-        ],
-        child: Column(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1, eq2 ])),
+        BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
+      ],
+      child: Scaffold(
+        appBar: AppBar(
+          title: BlocBuilder<EquationEditorCubit, EquationEditorState>(
+            builder: (context, editorState) => Text(title + (editorState is EquationEditorEditing ? ' - ' + editorState.getStepName() : '')),
+          ),
+        ),
+        body: Column(
           children: [
             Expanded(
               child: BlocBuilder<EquationsCubit, EquationsState>(
@@ -93,19 +95,21 @@ class MyHomePage extends StatelessWidget {
                             Row(
                               children: [
                                 latexToWidget('(${index+1})', 0.8),
-                                DropdownButton<String>(
-                                  selectedItemBuilder: (context) => [ Container() ],
-                                  iconSize: 24,
-                                  elevation: 16,
-                                  underline: Container(),
-                                  onChanged: (String? newValue) {},
-                                  items: ['One', 'Two', 'Free', 'Four']
-                                    .map<DropdownMenuItem<String>>((value) => DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    ))
-                                    .toList(),
-                                ),
+                                ...(editorState is EquationEditorEditing ? [] : [
+                                  DropdownButton<void Function()>(
+                                    selectedItemBuilder: (context) => [ Container() ],
+                                    iconSize: 24,
+                                    elevation: 16,
+                                    underline: Container(),
+                                    onChanged: (void Function()? newValue) => newValue?.call(),
+                                    items: [
+                                      DropdownMenuItem<void Function()>(
+                                        value: () => BlocProvider.of<EquationEditorCubit>(context).startDevelopping(index),
+                                        child: Text('Develop'),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
                               ],
                             )
                           ],
