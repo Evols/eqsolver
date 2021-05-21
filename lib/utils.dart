@@ -7,3 +7,13 @@ List<T> flipExistenceArray<T>(List<T> list, T elem) {
     return [ ...list, elem ];
   }
 }
+
+int computeGcd(int a, int b) {
+  int t = b;
+  while (b != 0) {
+    t = b; 
+    b = a % b; 
+    a = t;
+  } 
+  return a;
+}

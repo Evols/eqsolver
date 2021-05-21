@@ -1,5 +1,6 @@
 
 import 'package:formula_transformator/core/transformators/develop_transformator.dart';
+import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
@@ -88,7 +89,7 @@ class EquationEditorDevelop extends EquationEditorEditing {
         if (multiplication != null) {
           equationsCubit.addEquations(
             DevelopTransformator(selectedTerms).transform(multiplication).map(
-              (transformed) => equation.mountAt(multiplication, transformed)
+              (transformed) => applyTrivializers(equation.mountAt(multiplication, transformed)).deepClone()
             ).toList()
           );
         }

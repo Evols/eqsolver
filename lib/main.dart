@@ -162,6 +162,10 @@ class MyHomePage extends StatelessWidget {
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startDevelopping(index),
                                       child: Text('Develop'),
                                     ),
+                                    DropdownMenuItem<void Function()>(
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startFactoring(index),
+                                      child: Text('Factor'),
+                                    ),
                                   ],
                                 ),
                               ],
