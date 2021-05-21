@@ -41,4 +41,14 @@ abstract class Value implements Comparable {
     return getChildren().fold(null, (value, element) => value ?? element.findTree(recurser));
   }
 
+  Value mountAt(Value at, Value toMount) {
+    final children = getChildren();
+    if (children.isEmpty) {
+      return this;
+    }
+    return deepCloneWithChildren(children.map(
+      (e) => identical(e, at) ? toMount : e
+    ).toList());
+  }
+
 }

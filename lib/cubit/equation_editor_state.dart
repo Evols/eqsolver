@@ -16,7 +16,7 @@ abstract class EquationEditorEditing extends EquationEditorState {
   Selectable isSelectable(Value root, Value value);
   bool canValidate();
 
-  EquationEditorEditing nextStep(EquationsCubit equationsCubit);
+  EquationEditorState nextStep(EquationsCubit equationsCubit);
   EquationEditorEditing onSelect(Value value);
 
   EquationEditorEditing();
@@ -85,12 +85,36 @@ class EquationEditorDevelop extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing nextStep(EquationsCubit equationsCubit) {
+  EquationEditorState nextStep(EquationsCubit equationsCubit) {
     final newStep = DevelopStep.values[step.index + 1];
     if (newStep == DevelopStep.Finished) {
-      equationsCubit.addEquations([]
-        // DevelopTransformator(selectedTerms).transform() TODO
-      );
+
+      print('Finished 1');
+
+      for (var equation in equationsCubit.state.equations) {
+        print('Trying eq ${equation.toString()}');
+        final multiplication = equation.findTree(
+          (treeIt) => treeIt is Multiplication && treeIt.children.where(
+            (factor) => factor is Addition && factor.children.where(
+              (term) => selectedTerms.where(
+                (term2) => identical(term, term2)
+              ).isNotEmpty
+            ).length == selectedTerms.length
+          ).isNotEmpty
+        );
+        print('multiplication: ${multiplication.toString()}');
+        if (multiplication != null) {
+          print('teq2');
+          equationsCubit.addEquations(
+            DevelopTransformator(selectedTerms).transform(multiplication).map(
+              (transformed) => equation.mountAt(multiplication, transformed)
+            ).toList()
+          );
+        }
+      }
+
+      
+      return EquationEditorIdle();
     }
     return EquationEditorDevelop(
       eqIdx,

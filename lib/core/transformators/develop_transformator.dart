@@ -2,6 +2,7 @@
 import 'package:formula_transformator/core/transformators/transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
+import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
@@ -13,19 +14,19 @@ class DevelopTransformator extends Transformator {
 
   @override
   List<Value> transform(Value value) {
+
     if (!(value is Multiplication) || value.children.length < 2) {
       return [];
     }
 
     final additions = value.children.where(
       (factor) => factor is Addition && factor.children.where(
-        (term) => identical(term, value)
-      ).isNotEmpty && factor.children.where(
         (term) => termsToDevelop.where(
           (term2) => identical(term, term2)
         ).isNotEmpty
       ).length == termsToDevelop.length
     ).toList();
+
     if (additions.isEmpty) {
       return [];
     }
