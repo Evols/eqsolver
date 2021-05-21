@@ -10,7 +10,6 @@ class EquationsCubit extends Cubit<EquationsState> {
   EquationsCubit(List<Value> equations) : super(EquationsState(equations));
 
   void addEquations(List<Value> equations) {
-    print('addEquations: $equations');
     emit(EquationsState([ ...state.equations, ...equations ]));
   }
 

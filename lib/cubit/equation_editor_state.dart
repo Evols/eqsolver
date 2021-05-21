@@ -89,10 +89,8 @@ class EquationEditorDevelop extends EquationEditorEditing {
     final newStep = DevelopStep.values[step.index + 1];
     if (newStep == DevelopStep.Finished) {
 
-      print('Finished 1');
-
       for (var equation in equationsCubit.state.equations) {
-        print('Trying eq ${equation.toString()}');
+
         final multiplication = equation.findTree(
           (treeIt) => treeIt is Multiplication && treeIt.children.where(
             (factor) => factor is Addition && factor.children.where(
@@ -102,15 +100,15 @@ class EquationEditorDevelop extends EquationEditorEditing {
             ).length == selectedTerms.length
           ).isNotEmpty
         );
-        print('multiplication: ${multiplication.toString()}');
+
         if (multiplication != null) {
-          print('teq2');
           equationsCubit.addEquations(
             DevelopTransformator(selectedTerms).transform(multiplication).map(
               (transformed) => equation.mountAt(multiplication, transformed)
             ).toList()
           );
         }
+
       }
 
       
