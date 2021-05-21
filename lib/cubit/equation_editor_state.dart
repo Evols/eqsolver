@@ -111,7 +111,6 @@ class EquationEditorDevelop extends EquationEditorEditing {
 
       }
 
-      
       return EquationEditorIdle();
     }
     return EquationEditorDevelop(
