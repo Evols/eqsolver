@@ -27,4 +27,18 @@ abstract class Value implements Comparable {
     return compareTo(other) == 0;
   }
 
+  List<Value> whereTree(bool Function(Value) recurser) {
+    return [
+      ...(recurser(this) ? [ this ] : []),
+      ...getChildren().map((e) => e.whereTree(recurser)).expand((e) => e).toList(),
+    ];
+  }
+
+  Value? findTree(bool Function(Value) recurser) {
+    if (recurser(this)) {
+      return this;
+    }
+    return getChildren().fold(null, (value, element) => value ?? element.findTree(recurser));
+  }
+
 }

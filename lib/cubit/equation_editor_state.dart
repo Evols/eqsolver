@@ -13,7 +13,8 @@ abstract class EquationEditorEditing extends EquationEditorState {
 
   bool hasFinished();
   String getStepName();
-  Selectable isSelectable(Value value);
+  Selectable isSelectable(Value root, Value value);
+  bool canValidate();
 
   EquationEditorEditing nextStep();
   EquationEditorEditing onSelect(Value value);
@@ -22,23 +23,21 @@ abstract class EquationEditorEditing extends EquationEditorState {
 
 }
 
-enum DevelopStep { SelectMult, SelectTerms, Finished }
+enum DevelopStep { Select, Finished }
 
 class EquationEditorDevelop extends EquationEditorEditing {
 
   final int eqIdx;
   final DevelopStep step;
-  final Multiplication? selectedMultiplication;
-  final List<Addition> selectedAdditions;
+  final List<Value> selectedTerms;
 
-  EquationEditorDevelop(this.eqIdx, this.step, { this.selectedMultiplication, List<Addition>? selectedAdditions })
-    : this.selectedAdditions = selectedAdditions ?? [];
+  EquationEditorDevelop(this.eqIdx, this.step, { List<Value>? selectedTerms })
+    : this.selectedTerms = selectedTerms ?? [];
 
   @override
   String getStepName() {
     switch (step) {
-      case DevelopStep.SelectMult: return 'Select the multiplication to develop';
-      case DevelopStep.SelectTerms: return 'Select the terms to develop';
+      case DevelopStep.Select: return 'Select the terms to develop';
       default: return '';
     }
   }
@@ -47,30 +46,41 @@ class EquationEditorDevelop extends EquationEditorEditing {
   bool hasFinished() => step == DevelopStep.Finished;
 
   @override
-  Selectable isSelectable(Value value) {
+  Selectable isSelectable(Value root, Value value) {
     switch (step) {
-    case DevelopStep.SelectMult:
-      return (
-        value is Multiplication
-        ? (
-          identical(value, selectedMultiplication)
-          ? Selectable.SingleSelected
-          : Selectable.SingleEmpty
-        )
-        : Selectable.None
-      );
-    case DevelopStep.SelectTerms:
-      return (
-        value is Addition && selectedMultiplication!.children.where((child) => identical(value, child)).isNotEmpty
-        ? (
-          selectedAdditions.where((child) => identical(value, child)).isNotEmpty
+    case DevelopStep.Select:
+      if (
+        root.findTree(
+          (treeIt) => treeIt is Multiplication && treeIt.children.where(
+            (factor) => factor is Addition && factor.children.where(
+              (term) => identical(term, value)
+            ).isNotEmpty && factor.children.where(
+              (term) => selectedTerms.where(
+                (term2) => identical(term, term2)
+              ).isNotEmpty
+            ).length == selectedTerms.length
+          ).isNotEmpty
+        ) != null
+      ) {
+        return (
+          selectedTerms.where((e) => identical(e, value)).isNotEmpty
           ? Selectable.MultipleSelected
           : Selectable.MultipleEmpty
-        )
-        : Selectable.None
-      );
+        );
+      }
+      return Selectable.None;
     default:
       return Selectable.None;
+    }
+  }
+
+  @override
+  bool canValidate() {
+    switch (step) {
+    case DevelopStep.Select:
+      return selectedTerms.length > 0;
+    default:
+      return true;
     }
   }
 
@@ -78,26 +88,17 @@ class EquationEditorDevelop extends EquationEditorEditing {
   EquationEditorEditing nextStep() => EquationEditorDevelop(
     eqIdx,
     DevelopStep.values[step.index + 1],
-    selectedMultiplication: selectedMultiplication,
-    selectedAdditions: selectedAdditions,
+    selectedTerms: selectedTerms,
   );
 
   @override
   EquationEditorEditing onSelect(Value value) {
     switch (step) {
-    case DevelopStep.SelectMult:
+    case DevelopStep.Select:
       return EquationEditorDevelop(
         eqIdx,
         step,
-        selectedMultiplication: (identical(value, selectedMultiplication) ? null : value as Multiplication),
-        selectedAdditions: selectedAdditions,
-      );
-    case DevelopStep.SelectTerms:
-      return EquationEditorDevelop(
-        eqIdx,
-        step,
-        selectedMultiplication: selectedMultiplication,
-        selectedAdditions: flipExistenceArray<Addition>(selectedAdditions, value as Addition),
+        selectedTerms: flipExistenceArray<Value>(selectedTerms, value),
       );
     default:
       return this;

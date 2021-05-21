@@ -75,7 +75,32 @@ class MyHomePage extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: BlocBuilder<EquationEditorCubit, EquationEditorState>(
-            builder: (context, editorState) => Text(title + (editorState is EquationEditorEditing ? ' - ' + editorState.getStepName() : '')),
+            builder: (context, editorState) => Row(
+              children: [
+                Text(title + (editorState is EquationEditorEditing ? ' - ' + editorState.getStepName() : '')),
+                Spacer(),
+                BlocBuilder<EquationEditorCubit, EquationEditorState>(
+                  builder: (context, editorState) {
+                    if (editorState is EquationEditorEditing) {
+                      return Row(
+                        children: [
+                          ElevatedButton(
+                            onPressed: () => BlocProvider.of<EquationEditorCubit>(context).cancel(),
+                            child: Text('Cancel'),
+                          ),
+                          Text(' '),
+                          ElevatedButton(
+                            onPressed: !editorState.canValidate() ? null : () => BlocProvider.of<EquationEditorCubit>(context).nextStep(),
+                            child: Text('Validate'),
+                          ),
+                        ],
+                      );
+                    }
+                    return Container();
+                  }
+                )
+              ]
+            ),
           ),
         ),
         body: Column(
@@ -95,7 +120,7 @@ class MyHomePage extends StatelessWidget {
                               state.equations[index],
                               bottomWidgetBuilder: (value) {
                                 if (editorState is EquationEditorEditing) {
-                                  final selectable = editorState.isSelectable(value);
+                                  final selectable = editorState.isSelectable(state.equations[index], value);
                                   switch (selectable) {
                                   case Selectable.SingleEmpty:
                                   case Selectable.SingleSelected:

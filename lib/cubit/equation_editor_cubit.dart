@@ -15,7 +15,11 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
   EquationEditorCubit(this.equationsCubit) : super(EquationEditorIdle());
 
   void startDevelopping(int eqIdx) {
-    emit(EquationEditorDevelop(eqIdx, DevelopStep.SelectMult));
+    emit(EquationEditorDevelop(eqIdx, DevelopStep.Select));
+  }
+
+  void cancel() {
+    emit(EquationEditorIdle());
   }
 
   void nextStep() {
