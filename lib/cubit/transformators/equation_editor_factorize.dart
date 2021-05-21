@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:formula_transformator/core/transformators/develop_transformator.dart';
+import 'package:formula_transformator/core/transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
@@ -125,6 +126,36 @@ class EquationEditorFactorize extends EquationEditorEditing {
         );
       }
       return Selectable.None;
+
+    case FactorizeStep.SelectTerms:
+      if (
+        root.findTree(
+          (additionCandidate) => additionCandidate is Addition
+          // Check that the addition has a multiplication term, and that this multiplication term has value as one of its factors
+          && additionCandidate.children.where(
+            (multiplicateCandidate) => multiplicateCandidate is Multiplication
+            // Multiplication term has value as one of its factors
+            && identical(multiplicateCandidate, value)
+            // Divisible by the selected factors and the new factor
+            && hasAllFactors(selectedFactors, multiplicateCandidate.children)
+          ).isNotEmpty
+          // Check that the addition has another multiplication term, and that this other multiplication term has is divisible by the selected factors and the new factor
+          && additionCandidate.children.where(
+            (multiplicateCandidate) => multiplicateCandidate is Multiplication
+            // Multiplication term has the selected factors
+            && multiplicateCandidate.children.where(
+              (factor) => selectedFactors.where((selectedFactor) => identical(selectedFactor, factor)).isNotEmpty
+            ).length == selectedFactors.length
+          ).isNotEmpty
+        ) != null
+      ) {
+        return (
+          selectedTerms.where((e) => identical(e, value)).isNotEmpty
+          ? Selectable.MultipleSelected
+          : Selectable.MultipleEmpty
+        );
+      }
+      return Selectable.None;
     default:
       return Selectable.None;
     }
@@ -135,6 +166,8 @@ class EquationEditorFactorize extends EquationEditorEditing {
     switch (step) {
     case FactorizeStep.SelectFactor:
       return selectedFactors.length > 0;
+    case FactorizeStep.SelectTerms:
+      return selectedTerms.length > 1;
     default:
       return true;
     }
@@ -143,32 +176,33 @@ class EquationEditorFactorize extends EquationEditorEditing {
   @override
   EquationEditorState nextStep(EquationsCubit equationsCubit) {
     final newStep = FactorizeStep.values[step.index + 1];
-    // if (newStep == FactorizeStep.Finished) {
+    if (newStep == FactorizeStep.Finished) {
 
-    //   for (var equation in equationsCubit.state.equations) {
+      for (var equation in equationsCubit.state.equations) {
 
-    //     final multiplication = equation.findTree(
-    //       (treeIt) => treeIt is Multiplication && treeIt.children.where(
-    //         (factor) => factor is Addition && factor.children.where(
-    //           (term) => selectedTerms.where(
-    //             (term2) => identical(term, term2)
-    //           ).isNotEmpty
-    //         ).length == selectedTerms.length
-    //       ).isNotEmpty
-    //     );
+        final addition = equation.findTree(
+          (additionCandidate) => additionCandidate is Addition
+          && additionCandidate.children.where(
+            (multiplicateCandidate) => multiplicateCandidate is Multiplication
+            // Multiplication term has the selected factors
+            && multiplicateCandidate.children.where(
+              (factor) => selectedFactors.where((selectedFactor) => identical(selectedFactor, factor)).isNotEmpty
+            ).length == selectedFactors.length
+          ).isNotEmpty
+        );
 
-    //     if (multiplication != null) {
-    //       equationsCubit.addEquations(
-    //         DevelopTransformator(selectedTerms).transform(multiplication).map(
-    //           (transformed) => equation.mountAt(multiplication, transformed)
-    //         ).toList()
-    //       );
-    //     }
+        if (addition != null) {
+          equationsCubit.addEquations(
+            FactorizeTransformator(selectedFactors, selectedTerms).transform(addition).map(
+              (transformed) => equation.mountAt(addition, transformed)
+            ).toList()
+          );
+        }
 
-    //   }
+      }
 
-    //   return EquationEditorIdle();
-    // }
+      return EquationEditorIdle();
+    }
     return EquationEditorFactorize(
       eqIdx,
       newStep,
@@ -186,6 +220,13 @@ class EquationEditorFactorize extends EquationEditorEditing {
         step,
         selectedFactors: flipExistenceArray<Value>(selectedFactors, value),
         selectedTerms: selectedTerms,
+      );
+    case FactorizeStep.SelectTerms:
+      return EquationEditorFactorize(
+        eqIdx,
+        step,
+        selectedFactors: selectedFactors,
+        selectedTerms: flipExistenceArray<Value>(selectedTerms, value),
       );
     default:
       return this;
