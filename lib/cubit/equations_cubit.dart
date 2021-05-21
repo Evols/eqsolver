@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 part 'equations_state.dart';
 
 class EquationsCubit extends Cubit<EquationsState> {
-  
+
   EquationsCubit(List<Value> equations) : super(EquationsState(equations));
 
   void addEquations(List<Value> equations) {
