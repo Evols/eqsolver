@@ -137,6 +137,8 @@ class MyHomePage extends StatelessWidget {
                                       value: selectable == Selectable.MultipleSelected,
                                       onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(value),
                                     );
+                                    case Selectable.None:
+                                      return null;
                                   }
                                 }
                                 return null;
