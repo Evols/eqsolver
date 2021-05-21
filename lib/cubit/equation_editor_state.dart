@@ -16,7 +16,7 @@ abstract class EquationEditorEditing extends EquationEditorState {
   Selectable isSelectable(Value root, Value value);
   bool canValidate();
 
-  EquationEditorEditing nextStep();
+  EquationEditorEditing nextStep(EquationsCubit equationsCubit);
   EquationEditorEditing onSelect(Value value);
 
   EquationEditorEditing();
@@ -85,11 +85,19 @@ class EquationEditorDevelop extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing nextStep() => EquationEditorDevelop(
-    eqIdx,
-    DevelopStep.values[step.index + 1],
-    selectedTerms: selectedTerms,
-  );
+  EquationEditorEditing nextStep(EquationsCubit equationsCubit) {
+    final newStep = DevelopStep.values[step.index + 1];
+    if (newStep == DevelopStep.Finished) {
+      equationsCubit.addEquations([]
+        // DevelopTransformator(selectedTerms).transform() TODO
+      );
+    }
+    return EquationEditorDevelop(
+      eqIdx,
+      newStep,
+      selectedTerms: selectedTerms,
+    );
+  }
 
   @override
   EquationEditorEditing onSelect(Value value) {
