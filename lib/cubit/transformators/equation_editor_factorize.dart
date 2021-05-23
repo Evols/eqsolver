@@ -1,6 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
-import 'package:formula_transformator/core/transformators/develop_transformator.dart';
 import 'package:formula_transformator/core/transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
