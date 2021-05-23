@@ -42,12 +42,15 @@ abstract class Value implements Comparable {
   }
 
   Value mountAt(Value at, Value toMount) {
+    if (identical(this, at)) {
+      return toMount;
+    }
     final children = getChildren();
     if (children.isEmpty) {
       return this;
     }
     return deepCloneWithChildren(children.map(
-      (e) => identical(e, at) ? toMount : e
+      (e) => e.mountAt(at, toMount)
     ).toList());
   }
 
