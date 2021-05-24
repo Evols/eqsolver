@@ -174,6 +174,10 @@ class MyHomePage extends StatelessWidget {
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startDioph(index),
                                       child: Container(child: Text('Diophantine')),
                                     ),
+                                    DropdownMenuItem<void Function()>(
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startInject(index),
+                                      child: Container(child: Text('Inject')),
+                                    ),
                                   ],
                                 ),
                               ],
