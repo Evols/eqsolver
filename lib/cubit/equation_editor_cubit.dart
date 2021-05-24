@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_develop.dart';
+import 'package:formula_transformator/cubit/transformators/equation_editor_dioph.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_factorize.dart';
 import 'package:meta/meta.dart';
 
@@ -19,6 +20,10 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
 
   void startFactoring(int eqIdx) {
     emit(EquationEditorFactorize(eqIdx, FactorizeStep.SelectFactor));
+  }
+
+  void startDioph(int eqIdx) {
+    emit(EquationEditorDioph(eqIdx, DiophStep.SelectTerms));
   }
 
   void cancel() {
