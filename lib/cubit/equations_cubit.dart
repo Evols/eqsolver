@@ -8,13 +8,17 @@ part 'equations_state.dart';
 
 class EquationsCubit extends Cubit<EquationsState> {
 
-  EquationsCubit(List<Value> equations) : super(EquationsState(equations));
+  EquationsCubit(List<Value> equations) : super(EquationsState(equations, false));
 
   void addEquations(List<Value> equations) {
     final trivialized = equations.map((e) => applyTrivializers(e)).toList();
     print('Adding equations $trivialized');
 
-    emit(EquationsState([ ...state.equations, ...trivialized ]));
+    emit(EquationsState([ ...state.equations, ...trivialized ], state.prettifyEquations));
+  }
+
+  void setPrettifyEquations(bool prettify) {
+    emit(EquationsState(state.equations, prettify));
   }
 
 }

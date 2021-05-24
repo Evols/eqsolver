@@ -33,15 +33,16 @@ class LatexWidget extends StatelessWidget {
 class EquationWidget extends StatelessWidget {
 
   final Value equation;
+  final bool prettify;
   final Widget? Function(Value)? bottomWidgetBuilder;
 
-  const EquationWidget(this.equation, {Key? key, this.bottomWidgetBuilder}) : super(key: key);
+  const EquationWidget(this.equation, {Key? key, this.bottomWidgetBuilder, required this.prettify}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
 
     final trivialized = applyTrivializers(equation);
-    if (trivialized is Addition) {
+    if (prettify && trivialized is Addition) {
 
       var positives = <Value>[], negatives = <Value>[];
 
@@ -70,9 +71,13 @@ class EquationWidget extends StatelessWidget {
       }
     }
 
-    return Row(children: [
-      ValueWidget(applyTrivializers(trivialized), bottomWidgetBuilder: bottomWidgetBuilder),
-      LatexWidget('= 0'),
-    ]);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ValueWidget(applyTrivializers(trivialized), bottomWidgetBuilder: bottomWidgetBuilder),
+        Container(width: 4.0),
+        LatexWidget('= 0'),
+      ],
+    );
   }
 }

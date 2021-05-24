@@ -74,32 +74,34 @@ class MyHomePage extends StatelessWidget {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: BlocBuilder<EquationEditorCubit, EquationEditorState>(
-            builder: (context, editorState) => Row(
-              children: [
-                Text(title + (editorState is EquationEditorEditing ? ' - ' + editorState.getStepName() : '')),
-                Spacer(),
-                BlocBuilder<EquationEditorCubit, EquationEditorState>(
-                  builder: (context, editorState) {
-                    if (editorState is EquationEditorEditing) {
+          title: BlocBuilder<EquationsCubit, EquationsState>(
+            builder: (context, state) => BlocBuilder<EquationEditorCubit, EquationEditorState>(
+              builder: (context, editorState) => Row(
+                children: [
+                  Text(title + (editorState is EquationEditorEditing ? ' - ' + editorState.getStepName() : '')),
+                  Spacer(),
+                  BlocBuilder<EquationEditorCubit, EquationEditorState>(
+                    builder: (context, editorState) {
                       return Row(
                         children: [
-                          ElevatedButton(
-                            onPressed: () => BlocProvider.of<EquationEditorCubit>(context).cancel(),
-                            child: Text('Cancel'),
-                          ),
-                          Text(' '),
-                          ElevatedButton(
-                            onPressed: !editorState.canValidate() ? null : () => BlocProvider.of<EquationEditorCubit>(context).nextStep(),
-                            child: Text('Validate'),
-                          ),
+                          ...(editorState is EquationEditorEditing ? [
+                            ElevatedButton(
+                              onPressed: () => BlocProvider.of<EquationEditorCubit>(context).cancel(),
+                              child: Text('Cancel'),
+                            ),
+                            Text(' '),
+                            ElevatedButton(
+                              onPressed: !editorState.canValidate() ? null : () => BlocProvider.of<EquationEditorCubit>(context).nextStep(),
+                              child: Text('Validate'),
+                            ),
+                          ] : []),
+                          Switch(value: state.prettifyEquations, onChanged: (_) => BlocProvider.of<EquationsCubit>(context).setPrettifyEquations(!state.prettifyEquations)),
                         ],
                       );
                     }
-                    return Container();
-                  }
-                )
-              ]
+                  )
+                ]
+              ),
             ),
           ),
         ),
@@ -118,6 +120,7 @@ class MyHomePage extends StatelessWidget {
                           children: [
                             EquationWidget(
                               state.equations[index],
+                              prettify: state.prettifyEquations,
                               bottomWidgetBuilder: (value) {
                                 if (editorState is EquationEditorEditing) {
                                   final selectable = editorState.isSelectable(state.equations[index], value);
