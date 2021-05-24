@@ -1,6 +1,4 @@
 
-import 'dart:math';
-
 import 'package:formula_transformator/core/transformators/transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
