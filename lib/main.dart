@@ -158,20 +158,21 @@ class MyHomePage extends StatelessWidget {
                                   selectedItemBuilder: (context) => [ Container() ],
                                   iconSize: 24,
                                   elevation: 16,
+                                  isDense: true,
                                   underline: Container(),
                                   onChanged: (void Function()? newValue) => newValue?.call(),
                                   items: editorState is EquationEditorEditing ? [] : [
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startDevelopping(index),
-                                      child: Text('Develop'),
+                                      child: Container(child: Text('Develop')),
                                     ),
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startFactoring(index),
-                                      child: Text('Factor'),
+                                      child: Container(child: Text('Factor')),
                                     ),
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startDioph(index),
-                                      child: Text('Diophantine'),
+                                      child: Container(child: Text('Diophantine')),
                                     ),
                                   ],
                                 ),

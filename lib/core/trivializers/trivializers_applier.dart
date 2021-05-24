@@ -1,4 +1,7 @@
 
+import 'package:formula_transformator/core/trivializers/eliminate_eq_constant_factors_trivializer.dart';
+import 'package:formula_transformator/core/trivializers/eliminate_eq_gcd_trivializer.dart';
+
 import 'constant_computation_trivializer.dart';
 import 'empty_trivializer.dart';
 import 'mult_one_trivializer.dart';
@@ -19,15 +22,17 @@ const trivializers = <Trivializer>{
   ConstantComputationTrivializer(),
   EmptyTrivializer(),
   NestedTrivializer(),
+  EliminateEqGcdTrivializer(),
+  EliminateEqConstantFactorsTrivializer(),
 };
 
-Value applyTrivializers(Value value) {
+Value applyTrivializers(Value value, [bool isEquation = false]) {
   var tempValue = value;
   var applied = true;
   while (applied) {
     applied = false;
     for (var trivializer in trivializers) {
-      var transformed = mountValueAt(tempValue, (e) => trivializer.transform(e));
+      var transformed = mountValueAt(tempValue, (elem, depth) => trivializer.transform(elem, depth == 0 && isEquation));
       if (transformed != null) {
         tempValue = transformed;
         applied = true;

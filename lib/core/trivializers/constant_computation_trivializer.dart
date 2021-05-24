@@ -10,7 +10,7 @@ class ConstantComputationTrivializer implements Trivializer {
   const ConstantComputationTrivializer();
 
   @override
-  Value? transform(Value value) {
+  Value? transform(Value value, [bool isEquation = false]) {
 
     if (value is Addition) {
       final children = value.getChildren();

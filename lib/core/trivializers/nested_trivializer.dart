@@ -9,7 +9,7 @@ class NestedTrivializer implements Trivializer {
   const NestedTrivializer();
 
   @override
-  Value? transform(Value value) {
+  Value? transform(Value value, [bool isEquation = false]) {
     if (value is Addition) {
       final additionChildren = value.children.whereType<Addition>();
       if (additionChildren.isNotEmpty) {

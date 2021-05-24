@@ -67,7 +67,7 @@ class DiophTransformator extends Transformator {
     final u0 = u0ref.value, v0 = u0ref.value;
 
     if (gcd != 1) {
-      print('GCD WAS $gcd. ABORTING');
+      print('GCD WAS $gcd. TODO: handle this case. ABORTING');
       return [];
     }
 

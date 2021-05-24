@@ -9,7 +9,7 @@ class AddZeroTrivializer implements Trivializer {
   const AddZeroTrivializer();
 
   @override
-  Value? transform(Value value) {
+  Value? transform(Value value, [bool isEquation = false]) {
     if (value is Addition) {
       final newChildren = value.children.where((child) => !(child is Constant && child.number == 0.0)).toList();
       if (newChildren.length != value.children.length) {

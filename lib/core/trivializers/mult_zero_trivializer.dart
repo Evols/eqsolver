@@ -9,7 +9,7 @@ class MultZeroTrivializer implements Trivializer {
   const MultZeroTrivializer();
 
   @override
-  Value? transform(Value value) {
+  Value? transform(Value value, [bool isEquation = false]) {
     if (value is Multiplication) {
       final newChildren = value.children.where((child) => child is Constant && child.number == 0);
       if (newChildren.isNotEmpty) {

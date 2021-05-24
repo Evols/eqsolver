@@ -16,10 +16,10 @@ class Ref<T> {
 int computeGcd(int a, int b) {
   int t = b;
   while (b != 0) {
-    t = b; 
-    b = a % b; 
+    t = b;
+    b = a % b;
     a = t;
-  } 
+  }
   return a;
 }
 

@@ -10,7 +10,7 @@ class EmptyTrivializer implements Trivializer {
   const EmptyTrivializer();
 
   @override
-  Value? transform(Value value) {
+  Value? transform(Value value, [bool isEquation = false]) {
     if (value is Addition) {
       if (value.children.isEmpty) {
         return Constant(0);

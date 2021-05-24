@@ -11,7 +11,7 @@ class EquationsCubit extends Cubit<EquationsState> {
   EquationsCubit(List<Value> equations) : super(EquationsState(equations, false));
 
   void addEquations(List<Value> equations) {
-    final trivialized = equations.map((e) => applyTrivializers(e)).toList();
+    final trivialized = equations.map((e) => applyTrivializers(e, true)).toList();
     print('Adding equations $trivialized');
 
     emit(EquationsState([ ...state.equations, ...trivialized ], state.prettifyEquations));

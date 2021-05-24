@@ -9,7 +9,7 @@ class SingleChildTrivializer implements Trivializer {
   const SingleChildTrivializer();
 
   @override
-  Value? transform(Value value) {
+  Value? transform(Value value, [bool isEquation = false]) {
     if (value is Addition || value is Multiplication) {
       final children = value.getChildren();
       if (children.length == 1) {
