@@ -1,6 +1,6 @@
 
 import 'package:formula_transformator/core/values/value.dart';
 
-abstract class Transformator {
+abstract class ValueTransformator {
   List<Value> transform(Value value);
 }

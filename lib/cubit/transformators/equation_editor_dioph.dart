@@ -1,5 +1,5 @@
 
-import 'package:formula_transformator/core/transformators/dioph_transformator.dart';
+import 'package:formula_transformator/core/value_transformators/dioph_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
