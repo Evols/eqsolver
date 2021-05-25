@@ -19,11 +19,11 @@ class DiophTransformator extends Transformator {
   @override
   List<Value> transform(Value value) {
 
-    if (!(value is Addition) || value.children.length < 3) {
+    if (!(value is Addition) || value.terms.length < 3) {
       return [];
     }
 
-    final multiplicationsToDioph = value.children.where(
+    final multiplicationsToDioph = value.terms.where(
       (multiplication) => multiplication is Multiplication && termsToFactor.where(
         (termToFactor) => identical(multiplication, termToFactor)
       ).isNotEmpty
@@ -38,14 +38,14 @@ class DiophTransformator extends Transformator {
     // a*u+b*v=c
 
     final constantParts = multiplicationsToDioph.map(
-      (multiplication) => multiplication.children.fold<int>(
+      (multiplication) => multiplication.factors.fold<int>(
         1,
         (previousValue, element) => element is Constant ? previousValue * element.number : previousValue,
       )
     ).toList();
 
     final variableParts = multiplicationsToDioph.map(
-      (multiplication) => multiplication.children.where((child) => !(child is Constant)).toList()
+      (multiplication) => multiplication.factors.where((child) => !(child is Constant)).toList()
     ).toList();
 
     final a = constantParts[0];
@@ -54,7 +54,7 @@ class DiophTransformator extends Transformator {
     final b = constantParts[1];
     final vFactors = variableParts[1];
 
-    final cTerms = value.children.where(
+    final cTerms = value.terms.where(
       (term) => multiplicationsToDioph.where(
         (termToFactor) => identical(term, termToFactor)
       ).isEmpty

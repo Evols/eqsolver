@@ -34,7 +34,7 @@ class ValueWidget extends StatelessWidget {
     else if (inValue is Addition) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: inValue.children
+        children: inValue.terms
         .map((e) => ValueWidget(e, bottomWidgetBuilder: this.bottomWidgetBuilder))
         .foldIndexed<List<Widget>>(
           [],
@@ -54,7 +54,7 @@ class ValueWidget extends StatelessWidget {
     else if (inValue is Multiplication) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: inValue.children
+        children: inValue.factors
         .map((e) =>
           e is Addition
           ? Row(

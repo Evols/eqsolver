@@ -36,10 +36,10 @@ class EquationEditorDevelop extends EquationEditorEditing {
     case DevelopStep.Select:
       if (
         root.findTree(
-          (treeIt) => treeIt is Multiplication && treeIt.children.where(
-            (factor) => factor is Addition && factor.children.where(
+          (treeIt) => treeIt is Multiplication && treeIt.factors.where(
+            (factor) => factor is Addition && factor.terms.where(
               (term) => identical(term, value)
-            ).isNotEmpty && factor.children.where(
+            ).isNotEmpty && factor.terms.where(
               (term) => selectedTerms.where(
                 (term2) => identical(term, term2)
               ).isNotEmpty
@@ -77,8 +77,8 @@ class EquationEditorDevelop extends EquationEditorEditing {
       for (var equation in equationsCubit.state.equations) {
 
         final multiplication = equation.findTree(
-          (treeIt) => treeIt is Multiplication && treeIt.children.where(
-            (factor) => factor is Addition && factor.children.where(
+          (treeIt) => treeIt is Multiplication && treeIt.factors.where(
+            (factor) => factor is Addition && factor.terms.where(
               (term) => selectedTerms.where(
                 (term2) => identical(term, term2)
               ).isNotEmpty

@@ -17,13 +17,13 @@ class EliminateEqGcdTrivializer implements Trivializer {
     if (isEquation && value is Addition) {
 
       // The constant part of each term
-      final constantParts = value.children.map<int>(
+      final constantParts = value.terms.map<int>(
         (term) {
           if (term is Constant) {
             return term.number;
           }
           if (term is Multiplication) {
-            return term.children.fold<int>(
+            return term.factors.fold<int>(
               1,
               (factorAcc, factor) => factorAcc * (factor is Constant ? factor.number : 1),
             );
@@ -44,17 +44,17 @@ class EliminateEqGcdTrivializer implements Trivializer {
       ).isEmpty ? -1 : 1);
 
       if (gcd > 1 || gcd < 0) {
-        final newTerms = value.children.mapIndexed(
+        final newTerms = value.terms.mapIndexed(
           (term, index) {
             if (term is Constant) {
               return Constant(term.number ~/ gcd);
             }
             if (term is Multiplication) {
-              final constantPart = term.children.fold<int>(
+              final constantPart = term.factors.fold<int>(
                 1,
                 (factorAcc, factor) => factorAcc * (factor is Constant ? factor.number : 1),
               );
-              final nonConstantPart = term.children.where((element) => !(element is Constant));
+              final nonConstantPart = term.factors.where((element) => !(element is Constant));
               return Multiplication([
                 Constant(constantPart ~/ gcd),
                 ...nonConstantPart,

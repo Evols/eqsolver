@@ -14,12 +14,12 @@ class DevelopTransformator extends Transformator {
   @override
   List<Value> transform(Value value) {
 
-    if (!(value is Multiplication) || value.children.length < 2) {
+    if (!(value is Multiplication) || value.factors.length < 2) {
       return [];
     }
 
-    final additions = value.children.where(
-      (factor) => factor is Addition && factor.children.where(
+    final additions = value.factors.where(
+      (factor) => factor is Addition && factor.terms.where(
         (term) => termsToDevelop.where(
           (term2) => identical(term, term2)
         ).isNotEmpty
@@ -31,7 +31,7 @@ class DevelopTransformator extends Transformator {
     }
 
     final addition = additions[0];
-    final otherFactors = value.children.where((element) => !identical(element, addition)).toList();
+    final otherFactors = value.factors.where((element) => !identical(element, addition)).toList();
 
     final termsToNotDevelop = addition.getChildren().where(
       (term) => termsToDevelop.where(

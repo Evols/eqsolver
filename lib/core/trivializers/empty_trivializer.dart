@@ -12,12 +12,12 @@ class EmptyTrivializer implements Trivializer {
   @override
   Value? transform(Value value, [bool isEquation = false]) {
     if (value is Addition) {
-      if (value.children.isEmpty) {
+      if (value.terms.isEmpty) {
         return Constant(0);
       }
     }
     if (value is Multiplication) {
-      if (value.children.isEmpty) {
+      if (value.factors.isEmpty) {
         return Constant(1);
       }
     }

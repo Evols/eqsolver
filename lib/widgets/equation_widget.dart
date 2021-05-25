@@ -46,8 +46,8 @@ class EquationWidget extends StatelessWidget {
 
       var positives = <Value>[], negatives = <Value>[];
 
-      for (var term in trivialized.children) {
-        if (term is Constant && term.number < 0 || term is Multiplication && term.children.where((factor) => factor is Constant && factor.number < 0).length > 0) {
+      for (var term in trivialized.terms) {
+        if (term is Constant && term.number < 0 || term is Multiplication && term.factors.where((factor) => factor is Constant && factor.number < 0).length > 0) {
           negatives.add(term);
         } else {
           positives.add(term);

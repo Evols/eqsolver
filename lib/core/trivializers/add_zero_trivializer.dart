@@ -11,8 +11,8 @@ class AddZeroTrivializer implements Trivializer {
   @override
   Value? transform(Value value, [bool isEquation = false]) {
     if (value is Addition) {
-      final newChildren = value.children.where((child) => !(child is Constant && child.number == 0.0)).toList();
-      if (newChildren.length != value.children.length) {
+      final newChildren = value.terms.where((child) => !(child is Constant && child.number == 0.0)).toList();
+      if (newChildren.length != value.terms.length) {
         return Addition(newChildren);
       }
     }

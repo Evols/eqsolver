@@ -36,12 +36,12 @@ class EquationEditorDioph extends EquationEditorEditing {
     case DiophStep.SelectTerms:
       if (
         root is Addition && value is Multiplication
-        && root.children.length > 2
-        && root.children.where(
+        && root.terms.length > 2
+        && root.terms.where(
           (term) => identical(term, value)
-        ).isNotEmpty && value.children.where(
+        ).isNotEmpty && value.factors.where(
           (factor) => factor is Constant
-        ).isNotEmpty && root.children.where(
+        ).isNotEmpty && root.terms.where(
           (term) => selectedTerms.where(
             (selectedTerm) => identical(term, selectedTerm)
           ).isNotEmpty
@@ -71,7 +71,7 @@ class EquationEditorDioph extends EquationEditorEditing {
 
       for (var equation in equationsCubit.state.equations) {
 
-        final isTheEquation = equation is Addition && equation.children.where(
+        final isTheEquation = equation is Addition && equation.terms.where(
           (term) => selectedTerms.where(
             (selectedTerm) => identical(term, selectedTerm)
           ).isNotEmpty

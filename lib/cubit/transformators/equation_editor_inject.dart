@@ -36,8 +36,8 @@ class EquationEditorInject extends EquationEditorEditing {
   Selectable isSelectable(Value root, Value value) {
     switch (step) {
     case InjectStep.SelectSubstitute:
-      if (root is Addition && root.children.where(
-        (term) => identical(term, value) || (term is Multiplication && term.children.where(
+      if (root is Addition && root.terms.where(
+        (term) => identical(term, value) || (term is Multiplication && term.factors.where(
           (factor) => identical(factor, value)
         ).isNotEmpty)
       ).isNotEmpty && value.getChildren().isEmpty && !(value is Constant)) {
@@ -50,8 +50,8 @@ class EquationEditorInject extends EquationEditorEditing {
       return Selectable.None;
 
     case InjectStep.SelectInjection:
-      if (value.isEquivalentTo(sourceExpression!) && !identical(value, sourceExpression) && root is Addition && root.children.where(
-        (term) => identical(term, value) || (term is Multiplication && term.children.where(
+      if (value.isEquivalentTo(sourceExpression!) && !identical(value, sourceExpression) && root is Addition && root.terms.where(
+        (term) => identical(term, value) || (term is Multiplication && term.factors.where(
           (factor) => identical(factor, value)
         ).isNotEmpty)
       ).isNotEmpty) {
@@ -86,8 +86,8 @@ class EquationEditorInject extends EquationEditorEditing {
 
       for (var equation in equationsCubit.state.equations) {
 
-        final isTheEquation = equation is Addition && equation.children.where(
-          (term) => identical(term, targetExpression) || (term is Multiplication && term.children.where(
+        final isTheEquation = equation is Addition && equation.terms.where(
+          (term) => identical(term, targetExpression) || (term is Multiplication && term.factors.where(
             (factor) => identical(factor, targetExpression)
           ).isNotEmpty)
         ).isNotEmpty;

@@ -89,22 +89,22 @@ class EquationEditorFactorize extends EquationEditorEditing {
         root.findTree(
           (additionCandidate) => additionCandidate is Addition
           // Check that the addition has a multiplication term, and that this multiplication term has value as one of its factors
-          && additionCandidate.children.where(
+          && additionCandidate.terms.where(
             (multiplicateCandidate) => multiplicateCandidate is Multiplication
             // Multiplication term has value as one of its factors
-            && multiplicateCandidate.children.where(
+            && multiplicateCandidate.factors.where(
               (factor) => identical(factor, value)
             ).isNotEmpty
             // Multiplication term has the selected factors
-            && multiplicateCandidate.children.where(
+            && multiplicateCandidate.factors.where(
               (factor) => selectedFactors.where((selectedFactor) => identical(selectedFactor, factor)).isNotEmpty
             ).length == selectedFactors.length
           ).isNotEmpty
           // Check that the addition has another multiplication term, and that this other multiplication term has is divisible by the selected factors and the new factor
-          && additionCandidate.children.where(
+          && additionCandidate.terms.where(
             (otherMultiplicateCandidate) => otherMultiplicateCandidate is Multiplication
             // Not the multiplication that contains value
-            && otherMultiplicateCandidate.children.where(
+            && otherMultiplicateCandidate.factors.where(
               (factor) => identical(factor, value)
             ).isEmpty
             // Divisible by the selected factors and the new factor
@@ -112,7 +112,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
               selectedFactors.where(
                 (selectedFactor) => identical(selectedFactor, value)
               ).isNotEmpty ? selectedFactors : [ ...selectedFactors, value ],
-              otherMultiplicateCandidate.children,
+              otherMultiplicateCandidate.factors,
             )
           ).isNotEmpty
         ) != null
@@ -130,18 +130,18 @@ class EquationEditorFactorize extends EquationEditorEditing {
         root.findTree(
           (additionCandidate) => additionCandidate is Addition
           // Check that the addition has a multiplication term, and that this multiplication term has value as one of its factors
-          && additionCandidate.children.where(
+          && additionCandidate.terms.where(
             (multiplicateCandidate) => multiplicateCandidate is Multiplication
             // Multiplication term has value as one of its factors
             && identical(multiplicateCandidate, value)
             // Divisible by the selected factors and the new factor
-            && hasAllFactors(selectedFactors, multiplicateCandidate.children)
+            && hasAllFactors(selectedFactors, multiplicateCandidate.factors)
           ).isNotEmpty
           // Check that the addition has another multiplication term, and that this other multiplication term has is divisible by the selected factors and the new factor
-          && additionCandidate.children.where(
+          && additionCandidate.terms.where(
             (multiplicateCandidate) => multiplicateCandidate is Multiplication
             // Multiplication term has the selected factors
-            && multiplicateCandidate.children.where(
+            && multiplicateCandidate.factors.where(
               (factor) => selectedFactors.where((selectedFactor) => identical(selectedFactor, factor)).isNotEmpty
             ).length == selectedFactors.length
           ).isNotEmpty
@@ -180,10 +180,10 @@ class EquationEditorFactorize extends EquationEditorEditing {
 
         final addition = equation.findTree(
           (additionCandidate) => additionCandidate is Addition
-          && additionCandidate.children.where(
+          && additionCandidate.terms.where(
             (multiplicateCandidate) => multiplicateCandidate is Multiplication
             // Multiplication term has the selected factors
-            && multiplicateCandidate.children.where(
+            && multiplicateCandidate.factors.where(
               (factor) => selectedFactors.where((selectedFactor) => identical(selectedFactor, factor)).isNotEmpty
             ).length == selectedFactors.length
           ).isNotEmpty

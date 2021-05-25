@@ -19,11 +19,11 @@ class FactorizeTransformator extends Transformator {
   @override
   List<Value> transform(Value value) {
 
-    if (!(value is Addition) || value.children.length < 2) {
+    if (!(value is Addition) || value.terms.length < 2) {
       return [];
     }
 
-    final multiplicationsToFactor = value.children.where(
+    final multiplicationsToFactor = value.terms.where(
       (multiplication) => multiplication is Multiplication && termsToFactor.where(
         (term2) => identical(multiplication, term2)
       ).isNotEmpty
@@ -35,7 +35,7 @@ class FactorizeTransformator extends Transformator {
     final gcd = max(
       1,
       multiplicationsToFactor.map(
-        (e) => e.children.fold<int>(
+        (e) => e.factors.fold<int>(
           1,
           (previousValue, element) => element is Constant ? previousValue * element.number : previousValue,
         )
@@ -58,7 +58,7 @@ class FactorizeTransformator extends Transformator {
         var factorsToLookForCopy = [...actualFactorsToDivi];
         var nonFactorPart = <Value>[];
 
-        for (var multiplicationFactor in multiplication.children) {
+        for (var multiplicationFactor in multiplication.factors) {
 
           var found = false;
 
@@ -84,7 +84,7 @@ class FactorizeTransformator extends Transformator {
       }
     );
 
-    final termsToNotDevelop = value.children.where(
+    final termsToNotDevelop = value.terms.where(
       (candidateTerm) => termsToFactor.where(
         (termToFactor) => identical(candidateTerm, termToFactor)
       ).isEmpty

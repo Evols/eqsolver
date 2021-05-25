@@ -11,8 +11,8 @@ class EliminateEqConstantFactorsTrivializer implements Trivializer {
   @override
   Value? transform(Value value, [bool isEquation = false]) {
     if (isEquation && value is Multiplication) {
-      final newChildren = value.children.where((element) => !(element is Constant)).toList();
-      if (newChildren.length != value.children.length) {
+      final newChildren = value.factors.where((element) => !(element is Constant)).toList();
+      if (newChildren.length != value.factors.length) {
         return Multiplication(newChildren);
       }
     }

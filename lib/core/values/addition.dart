@@ -5,18 +5,18 @@ import '../utils.dart';
 
 class Addition extends Value {
 
-  final List<Value> children;
+  final List<Value> terms;
 
-  const Addition(this.children);
+  const Addition(this.terms);
 
   @override
   List<Value> getChildren() {
-    return children;
+    return terms;
   }
 
   @override
   Value deepClone() {
-    return Addition(children.map((e) => e.deepClone()).toList());
+    return Addition(terms.map((e) => e.deepClone()).toList());
   }
 
   @override
@@ -26,7 +26,7 @@ class Addition extends Value {
 
   @override
   Value getNormalized() {
-    final childrenNormalized = children.map((e) => e.getNormalized()).toList();
+    final childrenNormalized = terms.map((e) => e.getNormalized()).toList();
     childrenNormalized.sort();
     return Addition(childrenNormalized);
   }
@@ -36,12 +36,12 @@ class Addition extends Value {
     if (!(other is Addition)) {
       return compareToClass(other);
     }
-    return compareLists(children, other.children);
+    return compareLists(terms, other.terms);
   }
 
   @override
   String toString() {
-    return 'Addition( ${children.map((e) => e.toString()).toList().join(', ')} )';
+    return 'Addition( ${terms.map((e) => e.toString()).toList().join(', ')} )';
   }
 
 }

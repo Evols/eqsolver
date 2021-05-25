@@ -11,8 +11,8 @@ class MultOneTrivializer implements Trivializer {
   @override
   Value? transform(Value value, [bool isEquation = false]) {
     if (value is Multiplication) {
-      final newChildren = value.children.where((child) => !(child is Constant && child.number == 1.0)).toList();
-      if (newChildren.length != value.children.length) {
+      final newChildren = value.factors.where((child) => !(child is Constant && child.number == 1.0)).toList();
+      if (newChildren.length != value.factors.length) {
         return Multiplication(newChildren);
       }
     }

@@ -11,20 +11,20 @@ class NestedTrivializer implements Trivializer {
   @override
   Value? transform(Value value, [bool isEquation = false]) {
     if (value is Addition) {
-      final additionChildren = value.children.whereType<Addition>();
+      final additionChildren = value.terms.whereType<Addition>();
       if (additionChildren.isNotEmpty) {
         return Addition([
-          ...value.children.where((element) => !(element is Addition)),
-          ...additionChildren.map((element) => element.children).expand((element) => element),
+          ...value.terms.where((element) => !(element is Addition)),
+          ...additionChildren.map((element) => element.terms).expand((element) => element),
         ]);
       }
     }
     if (value is Multiplication) {
-      final additionChildren = value.children.whereType<Multiplication>();
+      final additionChildren = value.factors.whereType<Multiplication>();
       if (additionChildren.isNotEmpty) {
         return Multiplication([
-          ...value.children.where((element) => !(element is Multiplication)),
-          ...additionChildren.map((element) => element.children).expand((element) => element),
+          ...value.factors.where((element) => !(element is Multiplication)),
+          ...additionChildren.map((element) => element.factors).expand((element) => element),
         ]);
       }
     }
