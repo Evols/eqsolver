@@ -69,7 +69,7 @@ class MyHomePage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1, eq2 ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1, /* eq2 */ ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
       child: Scaffold(
@@ -131,14 +131,14 @@ class MyHomePage extends StatelessWidget {
                                       splashRadius: 0.0,
                                       value: selectable == Selectable.SingleSelected,
                                       groupValue: true,
-                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(value),
+                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(state.equations[index], value),
                                     );
                                   case Selectable.MultipleEmpty:
                                   case Selectable.MultipleSelected:
                                     return Checkbox(
                                       splashRadius: 0.0,
                                       value: selectable == Selectable.MultipleSelected,
-                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(value),
+                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(state.equations[index], value),
                                     );
                                     case Selectable.None:
                                       return null;

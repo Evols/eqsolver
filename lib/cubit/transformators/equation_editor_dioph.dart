@@ -97,7 +97,7 @@ class EquationEditorDioph extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing onSelect(Value value) {
+  EquationEditorEditing onSelect(Value root, Value value) {
     switch (step) {
     case DiophStep.SelectTerms:
       return EquationEditorDioph(

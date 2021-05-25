@@ -42,10 +42,10 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
     }
   }
 
-  void onSelect(Value value) {
+  void onSelect(Value root, Value value) {
     var inState = state;
     if (inState is EquationEditorEditing) {
-      emit(inState.onSelect(value));
+      emit(inState.onSelect(root, value));
     }
   }
 

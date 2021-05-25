@@ -17,7 +17,7 @@ abstract class EquationEditorEditing extends EquationEditorState {
   bool canValidate();
 
   EquationEditorState nextStep(EquationsCubit equationsCubit);
-  EquationEditorEditing onSelect(Value value);
+  EquationEditorEditing onSelect(Value root, Value value);
 
   EquationEditorEditing();
 
