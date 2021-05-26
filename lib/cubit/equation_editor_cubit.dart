@@ -1,11 +1,13 @@
 
 import 'package:bloc/bloc.dart';
+import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_develop.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_dioph.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_factorize.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_inject.dart';
+import 'package:formula_transformator/cubit/transformators/equation_editor_reorganize.dart';
 import 'package:meta/meta.dart';
 
 part 'equation_editor_state.dart';
@@ -31,6 +33,10 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
     emit(EquationEditorInject(eqIdx, InjectStep.SelectSubstitute));
   }
 
+  void startReorganize(int eqIdx) {
+    emit(EquationEditorReorganize(eqIdx, ReorganizeStep.Select));
+  }
+
   void cancel() {
     emit(EquationEditorIdle());
   }
@@ -42,10 +48,10 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
     }
   }
 
-  void onSelect(Value root, Value value) {
+  void onSelect(Equation equation, Value value) {
     var inState = state;
     if (inState is EquationEditorEditing) {
-      emit(inState.onSelect(root, value));
+      emit(inState.onSelect(equation, value));
     }
   }
 

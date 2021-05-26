@@ -1,5 +1,6 @@
 
-import 'package:formula_transformator/core/transformators/dioph_transformator.dart';
+import 'package:formula_transformator/core/equation.dart';
+import 'package:formula_transformator/core/equation_transformators/dioph_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
@@ -7,7 +8,6 @@ import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
-import 'package:formula_transformator/utils.dart';
 
 enum DiophStep { SelectTerms, Finished }
 
@@ -15,9 +15,9 @@ class EquationEditorDioph extends EquationEditorEditing {
 
   final int eqIdx;
   final DiophStep step;
-  final List<Value> selectedTerms;
+  final Addition? selectedAddition;
 
-  EquationEditorDioph(this.eqIdx, this.step, { this.selectedTerms = const [] });
+  EquationEditorDioph(this.eqIdx, this.step, { this.selectedAddition });
 
   @override
   String getStepName() {
@@ -31,24 +31,23 @@ class EquationEditorDioph extends EquationEditorEditing {
   bool hasFinished() => step == DiophStep.Finished;
 
   @override
-  Selectable isSelectable(Value root, Value value) {
+  Selectable isSelectable(Equation equation, Value value) {
     switch (step) {
     case DiophStep.SelectTerms:
       if (
-        root is Addition && value is Multiplication
-        && root.terms.length > 2
-        && root.terms.where(
-          (term) => identical(term, value)
-        ).isNotEmpty && value.factors.where(
-          (factor) => factor is Constant
-        ).isNotEmpty && root.terms.where(
-          (term) => selectedTerms.where(
-            (selectedTerm) => identical(term, selectedTerm)
-          ).isNotEmpty
-        ).length == selectedTerms.length
+        equation.parts.where(
+          (part) => (
+            part is Addition
+            && identical(part, value)
+            && part.terms.length == 2
+            && part.terms.where(
+              (term) => term is Multiplication && term.factors.whereType<Constant>().isNotEmpty
+            ).length == 2
+          ) 
+        ).isNotEmpty
       ) {
         return (
-          selectedTerms.where((e) => identical(e, value)).isNotEmpty
+          identical(selectedAddition, value)
           ? Selectable.MultipleSelected
           : Selectable.MultipleEmpty
         );
@@ -61,7 +60,7 @@ class EquationEditorDioph extends EquationEditorEditing {
 
   @override
   bool canValidate() {
-    return selectedTerms.length == 2;
+    return selectedAddition != null;
   }
 
   @override
@@ -71,16 +70,10 @@ class EquationEditorDioph extends EquationEditorEditing {
 
       for (var equation in equationsCubit.state.equations) {
 
-        final isTheEquation = equation is Addition && equation.terms.where(
-          (term) => selectedTerms.where(
-            (selectedTerm) => identical(term, selectedTerm)
-          ).isNotEmpty
-        ).isNotEmpty;
-
-        if (isTheEquation) {
+        if (equation.findTree((child) => identical(selectedAddition, child)) != null) {
           equationsCubit.addEquations(
-            DiophTransformator(selectedTerms).transform(equation).map(
-              (transformed) => applyTrivializers(transformed).deepClone()
+            DiophTransformator(selectedAddition!).transformEquation(equation).map(
+              (transformed) => applyTrivializersToEq(transformed).deepClone()
             ).toList()
           );
         }
@@ -92,18 +85,18 @@ class EquationEditorDioph extends EquationEditorEditing {
     return EquationEditorDioph(
       eqIdx,
       newStep,
-      selectedTerms: selectedTerms,
+      selectedAddition: selectedAddition,
     );
   }
 
   @override
-  EquationEditorEditing onSelect(Value root, Value value) {
+  EquationEditorEditing onSelect(Equation equation, Value value) {
     switch (step) {
     case DiophStep.SelectTerms:
       return EquationEditorDioph(
         eqIdx,
         step,
-        selectedTerms: flipExistenceArray<Value>(selectedTerms, value),
+        selectedAddition: (selectedAddition == null && value is Addition) ? value : null,
       );
     default: return this;
     }

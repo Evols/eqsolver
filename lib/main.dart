@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
+import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
@@ -38,7 +39,7 @@ class MyHomePage extends StatelessWidget {
     // y=p=7789 ; q=2281 ; c=pq=17766709, a=2^7=128 ; b=q%a=2281%128=105
 
     // Right one
-    final eq1 = Addition([
+    final eq1 = Equation(
       Multiplication([
         Variable('y'),
         Addition([
@@ -49,9 +50,10 @@ class MyHomePage extends StatelessWidget {
           Constant(105),
         ]),
       ]),
-      Constant(-17766709),
-    ]);
+      Constant(17766709),
+    );
 
+    /*
     // Wrong one
     final eq2 = Addition([
       Multiplication([
@@ -64,8 +66,9 @@ class MyHomePage extends StatelessWidget {
           Constant(97),
         ]),
       ]),
-      Constant(-17766709),
+      Constant(17766709),
     ]);
+    */
 
     return MultiBlocProvider(
       providers: [
@@ -95,7 +98,6 @@ class MyHomePage extends StatelessWidget {
                               child: Text('Validate'),
                             ),
                           ] : []),
-                          Switch(value: state.prettifyEquations, onChanged: (_) => BlocProvider.of<EquationsCubit>(context).setPrettifyEquations(!state.prettifyEquations)),
                         ],
                       );
                     }
@@ -120,7 +122,6 @@ class MyHomePage extends StatelessWidget {
                           children: [
                             EquationWidget(
                               state.equations[index],
-                              prettify: state.prettifyEquations,
                               bottomWidgetBuilder: (value) {
                                 if (editorState is EquationEditorEditing) {
                                   final selectable = editorState.isSelectable(state.equations[index], value);
@@ -177,6 +178,10 @@ class MyHomePage extends StatelessWidget {
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startInject(index),
                                       child: Container(child: Text('Inject')),
+                                    ),
+                                    DropdownMenuItem<void Function()>(
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startReorganize(index),
+                                      child: Container(child: Text('Reorganize')),
                                     ),
                                   ],
                                 ),

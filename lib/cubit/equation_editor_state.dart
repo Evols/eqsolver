@@ -13,11 +13,11 @@ abstract class EquationEditorEditing extends EquationEditorState {
 
   bool hasFinished();
   String getStepName();
-  Selectable isSelectable(Value root, Value value);
+  Selectable isSelectable(Equation equation, Value value);
   bool canValidate();
 
   EquationEditorState nextStep(EquationsCubit equationsCubit);
-  EquationEditorEditing onSelect(Value root, Value value);
+  EquationEditorEditing onSelect(Equation equation, Value value);
 
   EquationEditorEditing();
 
