@@ -2,6 +2,7 @@
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/trivializers/eliminate_eq_constant_factors_trivializer.dart';
 import 'package:formula_transformator/core/trivializers/eliminate_eq_gcd_trivializer.dart';
+import 'package:formula_transformator/core/trivializers/reorder_constant_trivializer.dart';
 
 import 'constant_computation_trivializer.dart';
 import 'empty_trivializer.dart';
@@ -25,6 +26,7 @@ const trivializers = <Trivializer>{
   NestedTrivializer(),
   EliminateEqGcdTrivializer(),
   EliminateEqConstantFactorsTrivializer(),
+  ReorderConstantTrivializer(),
 };
 
 Value applyTrivializers(Value value, [bool isEquation = false]) {
