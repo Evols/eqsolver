@@ -17,7 +17,7 @@ class FactorizeTransformator extends ValueTransformator {
   FactorizeTransformator(this.commonFactors, this.termsToFactor);
 
   @override
-  List<Value> transform(Value value) {
+  List<Value> transformValue(Value value) {
 
     if (!(value is Addition) || value.terms.length < 2) {
       return [];

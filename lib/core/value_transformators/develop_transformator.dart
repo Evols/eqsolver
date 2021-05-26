@@ -12,7 +12,7 @@ class DevelopTransformator extends ValueTransformator {
   DevelopTransformator(this.termsToDevelop);
 
   @override
-  List<Value> transform(Value value) {
+  List<Value> transformValue(Value value) {
 
     if (!(value is Multiplication) || value.factors.length < 2) {
       return [];

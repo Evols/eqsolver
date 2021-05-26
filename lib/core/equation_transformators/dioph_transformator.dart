@@ -1,6 +1,6 @@
 
-import 'package:formula_transformator/core/value_transformators/value_transformator.dart';
-import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
+import 'package:formula_transformator/core/equation.dart';
+import 'package:formula_transformator/core/equation_transformators/equation_transformator.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
@@ -8,7 +8,7 @@ import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/utils.dart';
 
-class DiophTransformator extends ValueTransformator {
+class DiophTransformator extends EquationTransformator {
 
   final List<Value> termsToFactor;
 
@@ -17,13 +17,19 @@ class DiophTransformator extends ValueTransformator {
   static int gcdIdx = 1;
 
   @override
-  List<Value> transform(Value value) {
+  List<Equation> transformEquationImpl(Equation equation) {
 
-    if (!(value is Addition) || value.terms.length < 3) {
+    // a*u+b*v=c
+
+    final lhs = equation.leftPart;
+    final rhs = equation.rightPart;
+
+    if (!(lhs is Addition)) {
       return [];
     }
 
-    final multiplicationsToDioph = value.terms.where(
+    // a*u ; b*v
+    final multiplicationsToDioph = lhs.terms.where(
       (multiplication) => multiplication is Multiplication && termsToFactor.where(
         (termToFactor) => identical(multiplication, termToFactor)
       ).isNotEmpty
@@ -35,8 +41,7 @@ class DiophTransformator extends ValueTransformator {
       return [];
     }
 
-    // a*u+b*v=c
-
+    // a ; b
     final constantParts = multiplicationsToDioph.map(
       (multiplication) => multiplication.factors.fold<int>(
         1,
@@ -44,6 +49,7 @@ class DiophTransformator extends ValueTransformator {
       )
     ).toList();
 
+    // u ; v
     final variableParts = multiplicationsToDioph.map(
       (multiplication) => multiplication.factors.where((child) => !(child is Constant)).toList()
     ).toList();
@@ -53,12 +59,6 @@ class DiophTransformator extends ValueTransformator {
 
     final b = constantParts[1];
     final vFactors = variableParts[1];
-
-    final cTerms = value.terms.where(
-      (term) => multiplicationsToDioph.where(
-        (termToFactor) => identical(term, termToFactor)
-      ).isEmpty
-    ).toList();
 
     var u0ref = Ref<int>(0), v0ref = Ref<int>(0);
     final gcd = extEuclidAlgo(a, b, u0ref, v0ref);
@@ -87,43 +87,33 @@ class DiophTransformator extends ValueTransformator {
     gcdIdx++;
 
     return [
-      // c*u0+b*k-u=0
-      Addition([
-        // c*u0
-        Multiplication([
-          Constant(u0),
-          Addition(cTerms),
+      Equation(
+        Multiplication(uFactors),
+        Addition([
+          Multiplication([
+            rhs,
+            Constant(u0),
+          ]),
+          Multiplication([
+            Constant(-b),
+            Variable(varId),
+          ]),
         ]),
-        // b*k
-        Multiplication([
-          Constant(b),
-          Variable(varId),
+      ),
+      Equation(
+        Multiplication(vFactors),
+        Addition([
+          Multiplication([
+            rhs,
+            Constant(v0),
+          ]),
+          Multiplication([
+            Constant(a),
+            Variable(varId),
+          ]),
         ]),
-        // -u
-        Multiplication([
-          Constant(-1),
-          ...uFactors,
-        ]),
-      ]),
-      // c*v0-a*k-v=0
-      Addition([
-        // c*v0
-        Multiplication([
-          Constant(v0),
-          Addition(cTerms),
-        ]),
-        // -a*k
-        Multiplication([
-          Constant(-a),
-          Variable(varId),
-        ]),
-        // -v
-        Multiplication([
-          Constant(-1),
-          ...vFactors,
-        ]),
-      ]),
-    ].map((e) => applyTrivializers(e)).toList();
+      ),
+    ];
   }
 
 }

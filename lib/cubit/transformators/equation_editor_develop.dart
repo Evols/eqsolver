@@ -88,7 +88,7 @@ class EquationEditorDevelop extends EquationEditorEditing {
 
         if (multiplication != null) {
           equationsCubit.addEquations(
-            DevelopTransformator(selectedTerms).transform(multiplication).map(
+            DevelopTransformator(selectedTerms).transformValue(multiplication).map(
               (transformed) => applyTrivializers(equation.mountAt(multiplication, transformed)).deepClone()
             ).toList()
           );

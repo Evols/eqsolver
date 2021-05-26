@@ -191,7 +191,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
 
         if (addition != null) {
           equationsCubit.addEquations(
-            FactorizeTransformator(selectedFactors, selectedTerms).transform(addition).map(
+            FactorizeTransformator(selectedFactors, selectedTerms).transformValue(addition).map(
               (transformed) => equation.mountAt(addition, transformed)
             ).toList()
           );
