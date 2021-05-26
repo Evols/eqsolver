@@ -34,7 +34,7 @@ class EquationEditorReorganize extends EquationEditorEditing {
     switch (step) {
     case ReorganizeStep.Select:
       if (equation.parts.where(
-        (part) => identical(part, value) || (part is Addition && part.terms.where(
+        (part) => (identical(part, value) && !(part is Addition)) || (part is Addition && part.terms.where(
           (term) => identical(term, value)
         ).isNotEmpty)
       ).isNotEmpty) {
