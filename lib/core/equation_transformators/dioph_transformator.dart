@@ -29,8 +29,8 @@ class DiophTransformator extends EquationTransformator {
 
     // a ; b
     final constantParts = lhs.terms.map(
-      (multiplication) => (multiplication as Multiplication).factors.fold<int>(
-        1,
+      (multiplication) => (multiplication as Multiplication).factors.fold<BigInt>(
+        BigInt.from(1),
         (previousValue, element) => element is Constant ? previousValue * element.number : previousValue,
       )
     ).toList();
@@ -46,11 +46,11 @@ class DiophTransformator extends EquationTransformator {
     final b = constantParts[1];
     final vFactors = variableParts[1];
 
-    var u0ref = Ref<int>(0), v0ref = Ref<int>(0);
+    var u0ref = Ref<BigInt>(BigInt.from(0)), v0ref = Ref<BigInt>(BigInt.from(0));
     final gcd = extEuclidAlgo(a, b, u0ref, v0ref);
     final u0 = u0ref.value, v0 = v0ref.value;
 
-    if (gcd != 1) {
+    if (gcd != BigInt.from(1)) {
       print('GCD WAS $gcd. TODO: handle this case. ABORTING');
       return [];
     }

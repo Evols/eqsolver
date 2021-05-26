@@ -3,7 +3,7 @@ import 'package:formula_transformator/core/values/value.dart';
 
 class Constant extends Value {
 
-  final int number;
+  final BigInt number;
 
   const Constant(this.number);
 

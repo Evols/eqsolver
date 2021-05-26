@@ -11,9 +11,9 @@ class MultZeroTrivializer implements Trivializer {
   @override
   Value? transform(Value value, [bool isEquation = false]) {
     if (value is Multiplication) {
-      final newChildren = value.factors.where((child) => child is Constant && child.number == 0);
+      final newChildren = value.factors.where((child) => child is Constant && child.number == BigInt.from(0));
       if (newChildren.isNotEmpty) {
-        return Constant(0);
+        return Constant(BigInt.from(0));
       }
     }
     return null;
