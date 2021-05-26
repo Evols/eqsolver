@@ -14,6 +14,8 @@ class EliminateEqGcdTrivializer implements Trivializer {
   @override
   Value? transform(Value value, [bool isEquation = false]) {
 
+    // TODO: equation trivializers
+
     if (isEquation && value is Addition) {
 
       // The constant part of each term

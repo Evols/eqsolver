@@ -1,5 +1,7 @@
 
 import 'package:formula_transformator/core/equation.dart';
+import 'package:formula_transformator/core/equation_transformators/inject_transformator.dart';
+import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
@@ -88,12 +90,11 @@ class EquationEditorInject extends EquationEditorEditing {
         ) != null;
 
         if (isTheEquation) {
-          // TODO
-          // equationsCubit.addEquations(
-          //   InjectTransformator(sourceEquation!, sourceExpression!, targetExpression!).transformValue(equation).map(
-          //     (transformed) => applyTrivializers(transformed).deepClone()
-          //   ).toList()
-          // );
+          equationsCubit.addEquations(
+            InjectTransformator(sourceEquation!, sourceExpression!, targetExpression!).transformEquation(equation).map(
+              (transformed) => applyTrivializersToEq(transformed).deepClone()
+            ).toList()
+          );
         }
 
       }

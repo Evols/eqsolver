@@ -12,7 +12,6 @@ class EquationsCubit extends Cubit<EquationsState> {
 
   void addEquations(List<Equation> equations) {
     final trivialized = equations.map((equation) => applyTrivializersToEq(equation)).toList();
-    print('Adding equations $trivialized');
 
     emit(EquationsState([ ...state.equations, ...trivialized ]));
   }
