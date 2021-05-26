@@ -179,6 +179,10 @@ class MyHomePage extends StatelessWidget {
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startInject(index),
                                       child: Container(child: Text('Inject')),
                                     ),
+                                    DropdownMenuItem<void Function()>(
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startReorganize(index),
+                                      child: Container(child: Text('Reorganize')),
+                                    ),
                                   ],
                                 ),
                               ],

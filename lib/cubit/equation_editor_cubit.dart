@@ -7,6 +7,7 @@ import 'package:formula_transformator/cubit/transformators/equation_editor_devel
 import 'package:formula_transformator/cubit/transformators/equation_editor_dioph.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_factorize.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_inject.dart';
+import 'package:formula_transformator/cubit/transformators/equation_editor_reorganize.dart';
 import 'package:meta/meta.dart';
 
 part 'equation_editor_state.dart';
@@ -30,6 +31,10 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
 
   void startInject(int eqIdx) {
     emit(EquationEditorInject(eqIdx, InjectStep.SelectSubstitute));
+  }
+
+  void startReorganize(int eqIdx) {
+    emit(EquationEditorReorganize(eqIdx, ReorganizeStep.Select));
   }
 
   void cancel() {
