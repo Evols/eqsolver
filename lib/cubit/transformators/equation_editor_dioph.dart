@@ -1,6 +1,5 @@
 
-import 'package:formula_transformator/core/equation_transformators/dioph_transformator.dart';
-import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
+import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
@@ -31,21 +30,19 @@ class EquationEditorDioph extends EquationEditorEditing {
   bool hasFinished() => step == DiophStep.Finished;
 
   @override
-  Selectable isSelectable(Value root, Value value) {
+  Selectable isSelectable(Equation equation, Value value) {
     switch (step) {
     case DiophStep.SelectTerms:
       if (
-        root is Addition && value is Multiplication
-        && root.terms.length > 2
-        && root.terms.where(
-          (term) => identical(term, value)
-        ).isNotEmpty && value.factors.where(
-          (factor) => factor is Constant
-        ).isNotEmpty && root.terms.where(
-          (term) => selectedTerms.where(
-            (selectedTerm) => identical(term, selectedTerm)
-          ).isNotEmpty
-        ).length == selectedTerms.length
+        equation.parts.where(
+          (part) => (
+            part is Addition
+            && part.terms.length == 2
+            && part.terms.where(
+              (term) => term is Multiplication && term.factors.whereType<Constant>().isNotEmpty
+            ).length == 2
+          ) 
+        ).isNotEmpty
       ) {
         return (
           selectedTerms.where((e) => identical(e, value)).isNotEmpty
@@ -71,19 +68,19 @@ class EquationEditorDioph extends EquationEditorEditing {
 
       for (var equation in equationsCubit.state.equations) {
 
-        final isTheEquation = equation is Addition && equation.terms.where(
-          (term) => selectedTerms.where(
-            (selectedTerm) => identical(term, selectedTerm)
-          ).isNotEmpty
-        ).isNotEmpty;
+        // final isTheEquation = equation is Addition && equation.terms.where(
+        //   (term) => selectedTerms.where(
+        //     (selectedTerm) => identical(term, selectedTerm)
+        //   ).isNotEmpty
+        // ).isNotEmpty;
 
-        if (isTheEquation) {
-          equationsCubit.addEquations(
-            DiophTransformator(selectedTerms).transformValue(equation).map(
-              (transformed) => applyTrivializers(transformed).deepClone()
-            ).toList()
-          );
-        }
+        // if (isTheEquation) {
+        //   equationsCubit.addEquations(
+        //     DiophTransformator(selectedTerms).transformValue(equation).map(
+        //       (transformed) => applyTrivializers(transformed).deepClone()
+        //     ).toList()
+        //   );
+        // }
 
       }
 
@@ -97,7 +94,7 @@ class EquationEditorDioph extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing onSelect(Value root, Value value) {
+  EquationEditorEditing onSelect(Equation equation, Value value) {
     switch (step) {
     case DiophStep.SelectTerms:
       return EquationEditorDioph(

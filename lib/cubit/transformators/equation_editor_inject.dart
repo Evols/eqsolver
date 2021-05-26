@@ -1,8 +1,5 @@
 
-import 'package:formula_transformator/core/equation_transformators/inject_transformator.dart';
-import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
@@ -14,7 +11,7 @@ class EquationEditorInject extends EquationEditorEditing {
 
   final int eqIdx;
   final InjectStep step;
-  final Addition? sourceEquation;
+  final Equation? sourceEquation;
   final Value? sourceExpression;
   final Value? targetExpression;
 
@@ -33,14 +30,14 @@ class EquationEditorInject extends EquationEditorEditing {
   bool hasFinished() => step == InjectStep.Finished;
 
   @override
-  Selectable isSelectable(Value root, Value value) {
+  Selectable isSelectable(Equation equation, Value value) {
     switch (step) {
     case InjectStep.SelectSubstitute:
-      if (root is Addition && root.terms.where(
-        (term) => identical(term, value) || (term is Multiplication && term.factors.where(
+      if (equation.parts.where(
+        (part) => identical(part, value) || part is Multiplication && part.factors.where(
           (factor) => identical(factor, value)
-        ).isNotEmpty)
-      ).isNotEmpty && value.getChildren().isEmpty && !(value is Constant)) {
+        ).isNotEmpty
+      ).isNotEmpty) {
         return (
           identical(sourceExpression, value)
           ? Selectable.SingleSelected
@@ -50,10 +47,10 @@ class EquationEditorInject extends EquationEditorEditing {
       return Selectable.None;
 
     case InjectStep.SelectInjection:
-      if (value.isEquivalentTo(sourceExpression!) && !identical(value, sourceExpression) && root is Addition && root.terms.where(
-        (term) => identical(term, value) || (term is Multiplication && term.factors.where(
+      if (value.isEquivalentTo(sourceExpression!) && !identical(value, sourceExpression) && equation.parts.where(
+        (part) => identical(part, value) || part is Multiplication && part.factors.where(
           (factor) => identical(factor, value)
-        ).isNotEmpty)
+        ).isNotEmpty
       ).isNotEmpty) {
         return (
           identical(targetExpression, value)
@@ -86,18 +83,17 @@ class EquationEditorInject extends EquationEditorEditing {
 
       for (var equation in equationsCubit.state.equations) {
 
-        final isTheEquation = equation is Addition && equation.terms.where(
-          (term) => identical(term, targetExpression) || (term is Multiplication && term.factors.where(
-            (factor) => identical(factor, targetExpression)
-          ).isNotEmpty)
-        ).isNotEmpty;
+        final isTheEquation = equation.findTree(
+          (value) => identical(value, targetExpression)
+        ) != null;
 
         if (isTheEquation) {
-          equationsCubit.addEquations(
-            InjectTransformator(sourceEquation!, sourceExpression!, targetExpression!).transformValue(equation).map(
-              (transformed) => applyTrivializers(transformed).deepClone()
-            ).toList()
-          );
+          // TODO
+          // equationsCubit.addEquations(
+          //   InjectTransformator(sourceEquation!, sourceExpression!, targetExpression!).transformValue(equation).map(
+          //     (transformed) => applyTrivializers(transformed).deepClone()
+          //   ).toList()
+          // );
         }
 
       }
@@ -114,14 +110,14 @@ class EquationEditorInject extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing onSelect(Value root, Value value) {
+  EquationEditorEditing onSelect(Equation equation, Value value) {
     switch (step) {
     case InjectStep.SelectSubstitute:
       final shouldNullify = identical(value, sourceExpression);
       return EquationEditorInject(
         eqIdx,
         step,
-        sourceEquation: shouldNullify ? null : (root as Addition),
+        sourceEquation: shouldNullify ? null : equation,
         sourceExpression: shouldNullify ? null : value,
         targetExpression: targetExpression,
       );

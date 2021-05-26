@@ -1,5 +1,6 @@
 
 import 'package:bloc/bloc.dart';
+import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/cubit/transformators/equation_editor_develop.dart';
@@ -42,10 +43,10 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
     }
   }
 
-  void onSelect(Value root, Value value) {
+  void onSelect(Equation equation, Value value) {
     var inState = state;
     if (inState is EquationEditorEditing) {
-      emit(inState.onSelect(root, value));
+      emit(inState.onSelect(equation, value));
     }
   }
 

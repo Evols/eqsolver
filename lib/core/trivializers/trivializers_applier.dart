@@ -1,4 +1,5 @@
 
+import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/trivializers/eliminate_eq_constant_factors_trivializer.dart';
 import 'package:formula_transformator/core/trivializers/eliminate_eq_gcd_trivializer.dart';
 
@@ -41,4 +42,8 @@ Value applyTrivializers(Value value, [bool isEquation = false]) {
     }
   }
   return tempValue;
+}
+
+Equation applyTrivializersToEq(Equation equation) {
+  return Equation(applyTrivializers(equation.leftPart), applyTrivializers(equation.rightPart));
 }

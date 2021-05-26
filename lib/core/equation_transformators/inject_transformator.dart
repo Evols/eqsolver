@@ -74,67 +74,11 @@ class InjectTransformator extends EquationTransformator {
 
   @override
   List<Equation> transformEquationImpl(Equation equation) {
-
     final res1 = tryWithSourceEquation(sourceEquation, equation);
     if (res1.isNotEmpty) {
       return res1;
     }
     return tryWithSourceEquation(Equation(sourceEquation.rightPart, sourceEquation.leftPart), equation);
-    return [];
-
-    // // Source
-
-    // final sourceTermWithSourceExpression = sourceEquation.terms.firstWhere(
-    //   (term) => identical(term, sourceExpression) || (term is Multiplication && term.factors.where(
-    //     (factor) => identical(factor, sourceExpression)
-    //   ).isNotEmpty),
-    // );
-
-    // final sourceTermsWithoutSourceExpression = sourceEquation.terms.where(
-    //   (term) => !identical(term, sourceTermWithSourceExpression),
-    // ).toList();
-
-    // final sourceTermOtherFactors = (
-    //   identical(sourceTermWithSourceExpression, sourceExpression)
-    //   ? Constant(1)
-    //   : Multiplication((sourceTermWithSourceExpression as Multiplication).factors.where(
-    //     (factor) => !identical(factor, sourceExpression)
-    //   ).toList())
-    // );
-
-    // // Target
-
-    // final targetTermWithSourceExpression = value.terms.firstWhere(
-    //   (term) => identical(term, targetExpression) || (term is Multiplication && term.factors.where(
-    //     (factor) => identical(factor, targetExpression)
-    //   ).isNotEmpty),
-    // );
-
-    // final targetTermsWithoutSourceExpression = value.terms.where(
-    //   (term) => !identical(term, targetTermWithSourceExpression),
-    // ).toList();
-
-    // final targetTermOtherFactors = (
-    //   identical(targetTermWithSourceExpression, sourceExpression)
-    //   ? Constant(1)
-    //   : Multiplication((targetTermWithSourceExpression as Multiplication).factors.where(
-    //     (factor) => !identical(factor, targetExpression)
-    //   ).toList())
-    // );
-
-    // return [
-    //   applyTrivializers(Addition([
-    //     Multiplication([
-    //       sourceTermOtherFactors,
-    //       Addition(targetTermsWithoutSourceExpression),
-    //     ]),
-    //     Multiplication([
-    //       Constant(-1),
-    //       targetTermOtherFactors,
-    //       Addition(sourceTermsWithoutSourceExpression),
-    //     ]),
-    //   ])),
-    // ];
   }
 
 }

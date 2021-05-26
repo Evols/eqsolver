@@ -1,4 +1,5 @@
 
+import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/value_transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
@@ -82,11 +83,11 @@ class EquationEditorFactorize extends EquationEditorEditing {
   }
 
   @override
-  Selectable isSelectable(Value root, Value value) {
+  Selectable isSelectable(Equation equation, Value value) {
     switch (step) {
     case FactorizeStep.SelectFactor:
       if (
-        root.findTree(
+        equation.findTree(
           (additionCandidate) => additionCandidate is Addition
           // Check that the addition has a multiplication term, and that this multiplication term has value as one of its factors
           && additionCandidate.terms.where(
@@ -127,7 +128,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
 
     case FactorizeStep.SelectTerms:
       if (
-        root.findTree(
+        equation.findTree(
           (additionCandidate) => additionCandidate is Addition
           // Check that the addition has a multiplication term, and that this multiplication term has value as one of its factors
           && additionCandidate.terms.where(
@@ -210,7 +211,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing onSelect(Value root, Value value) {
+  EquationEditorEditing onSelect(Equation equation, Value value) {
     switch (step) {
     case FactorizeStep.SelectFactor:
       return EquationEditorFactorize(
