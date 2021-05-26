@@ -4,15 +4,14 @@ import 'package:formula_transformator/core/equation_transformators/equation_tran
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/utils.dart';
 
 class DiophTransformator extends EquationTransformator {
 
-  final List<Value> termsToFactor;
+  final Addition selectedAddition;
 
-  DiophTransformator(this.termsToFactor);
+  DiophTransformator(this.selectedAddition);
 
   static int gcdIdx = 1;
 
@@ -24,34 +23,21 @@ class DiophTransformator extends EquationTransformator {
     final lhs = equation.leftPart;
     final rhs = equation.rightPart;
 
-    if (!(lhs is Addition)) {
-      return [];
-    }
-
-    // a*u ; b*v
-    final multiplicationsToDioph = lhs.terms.where(
-      (multiplication) => multiplication is Multiplication && termsToFactor.where(
-        (termToFactor) => identical(multiplication, termToFactor)
-      ).isNotEmpty
-    ).map(
-      (multiplication) => multiplication as Multiplication
-    ).toList();
-
-    if (multiplicationsToDioph.length != 2) {
+    if (!(lhs is Addition) || !identical(selectedAddition, lhs) || lhs.terms.length != 2) {
       return [];
     }
 
     // a ; b
-    final constantParts = multiplicationsToDioph.map(
-      (multiplication) => multiplication.factors.fold<int>(
+    final constantParts = lhs.terms.map(
+      (multiplication) => (multiplication as Multiplication).factors.fold<int>(
         1,
         (previousValue, element) => element is Constant ? previousValue * element.number : previousValue,
       )
     ).toList();
 
     // u ; v
-    final variableParts = multiplicationsToDioph.map(
-      (multiplication) => multiplication.factors.where((child) => !(child is Constant)).toList()
+    final variableParts = lhs.terms.map(
+      (multiplication) => (multiplication as Multiplication).factors.where((child) => !(child is Constant)).toList()
     ).toList();
 
     final a = constantParts[0];
@@ -62,7 +48,7 @@ class DiophTransformator extends EquationTransformator {
 
     var u0ref = Ref<int>(0), v0ref = Ref<int>(0);
     final gcd = extEuclidAlgo(a, b, u0ref, v0ref);
-    final u0 = u0ref.value, v0 = u0ref.value;
+    final u0 = u0ref.value, v0 = v0ref.value;
 
     if (gcd != 1) {
       print('GCD WAS $gcd. TODO: handle this case. ABORTING');

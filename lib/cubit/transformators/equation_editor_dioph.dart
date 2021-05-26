@@ -1,12 +1,13 @@
 
 import 'package:formula_transformator/core/equation.dart';
+import 'package:formula_transformator/core/equation_transformators/dioph_transformator.dart';
+import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
-import 'package:formula_transformator/utils.dart';
 
 enum DiophStep { SelectTerms, Finished }
 
@@ -14,9 +15,9 @@ class EquationEditorDioph extends EquationEditorEditing {
 
   final int eqIdx;
   final DiophStep step;
-  final List<Value> selectedTerms;
+  final Addition? selectedAddition;
 
-  EquationEditorDioph(this.eqIdx, this.step, { this.selectedTerms = const [] });
+  EquationEditorDioph(this.eqIdx, this.step, { this.selectedAddition });
 
   @override
   String getStepName() {
@@ -37,6 +38,7 @@ class EquationEditorDioph extends EquationEditorEditing {
         equation.parts.where(
           (part) => (
             part is Addition
+            && identical(part, value)
             && part.terms.length == 2
             && part.terms.where(
               (term) => term is Multiplication && term.factors.whereType<Constant>().isNotEmpty
@@ -45,7 +47,7 @@ class EquationEditorDioph extends EquationEditorEditing {
         ).isNotEmpty
       ) {
         return (
-          selectedTerms.where((e) => identical(e, value)).isNotEmpty
+          identical(selectedAddition, value)
           ? Selectable.MultipleSelected
           : Selectable.MultipleEmpty
         );
@@ -58,7 +60,7 @@ class EquationEditorDioph extends EquationEditorEditing {
 
   @override
   bool canValidate() {
-    return selectedTerms.length == 2;
+    return selectedAddition != null;
   }
 
   @override
@@ -68,19 +70,13 @@ class EquationEditorDioph extends EquationEditorEditing {
 
       for (var equation in equationsCubit.state.equations) {
 
-        // final isTheEquation = equation is Addition && equation.terms.where(
-        //   (term) => selectedTerms.where(
-        //     (selectedTerm) => identical(term, selectedTerm)
-        //   ).isNotEmpty
-        // ).isNotEmpty;
-
-        // if (isTheEquation) {
-        //   equationsCubit.addEquations(
-        //     DiophTransformator(selectedTerms).transformValue(equation).map(
-        //       (transformed) => applyTrivializers(transformed).deepClone()
-        //     ).toList()
-        //   );
-        // }
+        if (equation.findTree((child) => identical(selectedAddition, child)) != null) {
+          equationsCubit.addEquations(
+            DiophTransformator(selectedAddition!).transformEquation(equation).map(
+              (transformed) => applyTrivializersToEq(transformed).deepClone()
+            ).toList()
+          );
+        }
 
       }
 
@@ -89,7 +85,7 @@ class EquationEditorDioph extends EquationEditorEditing {
     return EquationEditorDioph(
       eqIdx,
       newStep,
-      selectedTerms: selectedTerms,
+      selectedAddition: selectedAddition,
     );
   }
 
@@ -100,7 +96,7 @@ class EquationEditorDioph extends EquationEditorEditing {
       return EquationEditorDioph(
         eqIdx,
         step,
-        selectedTerms: flipExistenceArray<Value>(selectedTerms, value),
+        selectedAddition: (selectedAddition == null && value is Addition) ? value : null,
       );
     default: return this;
     }
