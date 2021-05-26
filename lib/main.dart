@@ -156,7 +156,7 @@ class MyHomePage extends StatelessWidget {
                                   textScaleFactor: 1.2,
                                 ),
                                 DropdownButton<void Function()>(
-                                  selectedItemBuilder: (context) => [ Container() ],
+                                  selectedItemBuilder: (context) => [ Container( width: 50,) ],
                                   iconSize: 24,
                                   elevation: 16,
                                   isDense: true,
@@ -165,23 +165,23 @@ class MyHomePage extends StatelessWidget {
                                   items: editorState is EquationEditorEditing ? [] : [
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startDevelopping(index),
-                                      child: Container(child: Text('Develop')),
+                                      child: Container(child: Text('Develop', style: TextStyle(fontSize: 14))),
                                     ),
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startFactoring(index),
-                                      child: Container(child: Text('Factor')),
+                                      child: Container(child: Text('Factor', style: TextStyle(fontSize: 14))),
                                     ),
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startDioph(index),
-                                      child: Container(child: Text('Diophantine')),
+                                      child: Container(child: Text('Diophantine', style: TextStyle(fontSize: 14))),
                                     ),
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startInject(index),
-                                      child: Container(child: Text('Inject')),
+                                      child: Container(child: Text('Inject', style: TextStyle(fontSize: 14))),
                                     ),
                                     DropdownMenuItem<void Function()>(
                                       value: () => BlocProvider.of<EquationEditorCubit>(context).startReorganize(index),
-                                      child: Container(child: Text('Reorganize')),
+                                      child: Container(child: Text('Reorganize', style: TextStyle(fontSize: 14))),
                                     ),
                                   ],
                                 ),
