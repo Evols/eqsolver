@@ -1,6 +1,4 @@
 
-import 'dart:math';
-
 import 'package:formula_transformator/core/value_transformators/value_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
@@ -32,22 +30,21 @@ class FactorizeTransformator extends ValueTransformator {
     ).toList();
 
     // The greatest common deminator. Will be 1 even if the returned value is 0
-    final gcd = max(
-      1,
-      multiplicationsToFactor.map(
-        (e) => e.factors.fold<int>(
-          1,
-          (previousValue, element) => element is Constant ? previousValue * element.number : previousValue,
-        )
-      ).fold<int>(
-        0,
-        (previousValue, element) => computeGcd(element, previousValue),
-      ),
+    final _gcd = multiplicationsToFactor.map(
+      (e) => e.factors.fold<BigInt>(
+        BigInt.from(1),
+        (previousValue, element) => element is Constant ? previousValue * element.number : previousValue,
+      )
+    ).fold<BigInt>(
+      BigInt.from(0),
+      (previousValue, element) => computeGcd(element, previousValue),
     );
+
+    final gcd = _gcd < BigInt.from(1) ? BigInt.from(1) : _gcd;
 
     // Factors to divide by, without the constants, that will be handled differently
     final actualFactorsToDivi = <Value>[
-      ...(gcd != 1 ? [ Constant(gcd) ] : []),
+      ...(gcd != BigInt.from(1) ? [ Constant(gcd) ] : []),
       ...commonFactors.where((element) => !(element is Constant)),
     ];
 
@@ -92,7 +89,7 @@ class FactorizeTransformator extends ValueTransformator {
 
     final rawResult = Addition([
       Multiplication([
-        ...(gcd != 1 ? [ Constant(gcd) ] : []),
+        ...(gcd != BigInt.from(1) ? [ Constant(gcd) ] : []),
         ...actualFactorsToDivi,
         Addition(nonFactorPartTerms.map(
           (factors) => Multiplication(factors)

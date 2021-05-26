@@ -26,7 +26,7 @@ class ReorganizeTransformator extends EquationTransformator {
       ).isNotEmpty
     ).map(
       (term) => Multiplication([
-        Constant(-1),
+        Constant(BigInt.from(-1)),
         term,
       ])
     ).toList(),

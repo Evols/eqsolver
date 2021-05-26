@@ -36,7 +36,8 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // y=p=7789 ; q=2281 ; c=pq=17766709, a=2^7=128 ; b=q%a=2281%128=105
+    // y*(a*x+b)=c
+    // y=p=7789 ; q=2281 ; c=pq=17766709, a=2^7=128 ; b=q%a=2281%128=105 ; x=(q-b)/a=17
 
     // Right one
     final eq1 = Equation(
@@ -44,13 +45,13 @@ class MyHomePage extends StatelessWidget {
         Variable('y'),
         Addition([
           Multiplication([
-            Constant(128),
+            Constant(BigInt.from(128)),
             Variable('x'),
           ]),
-          Constant(105),
+          Constant(BigInt.from(105)),
         ]),
       ]),
-      Constant(17766709),
+      Constant(BigInt.from(17766709)),
     );
 
     /*

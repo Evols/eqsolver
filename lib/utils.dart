@@ -13,9 +13,9 @@ class Ref<T> {
   Ref(this.value);
 }
 
-int computeGcd(int a, int b) {
-  int t = b;
-  while (b != 0) {
+BigInt computeGcd(BigInt a, BigInt b) {
+  BigInt t = b;
+  while (b != BigInt.from(0)) {
     t = b;
     b = a % b;
     a = t;
@@ -23,16 +23,16 @@ int computeGcd(int a, int b) {
   return a;
 }
 
-int extEuclidAlgo(int a, int b, Ref<int> u0, Ref<int> v0) {
+BigInt extEuclidAlgo(BigInt a, BigInt b, Ref<BigInt> u0, Ref<BigInt> v0) {
 
-  int q, r, s, t, tmp;
+  BigInt q, r, s, t, tmp;
 
-  u0.value = 1;
-  v0.value = 0;
-  s = 0;
-  t = 1;
+  u0.value = BigInt.from(1);
+  v0.value = BigInt.from(0);
+  s = BigInt.from(0);
+  t = BigInt.from(1);
 
-  while (b > 0) {
+  while (b > BigInt.from(0)) {
     q = a ~/ b;
     r = a % b;
     a = b;

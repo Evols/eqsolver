@@ -35,7 +35,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
   static Value? getCommonFactor(Value v1, Value v2) {
     if (v1 is Constant && v2 is Constant) {
       final gcd = computeGcd(v1.number, v2.number);
-      if (gcd != 1) {
+      if (gcd != BigInt.from(1)) {
         return Constant(gcd);
       }
     }

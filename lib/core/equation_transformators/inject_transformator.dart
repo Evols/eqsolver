@@ -45,7 +45,7 @@ class InjectTransformator extends EquationTransformator {
           (factor) => identical(factor, sourceExpression)
         ).toList()
       )
-      : Constant(1)
+      : Constant(BigInt.from(1))
     );
 
     final targetLhsWithoutExpression = (
@@ -55,7 +55,7 @@ class InjectTransformator extends EquationTransformator {
           (factor) => identical(factor, targetExpression)
         ).toList()
       )
-      : Constant(1)
+      : Constant(BigInt.from(1))
     );
 
     return [

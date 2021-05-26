@@ -17,7 +17,7 @@ class ConstantComputationTrivializer implements Trivializer {
       final constants = children.whereType<Constant>();
       if (constants.length > 1) {
         final nonConstants = children.where((e) => !(e is Constant));
-        final computationResult = constants.fold<int>(0, (value, element) => value + element.number);
+        final computationResult = constants.fold<BigInt>(BigInt.from(0), (value, element) => value + element.number);
         return Addition([ ...nonConstants, Constant(computationResult) ]);
       }
     }
@@ -27,7 +27,7 @@ class ConstantComputationTrivializer implements Trivializer {
       final constants = children.whereType<Constant>();
       if (constants.length > 1) {
         final nonConstants = children.where((e) => !(e is Constant));
-        final computationResult = constants.fold<int>(1, (value, element) => value * element.number);
+        final computationResult = constants.fold<BigInt>(BigInt.from(1), (value, element) => value * element.number);
         return Multiplication([ Constant(computationResult), ...nonConstants ]);
       }
     }

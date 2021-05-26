@@ -13,12 +13,12 @@ class EmptyTrivializer implements Trivializer {
   Value? transform(Value value, [bool isEquation = false]) {
     if (value is Addition) {
       if (value.terms.isEmpty) {
-        return Constant(0);
+        return Constant(BigInt.from(0));
       }
     }
     if (value is Multiplication) {
       if (value.factors.isEmpty) {
-        return Constant(1);
+        return Constant(BigInt.from(1));
       }
     }
     return null;
