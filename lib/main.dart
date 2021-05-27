@@ -54,26 +54,24 @@ class MyHomePage extends StatelessWidget {
       Constant(BigInt.from(17766709)),
     );
 
-    /*
     // Wrong one
-    final eq2 = Addition([
+    final eq2 = Equation(
       Multiplication([
         Variable('y'),
         Addition([
           Multiplication([
-            Constant(128),
+            Constant(BigInt.from(128)),
             Variable('x'),
           ]),
-          Constant(97),
+          Constant(BigInt.from(97)),
         ]),
       ]),
-      Constant(17766709),
-    ]);
-    */
+      Constant(BigInt.from(17766709)),
+    );
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1, /* eq2 */ ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq2 ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
       child: Scaffold(

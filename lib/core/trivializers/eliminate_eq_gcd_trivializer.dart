@@ -4,7 +4,6 @@ import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
-import 'package:formula_transformator/utils.dart';
 import 'package:formula_transformator/extensions.dart';
 
 class EliminateEqGcdTrivializer implements Trivializer {
@@ -38,7 +37,7 @@ class EliminateEqGcdTrivializer implements Trivializer {
       // Compute the gcd of all terms
       constantParts.fold<BigInt>(
         BigInt.from(0),
-        (gcdAcc, term) => computeGcd(term, gcdAcc)
+        (gcdAcc, term) => term.gcd(gcdAcc)
       )
       // And if all terms are negative, make it negative
       * (constantParts.where(

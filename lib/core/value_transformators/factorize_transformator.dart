@@ -5,7 +5,6 @@ import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
-import 'package:formula_transformator/utils.dart';
 
 class FactorizeTransformator extends ValueTransformator {
 
@@ -37,7 +36,7 @@ class FactorizeTransformator extends ValueTransformator {
       )
     ).fold<BigInt>(
       BigInt.from(0),
-      (previousValue, element) => computeGcd(element, previousValue),
+      (previousValue, element) => element.gcd(previousValue),
     );
 
     final gcd = _gcd < BigInt.from(1) ? BigInt.from(1) : _gcd;
