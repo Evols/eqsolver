@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
+import 'package:formula_transformator/core/values/named_constant.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/extensions.dart';
@@ -22,9 +23,13 @@ class ValueWidget extends StatelessWidget {
 
     final inValue = value;
 
-    // Widget for a constant
+    // Widget for a literal constant
     if (inValue is LiteralConstant) {
       return LatexWidget('${inValue.number}');
+    }
+    // Widget for a named constant
+    if (inValue is NamedConstant) {
+      return LatexWidget('${inValue.name}');
     }
     // Widget for a variable
     else if (inValue is Variable) {
