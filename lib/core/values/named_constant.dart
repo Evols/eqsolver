@@ -1,11 +1,11 @@
 
 import 'package:formula_transformator/core/values/value.dart';
 
-class Constant extends Value {
+class NamedConstant extends Value {
 
-  final BigInt number;
+  final String name;
 
-  const Constant(this.number);
+  const NamedConstant(this.name);
 
   @override
   List<Value> getChildren() {
@@ -14,12 +14,12 @@ class Constant extends Value {
 
   @override
   Value deepClone() {
-    return Constant(number);
+    return NamedConstant(name);
   }
 
   @override
   Value deepCloneWithChildren(List<Value> newChildren) {
-    return Constant(number);
+    return NamedConstant(name);
   }
 
   @override
@@ -28,15 +28,19 @@ class Constant extends Value {
   }
 
   @override
+  bool get isConstant => true;
+
+  @override
   int compareTo(other) {
-    if (!(other is Constant)) {
+    if (!(other is NamedConstant)) {
       return compareToClass(other);
     }
-    return number.compareTo(other.number);
+    return name.compareTo(other.name);
   }
 
   @override
   String toString() {
-    return 'Constant($number)';
+    return 'NamedConstant($name)';
   }
+
 }

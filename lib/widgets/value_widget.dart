@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/core/values/variable.dart';
@@ -23,7 +23,7 @@ class ValueWidget extends StatelessWidget {
     final inValue = value;
 
     // Widget for a constant
-    if (inValue is Constant) {
+    if (inValue is LiteralConstant) {
       return LatexWidget('${inValue.number}');
     }
     // Widget for a variable

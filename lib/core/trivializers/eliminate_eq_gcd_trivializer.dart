@@ -1,7 +1,7 @@
 
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/extensions.dart';
@@ -20,13 +20,13 @@ class EliminateEqGcdTrivializer implements Trivializer {
       // The constant part of each term
       final constantParts = value.terms.map<BigInt>(
         (term) {
-          if (term is Constant) {
+          if (term is LiteralConstant) {
             return term.number;
           }
           if (term is Multiplication) {
             return term.factors.fold<BigInt>(
               BigInt.from(1),
-              (factorAcc, factor) => factorAcc * (factor is Constant ? factor.number : BigInt.from(1)),
+              (factorAcc, factor) => factorAcc * (factor is LiteralConstant ? factor.number : BigInt.from(1)),
             );
           }
           return BigInt.from(1);
@@ -47,17 +47,17 @@ class EliminateEqGcdTrivializer implements Trivializer {
       if (gcd > BigInt.from(1) || gcd < BigInt.from(0)) {
         final newTerms = value.terms.mapIndexed(
           (term, index) {
-            if (term is Constant) {
-              return Constant(term.number ~/ gcd);
+            if (term is LiteralConstant) {
+              return LiteralConstant(term.number ~/ gcd);
             }
             if (term is Multiplication) {
               final constantPart = term.factors.fold<BigInt>(
                 BigInt.from(1),
-                (factorAcc, factor) => factorAcc * (factor is Constant ? factor.number : BigInt.from(1)),
+                (factorAcc, factor) => factorAcc * (factor is LiteralConstant ? factor.number : BigInt.from(1)),
               );
-              final nonConstantPart = term.factors.where((element) => !(element is Constant));
+              final nonConstantPart = term.factors.where((element) => !(element is LiteralConstant));
               return Multiplication([
-                Constant(constantPart ~/ gcd),
+                LiteralConstant(constantPart ~/ gcd),
                 ...nonConstantPart,
               ]);
             }

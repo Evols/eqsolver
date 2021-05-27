@@ -32,6 +32,9 @@ class Addition extends Value {
   }
 
   @override
+  bool get isConstant => terms.where((term) => !term.isConstant).isEmpty;
+
+  @override
   int compareTo(other) {
     if (!(other is Addition)) {
       return compareToClass(other);

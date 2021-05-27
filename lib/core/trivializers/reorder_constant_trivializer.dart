@@ -1,6 +1,6 @@
 
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
@@ -13,14 +13,14 @@ class ReorderConstantTrivializer implements Trivializer {
     if (value is Multiplication) {
 
       // Ensure there's exactly one constant factor
-      final constants = value.factors.whereType<Constant>().toList();
+      final constants = value.factors.whereType<LiteralConstant>().toList();
       final constantsCount = constants.length;
       if (constantsCount != 1) {
         return null;
       }
 
       // Ensure the first term isn't a constant
-      if (value.factors[0] is Constant) {
+      if (value.factors[0] is LiteralConstant) {
         return null;
       }
 
@@ -28,7 +28,7 @@ class ReorderConstantTrivializer implements Trivializer {
       return Multiplication([
         constantValue,
         ...value.factors.where(
-          (factor) => !(factor is Constant)
+          (factor) => !(factor is LiteralConstant)
         ),
       ]);
     }

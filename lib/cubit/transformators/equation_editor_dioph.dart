@@ -3,7 +3,7 @@ import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/dioph_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
@@ -41,7 +41,7 @@ class EquationEditorDioph extends EquationEditorEditing {
             && identical(part, value)
             && part.terms.length == 2
             && part.terms.where(
-              (term) => term is Multiplication && term.factors.whereType<Constant>().isNotEmpty
+              (term) => term is Multiplication && term.factors.whereType<LiteralConstant>().isNotEmpty
             ).length == 2
           ) 
         ).isNotEmpty

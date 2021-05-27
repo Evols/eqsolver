@@ -2,7 +2,7 @@
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/inject_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
@@ -40,7 +40,7 @@ class EquationEditorInject extends EquationEditorEditing {
         (part) => identical(part, value) || part is Multiplication && part.factors.where(
           (factor) => identical(factor, value)
         ).isNotEmpty
-      ).isNotEmpty && !(value is Constant)) {
+      ).isNotEmpty && !(value is LiteralConstant)) {
         return (
           identical(sourceExpression, value)
           ? Selectable.SingleSelected

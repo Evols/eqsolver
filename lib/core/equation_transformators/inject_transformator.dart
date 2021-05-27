@@ -1,7 +1,7 @@
 
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/equation_transformator.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
@@ -45,7 +45,7 @@ class InjectTransformator extends EquationTransformator {
           (factor) => identical(factor, sourceExpression)
         ).toList()
       )
-      : Constant(BigInt.from(1))
+      : LiteralConstant(BigInt.from(1))
     );
 
     final targetLhsWithoutExpression = (
@@ -55,7 +55,7 @@ class InjectTransformator extends EquationTransformator {
           (factor) => identical(factor, targetExpression)
         ).toList()
       )
-      : Constant(BigInt.from(1))
+      : LiteralConstant(BigInt.from(1))
     );
 
     return [

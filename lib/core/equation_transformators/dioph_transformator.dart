@@ -2,7 +2,7 @@
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/equation_transformator.dart';
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/utils.dart';
@@ -31,13 +31,13 @@ class DiophTransformator extends EquationTransformator {
     final constantParts = lhs.terms.map(
       (multiplication) => (multiplication as Multiplication).factors.fold<BigInt>(
         BigInt.from(1),
-        (previousValue, element) => element is Constant ? previousValue * element.number : previousValue,
+        (previousValue, element) => element is LiteralConstant ? previousValue * element.number : previousValue,
       )
     ).toList();
 
     // u ; v
     final variableParts = lhs.terms.map(
-      (multiplication) => (multiplication as Multiplication).factors.where((child) => !(child is Constant)).toList()
+      (multiplication) => (multiplication as Multiplication).factors.where((child) => !(child is LiteralConstant)).toList()
     ).toList();
 
     final a = constantParts[0];
@@ -78,10 +78,10 @@ class DiophTransformator extends EquationTransformator {
         Addition([
           Multiplication([
             rhs,
-            Constant(u0),
+            LiteralConstant(u0),
           ]),
           Multiplication([
-            Constant(-b),
+            LiteralConstant(-b),
             Variable(varId),
           ]),
         ]),
@@ -91,10 +91,10 @@ class DiophTransformator extends EquationTransformator {
         Addition([
           Multiplication([
             rhs,
-            Constant(v0),
+            LiteralConstant(v0),
           ]),
           Multiplication([
-            Constant(a),
+            LiteralConstant(a),
             Variable(varId),
           ]),
         ]),

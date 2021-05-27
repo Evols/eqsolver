@@ -1,12 +1,12 @@
 
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 
 int getValueClassId(Value val) {
-  if (val is Constant) {
+  if (val is LiteralConstant) {
     return 1;
   }
   if (val is Variable) {

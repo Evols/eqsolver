@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
@@ -45,13 +45,13 @@ class MyHomePage extends StatelessWidget {
         Variable('y'),
         Addition([
           Multiplication([
-            Constant(BigInt.from(128)),
+            LiteralConstant(BigInt.from(128)),
             Variable('x'),
           ]),
-          Constant(BigInt.from(105)),
+          LiteralConstant(BigInt.from(105)),
         ]),
       ]),
-      Constant(BigInt.from(17766709)),
+      LiteralConstant(BigInt.from(17766709)),
     );
 
     // Wrong one
@@ -60,13 +60,13 @@ class MyHomePage extends StatelessWidget {
         Variable('y'),
         Addition([
           Multiplication([
-            Constant(BigInt.from(128)),
+            LiteralConstant(BigInt.from(128)),
             Variable('x'),
           ]),
-          Constant(BigInt.from(97)),
+          LiteralConstant(BigInt.from(97)),
         ]),
       ]),
-      Constant(BigInt.from(17766709)),
+      LiteralConstant(BigInt.from(17766709)),
     );
 
     return MultiBlocProvider(
