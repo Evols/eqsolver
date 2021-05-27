@@ -5,6 +5,7 @@ import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
+import 'package:formula_transformator/core/values/named_constant.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
@@ -45,13 +46,13 @@ class MyHomePage extends StatelessWidget {
         Variable('y'),
         Addition([
           Multiplication([
-            LiteralConstant(BigInt.from(128)),
+            NamedConstant('a'),
             Variable('x'),
           ]),
-          LiteralConstant(BigInt.from(105)),
+          NamedConstant('b'),
         ]),
       ]),
-      LiteralConstant(BigInt.from(17766709)),
+      NamedConstant('c'),
     );
 
     // Wrong one
@@ -71,7 +72,7 @@ class MyHomePage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq2 ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1 ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
       child: Scaffold(
