@@ -3,6 +3,7 @@ part of 'equation_editor_cubit.dart';
 @immutable
 abstract class EquationEditorState {}
 
+@immutable
 class EquationEditorIdle extends EquationEditorState {}
 
 enum Selectable {

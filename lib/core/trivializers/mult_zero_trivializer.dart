@@ -1,9 +1,11 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
 import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
+@immutable
 class MultZeroTrivializer implements Trivializer {
 
   const MultZeroTrivializer();

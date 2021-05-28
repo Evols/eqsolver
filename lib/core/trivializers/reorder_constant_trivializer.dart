@@ -1,4 +1,5 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
 import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
@@ -6,6 +7,7 @@ import 'package:formula_transformator/core/values/named_constant.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/extensions.dart';
 
+@immutable
 class ReorderConstantTrivializer implements Trivializer {
 
   const ReorderConstantTrivializer();

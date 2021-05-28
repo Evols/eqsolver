@@ -1,6 +1,8 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
+@immutable
 class NamedConstant extends Value {
 
   final String name;

@@ -7,6 +7,7 @@ import 'package:formula_transformator/core/trivializers/trivializers_applier.dar
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/widgets/value_widget.dart';
 
+@immutable
 class LatexWidget extends StatelessWidget {
 
   final String latex;
@@ -28,6 +29,7 @@ class LatexWidget extends StatelessWidget {
   }
 }
 
+@immutable
 class EquationWidget extends StatelessWidget {
 
   final Equation equation;

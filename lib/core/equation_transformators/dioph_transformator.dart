@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/equation_transformator.dart';
 import 'package:formula_transformator/core/values/addition.dart';
@@ -8,6 +9,7 @@ import 'package:formula_transformator/core/values/named_constant.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/utils.dart';
 
+@immutable
 class DiophTransformator extends EquationTransformator {
 
   final Addition selectedAddition;

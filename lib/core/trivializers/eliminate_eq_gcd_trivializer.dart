@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/literal_constant.dart';
@@ -6,6 +7,7 @@ import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/extensions.dart';
 
+@immutable
 class EliminateEqGcdTrivializer implements Trivializer {
 
   const EliminateEqGcdTrivializer();

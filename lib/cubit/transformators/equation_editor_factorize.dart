@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/value_transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/values/addition.dart';
@@ -11,6 +12,7 @@ import 'package:formula_transformator/utils.dart';
 
 enum FactorizeStep { SelectFactor, SelectTerms, Finished }
 
+@immutable
 class EquationEditorFactorize extends EquationEditorEditing {
 
   final int eqIdx;

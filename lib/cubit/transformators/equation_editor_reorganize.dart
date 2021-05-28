@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/reorganize_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
@@ -10,6 +11,7 @@ import 'package:formula_transformator/utils.dart';
 
 enum ReorganizeStep { Select, Finished }
 
+@immutable
 class EquationEditorReorganize extends EquationEditorEditing {
 
   final int eqIdx;

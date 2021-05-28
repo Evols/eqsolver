@@ -12,6 +12,7 @@ import 'package:formula_transformator/extensions.dart';
 import 'equation_widget.dart';
 
 
+@immutable
 class ValueWidget extends StatelessWidget {
 
   final Value value;

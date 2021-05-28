@@ -1,6 +1,8 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/values/utils.dart';
 
+@immutable
 abstract class Value implements Comparable {
 
   const Value();

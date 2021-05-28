@@ -1,6 +1,8 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
+@immutable
 class Equation {
   final Value leftPart;
   final Value rightPart;

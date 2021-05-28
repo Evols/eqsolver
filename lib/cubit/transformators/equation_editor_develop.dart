@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/value_transformators/develop_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
@@ -11,6 +12,7 @@ import 'package:formula_transformator/utils.dart';
 
 enum DevelopStep { Select, Finished }
 
+@immutable
 class EquationEditorDevelop extends EquationEditorEditing {
 
   final int eqIdx;

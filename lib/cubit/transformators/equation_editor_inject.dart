@@ -1,4 +1,5 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/inject_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
@@ -10,6 +11,7 @@ import 'package:formula_transformator/cubit/equations_cubit.dart';
 
 enum InjectStep { SelectSubstitute, SelectInjection, Finished }
 
+@immutable
 class EquationEditorInject extends EquationEditorEditing {
 
   final int eqIdx;

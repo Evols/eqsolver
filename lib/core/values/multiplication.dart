@@ -1,8 +1,10 @@
 
+import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
 import '../utils.dart';
 
+@immutable
 class Multiplication extends Value {
 
   final List<Value> factors;
