@@ -41,7 +41,7 @@ class EquationEditorDioph extends EquationEditorEditing {
             && identical(part, value)
             && part.terms.length == 2
             && part.terms.where(
-              (term) => term is Multiplication && term.factors.whereType<LiteralConstant>().isNotEmpty
+              (term) => term is Multiplication && term.factors.where((factor) => factor.isConstant).isNotEmpty
             ).length == 2
           ) 
         ).isNotEmpty

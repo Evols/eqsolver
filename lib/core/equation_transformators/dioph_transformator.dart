@@ -4,6 +4,7 @@ import 'package:formula_transformator/core/equation_transformators/equation_tran
 import 'package:formula_transformator/core/values/addition.dart';
 import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
+import 'package:formula_transformator/core/values/named_constant.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/utils.dart';
 
@@ -13,7 +14,7 @@ class DiophTransformator extends EquationTransformator {
 
   DiophTransformator(this.selectedAddition);
 
-  static int gcdIdx = 1;
+  static int solvingIdx = 1;
 
   @override
   List<Equation> transformEquationImpl(Equation equation) {
@@ -28,26 +29,36 @@ class DiophTransformator extends EquationTransformator {
     }
 
     // a ; b
-    final constantParts = lhs.terms.map(
+    final literalConstantParts = lhs.terms.map(
       (multiplication) => (multiplication as Multiplication).factors.fold<BigInt>(
         BigInt.from(1),
-        (previousValue, element) => element is LiteralConstant ? previousValue * element.number : previousValue,
+        (previousValue, factor) => factor is LiteralConstant ? previousValue * factor.number : previousValue,
       )
+    ).toList();
+
+    final nonLiteralConstantParts = lhs.terms.map(
+      (multiplication) => (multiplication as Multiplication).factors.where(
+        (factor) => factor.isConstant && !(factor is LiteralConstant)
+      ).toList()
     ).toList();
 
     // u ; v
     final variableParts = lhs.terms.map(
-      (multiplication) => (multiplication as Multiplication).factors.where((child) => !(child is LiteralConstant)).toList()
+      (multiplication) => (multiplication as Multiplication).factors.where(
+        (child) => !child.isConstant
+      ).toList()
     ).toList();
 
-    final a = constantParts[0];
+    final aLiteral = literalConstantParts[0];
+    final aNonLiteral = nonLiteralConstantParts[0];
     final uFactors = variableParts[0];
 
-    final b = constantParts[1];
+    final bLiteral = literalConstantParts[1];
+    final bNonLiteral = nonLiteralConstantParts[1];
     final vFactors = variableParts[1];
 
     var u0ref = Ref<BigInt>(BigInt.from(0)), v0ref = Ref<BigInt>(BigInt.from(0));
-    final gcd = extEuclidAlgo(a, b, u0ref, v0ref);
+    final gcd = extEuclidAlgo(aLiteral, bLiteral, u0ref, v0ref);
     final u0 = u0ref.value, v0 = v0ref.value;
 
     if (gcd != BigInt.from(1)) {
@@ -69,19 +80,49 @@ class DiophTransformator extends EquationTransformator {
     // a*(d*u0+b*k)+b*(d*v0-a*k)=c
     // u=d*u0+b*k ; v=d*v0-a*k
 
-    final varId = 'k_$gcdIdx';
-    gcdIdx++;
+    final varId = 'k_$solvingIdx';
+    final uId = 'u_$solvingIdx';
+    final vId = 'v_$solvingIdx';
+    solvingIdx++;
+
+    final abAreLiteral = aNonLiteral.isEmpty && bNonLiteral.isEmpty;
 
     return [
+      ...(
+        abAreLiteral
+        ? []
+        : [
+          Equation(
+            Addition([
+              Multiplication([
+                LiteralConstant(aLiteral),
+                ...aNonLiteral,
+                Variable(uId),
+              ]),
+              Multiplication([
+                LiteralConstant(bLiteral),
+                ...bNonLiteral,
+                Variable(vId),
+              ]),
+            ]),
+            LiteralConstant(BigInt.from(1))
+          )
+        ]
+      ),
       Equation(
         Multiplication(uFactors),
         Addition([
           Multiplication([
             rhs,
-            LiteralConstant(u0),
+            (
+              abAreLiteral
+              ? LiteralConstant(u0)
+              : NamedConstant(uId)
+            ),
           ]),
           Multiplication([
-            LiteralConstant(-b),
+            LiteralConstant(-bLiteral),
+            ...bNonLiteral,
             Variable(varId),
           ]),
         ]),
@@ -91,10 +132,15 @@ class DiophTransformator extends EquationTransformator {
         Addition([
           Multiplication([
             rhs,
-            LiteralConstant(v0),
+            (
+              abAreLiteral
+              ? LiteralConstant(v0)
+              : NamedConstant(vId)
+            ),
           ]),
           Multiplication([
-            LiteralConstant(a),
+            LiteralConstant(aLiteral),
+            ...aNonLiteral,
             Variable(varId),
           ]),
         ]),
