@@ -32,6 +32,9 @@ class Multiplication extends Value {
   }
 
   @override
+  bool get isConstant => factors.where((factor) => !factor.isConstant).isEmpty;
+
+  @override
   int compareTo(other) {
     if (!(other is Multiplication)) {
       return compareToClass(other);

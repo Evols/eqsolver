@@ -1,7 +1,7 @@
 
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
@@ -14,21 +14,21 @@ class ConstantComputationTrivializer implements Trivializer {
 
     if (value is Addition) {
       final children = value.getChildren();
-      final constants = children.whereType<Constant>();
+      final constants = children.whereType<LiteralConstant>();
       if (constants.length > 1) {
-        final nonConstants = children.where((e) => !(e is Constant));
+        final nonConstants = children.where((e) => !(e is LiteralConstant));
         final computationResult = constants.fold<BigInt>(BigInt.from(0), (value, element) => value + element.number);
-        return Addition([ ...nonConstants, Constant(computationResult) ]);
+        return Addition([ ...nonConstants, LiteralConstant(computationResult) ]);
       }
     }
 
     if (value is Multiplication) {
       final children = value.getChildren();
-      final constants = children.whereType<Constant>();
+      final constants = children.whereType<LiteralConstant>();
       if (constants.length > 1) {
-        final nonConstants = children.where((e) => !(e is Constant));
+        final nonConstants = children.where((e) => !(e is LiteralConstant));
         final computationResult = constants.fold<BigInt>(BigInt.from(1), (value, element) => value * element.number);
-        return Multiplication([ Constant(computationResult), ...nonConstants ]);
+        return Multiplication([ LiteralConstant(computationResult), ...nonConstants ]);
       }
     }
 

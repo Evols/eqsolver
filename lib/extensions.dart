@@ -6,9 +6,14 @@ extension ExtendedIterable<E> on Iterable<E> {
     for (E element in this) value = combine(value, element, i++);
     return value;
   }
-  
+
   Iterable<T> mapIndexed<T>(T f(E e, int i)) {
     int i = 0;
     return map((e) => f(e, i++));
+  }
+
+  Iterable<E> whereIndexed(bool f(E e, int i)) {
+    int i = 0;
+    return where((e) => f(e, i++));
   }
 }

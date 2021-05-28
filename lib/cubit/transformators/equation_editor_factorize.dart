@@ -2,7 +2,7 @@
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/value_transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
@@ -33,10 +33,10 @@ class EquationEditorFactorize extends EquationEditorEditing {
   bool hasFinished() => step == FactorizeStep.Finished;
 
   static Value? getCommonFactor(Value v1, Value v2) {
-    if (v1 is Constant && v2 is Constant) {
+    if (v1 is LiteralConstant && v2 is LiteralConstant) {
       final gcd = v1.number.gcd(v2.number);
       if (gcd != BigInt.from(1)) {
-        return Constant(gcd);
+        return LiteralConstant(gcd);
       }
     }
     return v1.isEquivalentTo(v2) ? v1 : null;

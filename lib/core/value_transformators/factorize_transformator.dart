@@ -2,7 +2,7 @@
 import 'package:formula_transformator/core/value_transformators/value_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/constant.dart';
+import 'package:formula_transformator/core/values/literal_constant.dart';
 import 'package:formula_transformator/core/values/multiplication.dart';
 import 'package:formula_transformator/core/values/value.dart';
 
@@ -32,7 +32,7 @@ class FactorizeTransformator extends ValueTransformator {
     final _gcd = multiplicationsToFactor.map(
       (e) => e.factors.fold<BigInt>(
         BigInt.from(1),
-        (previousValue, element) => element is Constant ? previousValue * element.number : previousValue,
+        (previousValue, element) => element is LiteralConstant ? previousValue * element.number : previousValue,
       )
     ).fold<BigInt>(
       BigInt.from(0),
@@ -43,8 +43,8 @@ class FactorizeTransformator extends ValueTransformator {
 
     // Factors to divide by, without the constants, that will be handled differently
     final actualFactorsToDivi = <Value>[
-      ...(gcd != BigInt.from(1) ? [ Constant(gcd) ] : []),
-      ...commonFactors.where((element) => !(element is Constant)),
+      ...(gcd != BigInt.from(1) ? [ LiteralConstant(gcd) ] : []),
+      ...commonFactors.where((element) => !(element is LiteralConstant)),
     ];
 
     // The non factors parts. If we consider that we want to turn a*b+a*c+... into a*(b+c+...), this is the array of b, c, ...
@@ -59,7 +59,7 @@ class FactorizeTransformator extends ValueTransformator {
           var found = false;
 
           for (var lookedForFactorsIndex = factorsToLookForCopy.length - 1; lookedForFactorsIndex >= 0; lookedForFactorsIndex--) {
-            if (!(multiplicationFactor is Constant) && multiplicationFactor.isEquivalentTo(factorsToLookForCopy[lookedForFactorsIndex])) {
+            if (!(multiplicationFactor is LiteralConstant) && multiplicationFactor.isEquivalentTo(factorsToLookForCopy[lookedForFactorsIndex])) {
               found = true;
               factorsToLookForCopy.removeAt(lookedForFactorsIndex);
               break;
@@ -67,8 +67,8 @@ class FactorizeTransformator extends ValueTransformator {
           }
 
           if (!found) {
-            if (multiplicationFactor is Constant) {
-              nonFactorPart.add(Constant(multiplicationFactor.number ~/ gcd));
+            if (multiplicationFactor is LiteralConstant) {
+              nonFactorPart.add(LiteralConstant(multiplicationFactor.number ~/ gcd));
             } else {
               nonFactorPart.add(multiplicationFactor);
             }
@@ -88,7 +88,7 @@ class FactorizeTransformator extends ValueTransformator {
 
     final rawResult = Addition([
       Multiplication([
-        ...(gcd != BigInt.from(1) ? [ Constant(gcd) ] : []),
+        ...(gcd != BigInt.from(1) ? [ LiteralConstant(gcd) ] : []),
         ...actualFactorsToDivi,
         Addition(nonFactorPartTerms.map(
           (factors) => Multiplication(factors)
