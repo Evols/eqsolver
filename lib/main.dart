@@ -83,17 +83,6 @@ class MyHomePage extends StatelessWidget {
               builder: (context, editorState) => Row(
                 children: [
                   Text(title + (editorState is EquationEditorEditing ? ' - ' + editorState.getStepName() : '')),
-                  ...(
-                    editorState is EquationEditorIdle
-                    ? [
-                      Container(width: 8),
-                      Button(
-                        'Compute values of equations',
-                        onPressed: () => BlocProvider.of<EquationEditorCubit>(context).cancel(),
-                      ),
-                    ]
-                    : []
-                  ),
                   Spacer(),
                   BlocBuilder<EquationEditorCubit, EquationEditorState>(
                     builder: (context, editorState) {
