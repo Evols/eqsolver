@@ -9,6 +9,7 @@ import 'package:formula_transformator/core/values/named_constant.dart';
 import 'package:formula_transformator/core/values/variable.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
+import 'package:formula_transformator/widgets/button.dart';
 import 'package:formula_transformator/widgets/equation_widget.dart';
 
 void main() {
@@ -85,9 +86,10 @@ class MyHomePage extends StatelessWidget {
                   ...(
                     editorState is EquationEditorIdle
                     ? [
-                      ElevatedButton(
+                      Container(width: 8),
+                      Button(
+                        'Compute values of equations',
                         onPressed: () => BlocProvider.of<EquationEditorCubit>(context).cancel(),
-                        child: Text('Compute values of equations'),
                       ),
                     ]
                     : []
@@ -98,14 +100,14 @@ class MyHomePage extends StatelessWidget {
                       return Row(
                         children: [
                           ...(editorState is EquationEditorEditing ? [
-                            ElevatedButton(
+                            Button(
+                              'Cancel',
                               onPressed: () => BlocProvider.of<EquationEditorCubit>(context).cancel(),
-                              child: Text('Cancel'),
                             ),
                             Text(' '),
-                            ElevatedButton(
+                            Button(
+                              'Validate',
                               onPressed: !editorState.canValidate() ? null : () => BlocProvider.of<EquationEditorCubit>(context).nextStep(),
-                              child: Text('Validate'),
                             ),
                           ] : []),
                         ],
