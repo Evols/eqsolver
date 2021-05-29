@@ -1,47 +1,47 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/named_constant.dart';
-import 'package:formula_transformator/core/values/value.dart';
-import 'package:formula_transformator/core/values/variable.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/named_constant.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
+import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/extensions.dart';
 
 import 'equation_widget.dart';
 
 
 @immutable
-class ValueWidget extends StatelessWidget {
+class ExpressionWidget extends StatelessWidget {
 
-  final Value value;
-  final Widget? Function(Value)? bottomWidgetBuilder;
+  final Expression expression;
+  final Widget? Function(Expression)? bottomWidgetBuilder;
 
-  const ValueWidget(this.value, {Key? key, this.bottomWidgetBuilder}) : super(key: key);
+  const ExpressionWidget(this.expression, {Key? key, this.bottomWidgetBuilder}) : super(key: key);
 
   Widget buildLatex() {
 
-    final inValue = value;
+    final inExpression = expression;
 
     // Widget for a literal constant
-    if (inValue is LiteralConstant) {
-      return LatexWidget('${inValue.number}');
+    if (inExpression is LiteralConstant) {
+      return LatexWidget('${inExpression.number}');
     }
     // Widget for a named constant
-    if (inValue is NamedConstant) {
-      return LatexWidget('${inValue.name}');
+    if (inExpression is NamedConstant) {
+      return LatexWidget('${inExpression.name}');
     }
     // Widget for a variable
-    else if (inValue is Variable) {
-      return LatexWidget('${inValue.name}');
+    else if (inExpression is Variable) {
+      return LatexWidget('${inExpression.name}');
     }
     // Widget for an addition
-    else if (inValue is Addition) {
+    else if (inExpression is Addition) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: inValue.terms
-        .map((e) => ValueWidget(e, bottomWidgetBuilder: this.bottomWidgetBuilder))
+        children: inExpression.terms
+        .map((e) => ExpressionWidget(e, bottomWidgetBuilder: this.bottomWidgetBuilder))
         .foldIndexed<List<Widget>>(
           [],
           (previousValue, element, idx) => [
@@ -57,17 +57,17 @@ class ValueWidget extends StatelessWidget {
       );
     }
     // Widget for a multiplication
-    else if (inValue is Multiplication) {
+    else if (inExpression is Multiplication) {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: inValue.factors
+        children: inExpression.factors
         .map((e) =>
           e is Addition
           ? Row(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [ LatexWidget('('), ValueWidget(e, bottomWidgetBuilder: this.bottomWidgetBuilder), LatexWidget(')') ]
+            children: [ LatexWidget('('), ExpressionWidget(e, bottomWidgetBuilder: this.bottomWidgetBuilder), LatexWidget(')') ]
           )
-          : ValueWidget(e, bottomWidgetBuilder: this.bottomWidgetBuilder)
+          : ExpressionWidget(e, bottomWidgetBuilder: this.bottomWidgetBuilder)
         )
         .foldIndexed<List<Widget>>([],
           (previousValue, element, idx) => [
@@ -82,7 +82,7 @@ class ValueWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final bottomWidget = bottomWidgetBuilder != null ? bottomWidgetBuilder!(value) : null;
+    final bottomWidget = bottomWidgetBuilder != null ? bottomWidgetBuilder!(expression) : null;
 
     return Container(
       decoration: bottomWidget != null ? const BoxDecoration(

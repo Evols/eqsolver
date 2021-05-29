@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/equation.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/named_constant.dart';
-import 'package:formula_transformator/core/values/variable.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/widgets/button.dart';
@@ -123,9 +122,9 @@ class MyHomePage extends StatelessWidget {
                           children: [
                             EquationWidget(
                               state.equations[index],
-                              bottomWidgetBuilder: (value) {
+                              bottomWidgetBuilder: (expression) {
                                 if (editorState is EquationEditorEditing) {
-                                  final selectable = editorState.isSelectable(state.equations[index], value);
+                                  final selectable = editorState.isSelectable(state.equations[index], expression);
                                   switch (selectable) {
                                   case Selectable.SingleEmpty:
                                   case Selectable.SingleSelected:
@@ -133,14 +132,14 @@ class MyHomePage extends StatelessWidget {
                                       splashRadius: 0.0,
                                       value: selectable == Selectable.SingleSelected,
                                       groupValue: true,
-                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(state.equations[index], value),
+                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(state.equations[index], expression),
                                     );
                                   case Selectable.MultipleEmpty:
                                   case Selectable.MultipleSelected:
                                     return Checkbox(
                                       splashRadius: 0.0,
                                       value: selectable == Selectable.MultipleSelected,
-                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(state.equations[index], value),
+                                      onChanged: (_) => BlocProvider.of<EquationEditorCubit>(context).onSelect(state.equations[index], expression),
                                     );
                                     case Selectable.None:
                                       return null;

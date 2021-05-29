@@ -1,11 +1,11 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
-import 'package:formula_transformator/core/value_transformators/factorize_transformator.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expression_transformators/factorize_transformator.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/utils.dart';
@@ -16,8 +16,8 @@ enum FactorizeStep { SelectFactor, SelectTerms, Finished }
 class EquationEditorFactorize extends EquationEditorEditing {
 
   final FactorizeStep step;
-  final List<Value> selectedFactors;
-  final List<Value> selectedTerms;
+  final List<Expression> selectedFactors;
+  final List<Expression> selectedTerms;
 
   EquationEditorFactorize(this.step, { this.selectedTerms = const [], this.selectedFactors = const [] });
 
@@ -33,7 +33,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
   @override
   bool hasFinished() => step == FactorizeStep.Finished;
 
-  static Value? getCommonFactor(Value v1, Value v2) {
+  static Expression? getCommonFactor(Expression v1, Expression v2) {
     if (v1 is LiteralConstant && v2 is LiteralConstant) {
       final gcd = v1.number.gcd(v2.number);
       if (gcd != BigInt.from(1)) {
@@ -43,11 +43,11 @@ class EquationEditorFactorize extends EquationEditorEditing {
     return v1.isEquivalentTo(v2) ? v1 : null;
   }
 
-  static List<Value> getCommonFactors(List<Value> v1, List<Value> v2) {
+  static List<Expression> getCommonFactors(List<Expression> v1, List<Expression> v2) {
 
     var v1copy = [...v1];
     var v2copy = [...v2];
-    var commonFactors = <Value>[];
+    var commonFactors = <Expression>[];
 
     for (var v1index = v1copy.length - 1; v1index >= 0; v1index--) {
       for (var v2index = v2copy.length - 1; v2index >= 0; v2index--) {
@@ -64,7 +64,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
     return commonFactors;
   }
 
-  static bool hasAllFactors(List<Value> factorsToLookFor, List<Value> inMultiplication) {
+  static bool hasAllFactors(List<Expression> factorsToLookFor, List<Expression> inMultiplication) {
 
     var factorsToLookForCopy = [...factorsToLookFor];
     var inMultiplicationCopy = [...inMultiplication];
@@ -84,18 +84,18 @@ class EquationEditorFactorize extends EquationEditorEditing {
   }
 
   @override
-  Selectable isSelectable(Equation equation, Value value) {
+  Selectable isSelectable(Equation equation, Expression expression) {
     switch (step) {
     case FactorizeStep.SelectFactor:
       if (
         equation.findTree(
           (additionCandidate) => additionCandidate is Addition
-          // Check that the addition has a multiplication term, and that this multiplication term has value as one of its factors
+          // Check that the addition has a multiplication term, and that this multiplication term has expression as one of its factors
           && additionCandidate.terms.where(
             (multiplicateCandidate) => multiplicateCandidate is Multiplication
-            // Multiplication term has value as one of its factors
+            // Multiplication term has expression as one of its factors
             && multiplicateCandidate.factors.where(
-              (factor) => identical(factor, value)
+              (factor) => identical(factor, expression)
             ).isNotEmpty
             // Multiplication term has the selected factors
             && multiplicateCandidate.factors.where(
@@ -105,22 +105,22 @@ class EquationEditorFactorize extends EquationEditorEditing {
           // Check that the addition has another multiplication term, and that this other multiplication term has is divisible by the selected factors and the new factor
           && additionCandidate.terms.where(
             (otherMultiplicateCandidate) => otherMultiplicateCandidate is Multiplication
-            // Not the multiplication that contains value
+            // Not the multiplication that contains expression
             && otherMultiplicateCandidate.factors.where(
-              (factor) => identical(factor, value)
+              (factor) => identical(factor, expression)
             ).isEmpty
             // Divisible by the selected factors and the new factor
             && hasAllFactors(
               selectedFactors.where(
-                (selectedFactor) => identical(selectedFactor, value)
-              ).isNotEmpty ? selectedFactors : [ ...selectedFactors, value ],
+                (selectedFactor) => identical(selectedFactor, expression)
+              ).isNotEmpty ? selectedFactors : [ ...selectedFactors, expression ],
               otherMultiplicateCandidate.factors,
             )
           ).isNotEmpty
         ) != null
       ) {
         return (
-          selectedFactors.where((e) => identical(e, value)).isNotEmpty
+          selectedFactors.where((e) => identical(e, expression)).isNotEmpty
           ? Selectable.MultipleSelected
           : Selectable.MultipleEmpty
         );
@@ -131,11 +131,11 @@ class EquationEditorFactorize extends EquationEditorEditing {
       if (
         equation.findTree(
           (additionCandidate) => additionCandidate is Addition
-          // Check that the addition has a multiplication term, and that this multiplication term has value as one of its factors
+          // Check that the addition has a multiplication term, and that this multiplication term has expression as one of its factors
           && additionCandidate.terms.where(
             (multiplicateCandidate) => multiplicateCandidate is Multiplication
-            // Multiplication term has value as one of its factors
-            && identical(multiplicateCandidate, value)
+            // Multiplication term has expression as one of its factors
+            && identical(multiplicateCandidate, expression)
             // Divisible by the selected factors and the new factor
             && hasAllFactors(selectedFactors, multiplicateCandidate.factors)
           ).isNotEmpty
@@ -150,7 +150,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
         ) != null
       ) {
         return (
-          selectedTerms.where((e) => identical(e, value)).isNotEmpty
+          selectedTerms.where((e) => identical(e, expression)).isNotEmpty
           ? Selectable.MultipleSelected
           : Selectable.MultipleEmpty
         );
@@ -193,7 +193,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
 
         if (addition != null) {
           equationsCubit.addEquations(
-            FactorizeTransformator(selectedFactors, selectedTerms).transformValue(addition).map(
+            FactorizeTransformator(selectedFactors, selectedTerms).transformExpression(addition).map(
               (transformed) => equation.mountAt(addition, transformed)
             ).toList()
           );
@@ -211,19 +211,19 @@ class EquationEditorFactorize extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing onSelect(Equation equation, Value value) {
+  EquationEditorEditing onSelect(Equation equation, Expression expression) {
     switch (step) {
     case FactorizeStep.SelectFactor:
       return EquationEditorFactorize(
         step,
-        selectedFactors: flipExistenceArray<Value>(selectedFactors, value),
+        selectedFactors: flipExistenceArray<Expression>(selectedFactors, expression),
         selectedTerms: selectedTerms,
       );
     case FactorizeStep.SelectTerms:
       return EquationEditorFactorize(
         step,
         selectedFactors: selectedFactors,
-        selectedTerms: flipExistenceArray<Value>(selectedTerms, value),
+        selectedTerms: flipExistenceArray<Expression>(selectedTerms, expression),
       );
     default:
       return this;

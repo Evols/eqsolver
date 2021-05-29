@@ -1,33 +1,33 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 import '../utils.dart';
 
 @immutable
-class Addition extends Value {
+class Addition extends Expression {
 
-  final List<Value> terms;
+  final List<Expression> terms;
 
   const Addition(this.terms);
 
   @override
-  List<Value> getChildren() {
+  List<Expression> getChildren() {
     return terms;
   }
 
   @override
-  Value deepClone() {
+  Expression deepClone() {
     return Addition(terms.map((e) => e.deepClone()).toList());
   }
 
   @override
-  Value deepCloneWithChildren(List<Value> newChildren) {
+  Expression deepCloneWithChildren(List<Expression> newChildren) {
     return Addition(newChildren);
   }
 
   @override
-  Value getNormalized() {
+  Expression getNormalized() {
     final childrenNormalized = terms.map((e) => e.getNormalized()).toList();
     childrenNormalized.sort();
     return Addition(childrenNormalized);

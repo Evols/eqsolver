@@ -1,5 +1,5 @@
 
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 int compareLists<E extends Comparable>(List<E> first, List<E> second) {
   if (first.length != second.length) {
@@ -14,19 +14,19 @@ int compareLists<E extends Comparable>(List<E> first, List<E> second) {
   return 0;
 }
 
-Value? mountValueAt(Value baseValue, Value? Function(Value, int) replacer, [int depth = 0]) {
+Expression? mountExpressionAt(Expression baseExpression, Expression? Function(Expression, int) replacer, [int depth = 0]) {
 
-  final replacerResult = replacer(baseValue, depth);
+  final replacerResult = replacer(baseExpression, depth);
   if (replacerResult != null) {
     return replacerResult;
   }
 
-  final children = baseValue.getChildren();
+  final children = baseExpression.getChildren();
   for (var foundIdx = 0; foundIdx < children.length; foundIdx++) {
     final child = children[foundIdx];
-    final mounted = mountValueAt(child, replacer, depth + 1);
+    final mounted = mountExpressionAt(child, replacer, depth + 1);
     if (mounted != null) {
-      final dcwc = baseValue.deepCloneWithChildren([ ...children.sublist(0, foundIdx), mounted, ...children.sublist(foundIdx + 1) ]);
+      final dcwc = baseExpression.deepCloneWithChildren([ ...children.sublist(0, foundIdx), mounted, ...children.sublist(foundIdx + 1) ]);
       return dcwc;
     }
   }

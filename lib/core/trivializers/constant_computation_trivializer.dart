@@ -1,10 +1,10 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
 class ConstantComputationTrivializer implements Trivializer {
@@ -12,24 +12,24 @@ class ConstantComputationTrivializer implements Trivializer {
   const ConstantComputationTrivializer();
 
   @override
-  Value? transform(Value value, [bool isEquation = false]) {
+  Expression? transform(Expression expression, [bool isEquation = false]) {
 
-    if (value is Addition) {
-      final children = value.getChildren();
+    if (expression is Addition) {
+      final children = expression.getChildren();
       final constants = children.whereType<LiteralConstant>();
       if (constants.length > 1) {
         final nonConstants = children.where((e) => !(e is LiteralConstant));
-        final computationResult = constants.fold<BigInt>(BigInt.from(0), (value, element) => value + element.number);
+        final computationResult = constants.fold<BigInt>(BigInt.from(0), (expression, element) => expression + element.number);
         return Addition([ ...nonConstants, LiteralConstant(computationResult) ]);
       }
     }
 
-    if (value is Multiplication) {
-      final children = value.getChildren();
+    if (expression is Multiplication) {
+      final children = expression.getChildren();
       final constants = children.whereType<LiteralConstant>();
       if (constants.length > 1) {
         final nonConstants = children.where((e) => !(e is LiteralConstant));
-        final computationResult = constants.fold<BigInt>(BigInt.from(1), (value, element) => value * element.number);
+        final computationResult = constants.fold<BigInt>(BigInt.from(1), (expression, element) => expression * element.number);
         return Multiplication([ LiteralConstant(computationResult), ...nonConstants ]);
       }
     }

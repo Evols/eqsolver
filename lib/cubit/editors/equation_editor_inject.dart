@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/inject_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 
@@ -16,8 +16,8 @@ class EquationEditorInject extends EquationEditorEditing {
 
   final InjectStep step;
   final Equation? sourceEquation;
-  final Value? sourceExpression;
-  final Value? targetExpression;
+  final Expression? sourceExpression;
+  final Expression? targetExpression;
 
   EquationEditorInject(this.step, { this.sourceEquation, this.sourceExpression, this.targetExpression });
 
@@ -34,16 +34,16 @@ class EquationEditorInject extends EquationEditorEditing {
   bool hasFinished() => step == InjectStep.Finished;
 
   @override
-  Selectable isSelectable(Equation equation, Value value) {
+  Selectable isSelectable(Equation equation, Expression expression) {
     switch (step) {
     case InjectStep.SelectSubstitute:
       if (equation.parts.where(
-        (part) => identical(part, value) || part is Multiplication && part.factors.where(
-          (factor) => identical(factor, value)
+        (part) => identical(part, expression) || part is Multiplication && part.factors.where(
+          (factor) => identical(factor, expression)
         ).isNotEmpty
-      ).isNotEmpty && !(value is LiteralConstant)) {
+      ).isNotEmpty && !(expression is LiteralConstant)) {
         return (
-          identical(sourceExpression, value)
+          identical(sourceExpression, expression)
           ? Selectable.SingleSelected
           : Selectable.SingleEmpty
         );
@@ -51,13 +51,13 @@ class EquationEditorInject extends EquationEditorEditing {
       return Selectable.None;
 
     case InjectStep.SelectInjection:
-      if (value.isEquivalentTo(sourceExpression!) && !identical(value, sourceExpression) && equation.parts.where(
-        (part) => identical(part, value) || part is Multiplication && part.factors.where(
-          (factor) => identical(factor, value)
+      if (expression.isEquivalentTo(sourceExpression!) && !identical(expression, sourceExpression) && equation.parts.where(
+        (part) => identical(part, expression) || part is Multiplication && part.factors.where(
+          (factor) => identical(factor, expression)
         ).isNotEmpty
       ).isNotEmpty) {
         return (
-          identical(targetExpression, value)
+          identical(targetExpression, expression)
           ? Selectable.SingleSelected
           : Selectable.SingleEmpty
         );
@@ -88,7 +88,7 @@ class EquationEditorInject extends EquationEditorEditing {
       for (var equation in equationsCubit.state.equations) {
 
         final isTheEquation = equation.findTree(
-          (value) => identical(value, targetExpression)
+          (expression) => identical(expression, targetExpression)
         ) != null;
 
         if (isTheEquation) {
@@ -112,14 +112,14 @@ class EquationEditorInject extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing onSelect(Equation equation, Value value) {
+  EquationEditorEditing onSelect(Equation equation, Expression expression) {
     switch (step) {
     case InjectStep.SelectSubstitute:
-      final shouldNullify = identical(value, sourceExpression);
+      final shouldNullify = identical(expression, sourceExpression);
       return EquationEditorInject(
         step,
         sourceEquation: shouldNullify ? null : equation,
-        sourceExpression: shouldNullify ? null : value,
+        sourceExpression: shouldNullify ? null : expression,
         targetExpression: targetExpression,
       );
     case InjectStep.SelectInjection:
@@ -127,7 +127,7 @@ class EquationEditorInject extends EquationEditorEditing {
         step,
         sourceEquation: sourceEquation,
         sourceExpression: sourceExpression,
-        targetExpression: identical(value, targetExpression) ? null : value,
+        targetExpression: identical(expression, targetExpression) ? null : expression,
       );
     default:
       return this;

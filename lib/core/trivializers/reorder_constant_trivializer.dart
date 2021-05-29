@@ -1,10 +1,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/named_constant.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/named_constant.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/extensions.dart';
 
 @immutable
@@ -13,10 +13,10 @@ class ReorderConstantTrivializer implements Trivializer {
   const ReorderConstantTrivializer();
 
   @override
-  Value? transform(Value value, [bool isEquation = false]) {
-    if (value is Multiplication) {
+  Expression? transform(Expression expression, [bool isEquation = false]) {
+    if (expression is Multiplication) {
 
-      final sortedFactors = [...value.factors];
+      final sortedFactors = [...expression.factors];
       sortedFactors.sort((v1, v2) {
         final order1 = v1 is LiteralConstant ? 0 : v1 is NamedConstant ? 1 : 2;
         final order2 = v2 is LiteralConstant ? 0 : v2 is NamedConstant ? 1 : 2;
@@ -24,7 +24,7 @@ class ReorderConstantTrivializer implements Trivializer {
       });
 
       if (sortedFactors.whereIndexed(
-        (sortedFactor, index) => !identical(sortedFactor, value.factors[index])
+        (sortedFactor, index) => !identical(sortedFactor, expression.factors[index])
       ).isEmpty) {
         return null;
       }

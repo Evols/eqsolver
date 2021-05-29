@@ -1,26 +1,26 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:formula_transformator/core/value_transformators/value_transformator.dart';
+import 'package:formula_transformator/core/expression_transformators/expression_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
-class DevelopTransformator extends ValueTransformator {
+class DevelopTransformator extends ExpressionTransformator {
 
-  final List<Value> termsToDevelop;
+  final List<Expression> termsToDevelop;
 
   DevelopTransformator(this.termsToDevelop);
 
   @override
-  List<Value> transformValue(Value value) {
+  List<Expression> transformExpression(Expression expression) {
 
-    if (!(value is Multiplication) || value.factors.length < 2) {
+    if (!(expression is Multiplication) || expression.factors.length < 2) {
       return [];
     }
 
-    final additions = value.factors.where(
+    final additions = expression.factors.where(
       (factor) => factor is Addition && factor.terms.where(
         (term) => termsToDevelop.where(
           (term2) => identical(term, term2)
@@ -33,7 +33,7 @@ class DevelopTransformator extends ValueTransformator {
     }
 
     final addition = additions[0];
-    final otherFactors = value.factors.where((element) => !identical(element, addition)).toList();
+    final otherFactors = expression.factors.where((element) => !identical(element, addition)).toList();
 
     final termsToNotDevelop = addition.getChildren().where(
       (term) => termsToDevelop.where(

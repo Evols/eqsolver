@@ -1,31 +1,31 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
-class NamedConstant extends Value {
+class NamedConstant extends Expression {
 
   final String name;
 
   const NamedConstant(this.name);
 
   @override
-  List<Value> getChildren() {
+  List<Expression> getChildren() {
     return [];
   }
 
   @override
-  Value deepClone() {
+  Expression deepClone() {
     return NamedConstant(name);
   }
 
   @override
-  Value deepCloneWithChildren(List<Value> newChildren) {
+  Expression deepCloneWithChildren(List<Expression> newChildren) {
     return NamedConstant(name);
   }
 
   @override
-  Value getNormalized() {
+  Expression getNormalized() {
     return this;
   }
 

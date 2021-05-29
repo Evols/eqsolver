@@ -2,11 +2,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/equation_transformator.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/named_constant.dart';
-import 'package:formula_transformator/core/values/variable.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/named_constant.dart';
+import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/utils.dart';
 
 @immutable

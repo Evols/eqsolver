@@ -4,8 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
-import 'package:formula_transformator/core/values/value.dart';
-import 'package:formula_transformator/widgets/value_widget.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
+import 'package:formula_transformator/widgets/expression_widget.dart';
 
 @immutable
 class LatexWidget extends StatelessWidget {
@@ -33,7 +33,7 @@ class LatexWidget extends StatelessWidget {
 class EquationWidget extends StatelessWidget {
 
   final Equation equation;
-  final Widget? Function(Value)? bottomWidgetBuilder;
+  final Widget? Function(Expression)? bottomWidgetBuilder;
 
   const EquationWidget(this.equation, {Key? key, this.bottomWidgetBuilder}) : super(key: key);
 
@@ -44,11 +44,11 @@ class EquationWidget extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ValueWidget(trivializedEq.leftPart, bottomWidgetBuilder: bottomWidgetBuilder),
+        ExpressionWidget(trivializedEq.leftPart, bottomWidgetBuilder: bottomWidgetBuilder),
         Container(width: 4.0),
         LatexWidget('=', sizeFactor: 0.8),
         Container(width: 4.0),
-        ValueWidget(trivializedEq.rightPart, bottomWidgetBuilder: bottomWidgetBuilder),
+        ExpressionWidget(trivializedEq.rightPart, bottomWidgetBuilder: bottomWidgetBuilder),
       ],
     );
   }

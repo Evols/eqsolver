@@ -12,7 +12,7 @@ import 'nested_trivializer.dart';
 import 'single_child_trivializer.dart';
 import 'trivializer.dart';
 import 'package:formula_transformator/core/utils.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 import 'add_zero_trivializer.dart';
 
@@ -29,21 +29,21 @@ const trivializers = <Trivializer>{
   ReorderConstantTrivializer(),
 };
 
-Value applyTrivializers(Value value, [bool isEquation = false]) {
-  var tempValue = value;
+Expression applyTrivializers(Expression expression, [bool isEquation = false]) {
+  var tempExpression = expression;
   var applied = true;
   while (applied) {
     applied = false;
     for (var trivializer in trivializers) {
-      var transformed = mountValueAt(tempValue, (elem, depth) => trivializer.transform(elem, depth == 0 && isEquation));
+      var transformed = mountExpressionAt(tempExpression, (elem, depth) => trivializer.transform(elem, depth == 0 && isEquation));
       if (transformed != null) {
-        tempValue = transformed;
+        tempExpression = transformed;
         applied = true;
         break;
       }
     }
   }
-  return tempValue;
+  return tempExpression;
 }
 
 Equation applyTrivializersToEq(Equation equation) {

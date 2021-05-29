@@ -1,31 +1,31 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
-class Variable extends Value {
+class Variable extends Expression {
 
   final String name;
 
   const Variable(this.name);
 
   @override
-  List<Value> getChildren() {
+  List<Expression> getChildren() {
     return [];
   }
 
   @override
-  Value deepClone() {
+  Expression deepClone() {
     return Variable(name);
   }
 
   @override
-  Value deepCloneWithChildren(List<Value> newChildren) {
+  Expression deepCloneWithChildren(List<Expression> newChildren) {
     return Variable(name);
   }
 
   @override
-  Value getNormalized() {
+  Expression getNormalized() {
     return this;
   }
 

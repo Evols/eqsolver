@@ -1,9 +1,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
 class SingleChildTrivializer implements Trivializer {
@@ -11,9 +11,9 @@ class SingleChildTrivializer implements Trivializer {
   const SingleChildTrivializer();
 
   @override
-  Value? transform(Value value, [bool isEquation = false]) {
-    if (value is Addition || value is Multiplication) {
-      final children = value.getChildren();
+  Expression? transform(Expression expression, [bool isEquation = false]) {
+    if (expression is Addition || expression is Multiplication) {
+      final children = expression.getChildren();
       if (children.length == 1) {
         return children[0];
       }

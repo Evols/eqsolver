@@ -2,26 +2,26 @@
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/equation_transformator.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
 class ReorganizeTransformator extends EquationTransformator {
 
-  final List<Value> selectedTerms;
+  final List<Expression> selectedTerms;
 
   ReorganizeTransformator(this.selectedTerms);
 
-  Value buildSide(Value thisPart, Value otherPart) => Addition([
-    // thisPart's values that aren't selected
+  Expression buildSide(Expression thisPart, Expression otherPart) => Addition([
+    // thisPart's expressions that aren't selected
     ...(thisPart is Addition ? thisPart.terms : [thisPart]).where(
       (term) => selectedTerms.where(
         (selectedTerm) => identical(term, selectedTerm)
       ).isEmpty
     ).toList(),
-    // otherPart's values that are selected, and then we negate them
+    // otherPart's expressions that are selected, and then we negate them
     ...(otherPart is Addition ? otherPart.terms : [otherPart]).where(
       (term) => selectedTerms.where(
         (selectedTerm) => identical(term, selectedTerm)

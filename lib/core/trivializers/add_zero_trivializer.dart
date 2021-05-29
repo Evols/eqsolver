@@ -1,9 +1,9 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
 class AddZeroTrivializer implements Trivializer {
@@ -11,10 +11,10 @@ class AddZeroTrivializer implements Trivializer {
   const AddZeroTrivializer();
 
   @override
-  Value? transform(Value value, [bool isEquation = false]) {
-    if (value is Addition) {
-      final newChildren = value.terms.where((child) => !(child is LiteralConstant && child.number == BigInt.from(0))).toList();
-      if (newChildren.length != value.terms.length) {
+  Expression? transform(Expression expression, [bool isEquation = false]) {
+    if (expression is Addition) {
+      final newChildren = expression.terms.where((child) => !(child is LiteralConstant && child.number == BigInt.from(0))).toList();
+      if (newChildren.length != expression.terms.length) {
         return Addition(newChildren);
       }
     }

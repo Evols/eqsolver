@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/dioph_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 
@@ -31,14 +31,14 @@ class EquationEditorDioph extends EquationEditorEditing {
   bool hasFinished() => step == DiophStep.Finished;
 
   @override
-  Selectable isSelectable(Equation equation, Value value) {
+  Selectable isSelectable(Equation equation, Expression expression) {
     switch (step) {
     case DiophStep.SelectTerms:
       if (
         equation.parts.where(
           (part) => (
             part is Addition
-            && identical(part, value)
+            && identical(part, expression)
             && part.terms.length == 2
             && part.terms.where(
               (term) => term is Multiplication && term.factors.where((factor) => factor.isConstant).isNotEmpty
@@ -47,7 +47,7 @@ class EquationEditorDioph extends EquationEditorEditing {
         ).isNotEmpty
       ) {
         return (
-          identical(selectedAddition, value)
+          identical(selectedAddition, expression)
           ? Selectable.MultipleSelected
           : Selectable.MultipleEmpty
         );
@@ -89,12 +89,12 @@ class EquationEditorDioph extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing onSelect(Equation equation, Value value) {
+  EquationEditorEditing onSelect(Equation equation, Expression expression) {
     switch (step) {
     case DiophStep.SelectTerms:
       return EquationEditorDioph(
         step,
-        selectedAddition: (selectedAddition == null && value is Addition) ? value : null,
+        selectedAddition: (selectedAddition == null && expression is Addition) ? expression : null,
       );
     default: return this;
     }

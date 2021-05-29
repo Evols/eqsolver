@@ -1,17 +1,17 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
 class Equation {
-  final Value leftPart;
-  final Value rightPart;
+  final Expression leftPart;
+  final Expression rightPart;
 
-  List<Value> get parts => [leftPart, rightPart];
+  List<Expression> get parts => [leftPart, rightPart];
 
-  Value? findTree(bool Function(Value) recurser) => leftPart.findTree(recurser) ?? rightPart.findTree(recurser) ?? null;
+  Expression? findTree(bool Function(Expression) recurser) => leftPart.findTree(recurser) ?? rightPart.findTree(recurser) ?? null;
 
-  Equation mountAt(Value at, Value toMount) => Equation(leftPart.mountAt(at, toMount), rightPart.mountAt(at, toMount));
+  Equation mountAt(Expression at, Expression toMount) => Equation(leftPart.mountAt(at, toMount), rightPart.mountAt(at, toMount));
 
   Equation deepClone() => Equation(leftPart.deepClone(), rightPart.deepClone());
 

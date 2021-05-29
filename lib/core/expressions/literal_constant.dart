@@ -1,31 +1,31 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
-class LiteralConstant extends Value {
+class LiteralConstant extends Expression {
 
   final BigInt number;
 
   const LiteralConstant(this.number);
 
   @override
-  List<Value> getChildren() {
+  List<Expression> getChildren() {
     return [];
   }
 
   @override
-  Value deepClone() {
+  Expression deepClone() {
     return LiteralConstant(number);
   }
 
   @override
-  Value deepCloneWithChildren(List<Value> newChildren) {
+  Expression deepCloneWithChildren(List<Expression> newChildren) {
     return LiteralConstant(number);
   }
 
   @override
-  Value getNormalized() {
+  Expression getNormalized() {
     return this;
   }
 

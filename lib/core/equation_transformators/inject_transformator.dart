@@ -2,16 +2,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_transformators/equation_transformator.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
 class InjectTransformator extends EquationTransformator {
 
   final Equation sourceEquation;
-  final Value sourceExpression;
-  final Value targetExpression;
+  final Expression sourceExpression;
+  final Expression targetExpression;
 
   InjectTransformator(this.sourceEquation, this.sourceExpression, this.targetExpression);
 

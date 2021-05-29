@@ -1,11 +1,11 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
-import 'package:formula_transformator/core/value_transformators/develop_transformator.dart';
+import 'package:formula_transformator/core/expression_transformators/develop_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/utils.dart';
@@ -16,7 +16,7 @@ enum DevelopStep { Select, Finished }
 class EquationEditorDevelop extends EquationEditorEditing {
 
   final DevelopStep step;
-  final List<Value> selectedTerms;
+  final List<Expression> selectedTerms;
 
   EquationEditorDevelop(this.step, { this.selectedTerms = const [] });
 
@@ -32,14 +32,14 @@ class EquationEditorDevelop extends EquationEditorEditing {
   bool hasFinished() => step == DevelopStep.Finished;
 
   @override
-  Selectable isSelectable(Equation equation, Value value) {
+  Selectable isSelectable(Equation equation, Expression expression) {
     switch (step) {
     case DevelopStep.Select:
       if (
         equation.findTree(
           (treeIt) => treeIt is Multiplication && treeIt.factors.where(
             (factor) => factor is Addition && factor.terms.where(
-              (term) => identical(term, value)
+              (term) => identical(term, expression)
             ).isNotEmpty && factor.terms.where(
               (term) => selectedTerms.where(
                 (term2) => identical(term, term2)
@@ -49,7 +49,7 @@ class EquationEditorDevelop extends EquationEditorEditing {
         ) != null
       ) {
         return (
-          selectedTerms.where((e) => identical(e, value)).isNotEmpty
+          selectedTerms.where((e) => identical(e, expression)).isNotEmpty
           ? Selectable.MultipleSelected
           : Selectable.MultipleEmpty
         );
@@ -89,7 +89,7 @@ class EquationEditorDevelop extends EquationEditorEditing {
 
         if (multiplication != null) {
           equationsCubit.addEquations(
-            DevelopTransformator(selectedTerms).transformValue(multiplication).map(
+            DevelopTransformator(selectedTerms).transformExpression(multiplication).map(
               (transformed) => applyTrivializersToEq(equation.mountAt(multiplication, transformed)).deepClone()
             ).toList()
           );
@@ -106,12 +106,12 @@ class EquationEditorDevelop extends EquationEditorEditing {
   }
 
   @override
-  EquationEditorEditing onSelect(Equation equation, Value value) {
+  EquationEditorEditing onSelect(Equation equation, Expression expression) {
     switch (step) {
     case DevelopStep.Select:
       return EquationEditorDevelop(
         step,
-        selectedTerms: flipExistenceArray<Value>(selectedTerms, value),
+        selectedTerms: flipExistenceArray<Expression>(selectedTerms, expression),
       );
     default:
       return this;

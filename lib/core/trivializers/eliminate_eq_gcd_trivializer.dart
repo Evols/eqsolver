@@ -1,10 +1,10 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/extensions.dart';
 
 @immutable
@@ -13,14 +13,14 @@ class EliminateEqGcdTrivializer implements Trivializer {
   const EliminateEqGcdTrivializer();
 
   @override
-  Value? transform(Value value, [bool isEquation = false]) {
+  Expression? transform(Expression expression, [bool isEquation = false]) {
 
     // TODO: equation trivializers
 
-    if (isEquation && value is Addition) {
+    if (isEquation && expression is Addition) {
 
       // The constant part of each term
-      final constantParts = value.terms.map<BigInt>(
+      final constantParts = expression.terms.map<BigInt>(
         (term) {
           if (term is LiteralConstant) {
             return term.number;
@@ -47,7 +47,7 @@ class EliminateEqGcdTrivializer implements Trivializer {
       ).isEmpty ? BigInt.from(-1) : BigInt.from(1));
 
       if (gcd > BigInt.from(1) || gcd < BigInt.from(0)) {
-        final newTerms = value.terms.mapIndexed(
+        final newTerms = expression.terms.mapIndexed(
           (term, index) {
             if (term is LiteralConstant) {
               return LiteralConstant(term.number ~/ gcd);
@@ -70,8 +70,8 @@ class EliminateEqGcdTrivializer implements Trivializer {
         return Addition(newTerms);
       }
 
-      // final newChildren = value.children.where((element) => !(element is Constant)).toList();
-      // if (newChildren.length != value.children.length) {
+      // final newChildren = expression.children.where((element) => !(element is Constant)).toList();
+      // if (newChildren.length != expression.children.length) {
       //   return Multiplication(newChildren);
       // }
     }

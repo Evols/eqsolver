@@ -1,28 +1,28 @@
 
 import 'package:flutter/foundation.dart';
-import 'package:formula_transformator/core/value_transformators/value_transformator.dart';
+import 'package:formula_transformator/core/expression_transformators/expression_transformator.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
-import 'package:formula_transformator/core/values/addition.dart';
-import 'package:formula_transformator/core/values/literal_constant.dart';
-import 'package:formula_transformator/core/values/multiplication.dart';
-import 'package:formula_transformator/core/values/value.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 
 @immutable
-class FactorizeTransformator extends ValueTransformator {
+class FactorizeTransformator extends ExpressionTransformator {
 
-  final List<Value> commonFactors;
-  final List<Value> termsToFactor;
+  final List<Expression> commonFactors;
+  final List<Expression> termsToFactor;
 
   FactorizeTransformator(this.commonFactors, this.termsToFactor);
 
   @override
-  List<Value> transformValue(Value value) {
+  List<Expression> transformExpression(Expression expression) {
 
-    if (!(value is Addition) || value.terms.length < 2) {
+    if (!(expression is Addition) || expression.terms.length < 2) {
       return [];
     }
 
-    final multiplicationsToFactor = value.terms.where(
+    final multiplicationsToFactor = expression.terms.where(
       (multiplication) => multiplication is Multiplication && termsToFactor.where(
         (term2) => identical(multiplication, term2)
       ).isNotEmpty
@@ -30,7 +30,7 @@ class FactorizeTransformator extends ValueTransformator {
       (multiplication) => multiplication as Multiplication
     ).toList();
 
-    // The greatest common deminator. Will be 1 even if the returned value is 0
+    // The greatest common deminator. Will be 1 even if the returned expression is 0
     final _gcd = multiplicationsToFactor.map(
       (e) => e.factors.fold<BigInt>(
         BigInt.from(1),
@@ -44,7 +44,7 @@ class FactorizeTransformator extends ValueTransformator {
     final gcd = _gcd < BigInt.from(1) ? BigInt.from(1) : _gcd;
 
     // Factors to divide by, without the constants, that will be handled differently
-    final actualFactorsToDivi = <Value>[
+    final actualFactorsToDivi = <Expression>[
       ...(gcd != BigInt.from(1) ? [ LiteralConstant(gcd) ] : []),
       ...commonFactors.where((element) => !(element is LiteralConstant)),
     ];
@@ -54,7 +54,7 @@ class FactorizeTransformator extends ValueTransformator {
       (multiplication) {
 
         var factorsToLookForCopy = [...actualFactorsToDivi];
-        var nonFactorPart = <Value>[];
+        var nonFactorPart = <Expression>[];
 
         for (var multiplicationFactor in multiplication.factors) {
 
@@ -82,7 +82,7 @@ class FactorizeTransformator extends ValueTransformator {
       }
     );
 
-    final termsToNotDevelop = value.terms.where(
+    final termsToNotDevelop = expression.terms.where(
       (candidateTerm) => termsToFactor.where(
         (termToFactor) => identical(candidateTerm, termToFactor)
       ).isEmpty
