@@ -47,13 +47,13 @@ class MyHomePage extends StatelessWidget {
         Variable('y'),
         Addition([
           Multiplication([
-            NamedConstant('a'),
+            LiteralConstant(BigInt.from(128)),
             Variable('x'),
           ]),
-          NamedConstant('b'),
+          LiteralConstant(BigInt.from(105)),
         ]),
       ]),
-      NamedConstant('c'),
+      LiteralConstant(BigInt.from(17766709)),
     );
 
     // Wrong one
