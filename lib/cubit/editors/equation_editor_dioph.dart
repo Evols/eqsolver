@@ -14,11 +14,10 @@ enum DiophStep { SelectTerms, Finished }
 @immutable
 class EquationEditorDioph extends EquationEditorEditing {
 
-  final int eqIdx;
   final DiophStep step;
   final Addition? selectedAddition;
 
-  EquationEditorDioph(this.eqIdx, this.step, { this.selectedAddition });
+  EquationEditorDioph(this.step, { this.selectedAddition });
 
   @override
   String getStepName() {
@@ -84,7 +83,6 @@ class EquationEditorDioph extends EquationEditorEditing {
       return EquationEditorIdle();
     }
     return EquationEditorDioph(
-      eqIdx,
       newStep,
       selectedAddition: selectedAddition,
     );
@@ -95,7 +93,6 @@ class EquationEditorDioph extends EquationEditorEditing {
     switch (step) {
     case DiophStep.SelectTerms:
       return EquationEditorDioph(
-        eqIdx,
         step,
         selectedAddition: (selectedAddition == null && value is Addition) ? value : null,
       );

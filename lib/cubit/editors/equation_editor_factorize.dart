@@ -15,12 +15,11 @@ enum FactorizeStep { SelectFactor, SelectTerms, Finished }
 @immutable
 class EquationEditorFactorize extends EquationEditorEditing {
 
-  final int eqIdx;
   final FactorizeStep step;
   final List<Value> selectedFactors;
   final List<Value> selectedTerms;
 
-  EquationEditorFactorize(this.eqIdx, this.step, { this.selectedTerms = const [], this.selectedFactors = const [] });
+  EquationEditorFactorize(this.step, { this.selectedTerms = const [], this.selectedFactors = const [] });
 
   @override
   String getStepName() {
@@ -205,7 +204,6 @@ class EquationEditorFactorize extends EquationEditorEditing {
       return EquationEditorIdle();
     }
     return EquationEditorFactorize(
-      eqIdx,
       newStep,
       selectedFactors: selectedFactors,
       selectedTerms: selectedTerms,
@@ -217,14 +215,12 @@ class EquationEditorFactorize extends EquationEditorEditing {
     switch (step) {
     case FactorizeStep.SelectFactor:
       return EquationEditorFactorize(
-        eqIdx,
         step,
         selectedFactors: flipExistenceArray<Value>(selectedFactors, value),
         selectedTerms: selectedTerms,
       );
     case FactorizeStep.SelectTerms:
       return EquationEditorFactorize(
-        eqIdx,
         step,
         selectedFactors: selectedFactors,
         selectedTerms: flipExistenceArray<Value>(selectedTerms, value),

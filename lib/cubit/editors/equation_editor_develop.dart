@@ -15,12 +15,10 @@ enum DevelopStep { Select, Finished }
 @immutable
 class EquationEditorDevelop extends EquationEditorEditing {
 
-  final int eqIdx;
   final DevelopStep step;
   final List<Value> selectedTerms;
 
-  EquationEditorDevelop(this.eqIdx, this.step, { List<Value>? selectedTerms })
-    : this.selectedTerms = selectedTerms ?? [];
+  EquationEditorDevelop(this.step, { this.selectedTerms = const [] });
 
   @override
   String getStepName() {
@@ -102,7 +100,6 @@ class EquationEditorDevelop extends EquationEditorEditing {
       return EquationEditorIdle();
     }
     return EquationEditorDevelop(
-      eqIdx,
       newStep,
       selectedTerms: selectedTerms,
     );
@@ -113,7 +110,6 @@ class EquationEditorDevelop extends EquationEditorEditing {
     switch (step) {
     case DevelopStep.Select:
       return EquationEditorDevelop(
-        eqIdx,
         step,
         selectedTerms: flipExistenceArray<Value>(selectedTerms, value),
       );

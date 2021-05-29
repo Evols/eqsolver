@@ -14,11 +14,10 @@ enum ReorganizeStep { Select, Finished }
 @immutable
 class EquationEditorReorganize extends EquationEditorEditing {
 
-  final int eqIdx;
   final ReorganizeStep step;
   final List<Value> selectedTerms;
 
-  EquationEditorReorganize(this.eqIdx, this.step, [this.selectedTerms = const []]);
+  EquationEditorReorganize(this.step, [this.selectedTerms = const []]);
 
   @override
   String getStepName() {
@@ -89,7 +88,6 @@ class EquationEditorReorganize extends EquationEditorEditing {
       return EquationEditorIdle();
     }
     return EquationEditorReorganize(
-      eqIdx,
       newStep,
       selectedTerms,
     );
@@ -100,7 +98,6 @@ class EquationEditorReorganize extends EquationEditorEditing {
     switch (step) {
     case ReorganizeStep.Select:
       return EquationEditorReorganize(
-        eqIdx,
         step,
         flipExistenceArray<Value>(selectedTerms, value),
       );

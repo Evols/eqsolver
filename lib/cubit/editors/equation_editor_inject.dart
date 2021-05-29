@@ -14,13 +14,12 @@ enum InjectStep { SelectSubstitute, SelectInjection, Finished }
 @immutable
 class EquationEditorInject extends EquationEditorEditing {
 
-  final int eqIdx;
   final InjectStep step;
   final Equation? sourceEquation;
   final Value? sourceExpression;
   final Value? targetExpression;
 
-  EquationEditorInject(this.eqIdx, this.step, { this.sourceEquation, this.sourceExpression, this.targetExpression });
+  EquationEditorInject(this.step, { this.sourceEquation, this.sourceExpression, this.targetExpression });
 
   @override
   String getStepName() {
@@ -105,7 +104,6 @@ class EquationEditorInject extends EquationEditorEditing {
       return EquationEditorIdle();
     }
     return EquationEditorInject(
-      eqIdx,
       newStep,
       sourceEquation: sourceEquation,
       sourceExpression: sourceExpression,
@@ -119,7 +117,6 @@ class EquationEditorInject extends EquationEditorEditing {
     case InjectStep.SelectSubstitute:
       final shouldNullify = identical(value, sourceExpression);
       return EquationEditorInject(
-        eqIdx,
         step,
         sourceEquation: shouldNullify ? null : equation,
         sourceExpression: shouldNullify ? null : value,
@@ -127,7 +124,6 @@ class EquationEditorInject extends EquationEditorEditing {
       );
     case InjectStep.SelectInjection:
       return EquationEditorInject(
-        eqIdx,
         step,
         sourceEquation: sourceEquation,
         sourceExpression: sourceExpression,

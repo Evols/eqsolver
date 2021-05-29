@@ -17,24 +17,24 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
   final EquationsCubit equationsCubit;
   EquationEditorCubit(this.equationsCubit) : super(EquationEditorIdle());
 
-  void startDevelopping(int eqIdx) {
-    emit(EquationEditorDevelop(eqIdx, DevelopStep.Select));
+  void startDevelopping() {
+    emit(EquationEditorDevelop(DevelopStep.Select));
   }
 
-  void startFactoring(int eqIdx) {
-    emit(EquationEditorFactorize(eqIdx, FactorizeStep.SelectFactor));
+  void startFactoring() {
+    emit(EquationEditorFactorize(FactorizeStep.SelectFactor));
   }
 
-  void startDioph(int eqIdx) {
-    emit(EquationEditorDioph(eqIdx, DiophStep.SelectTerms));
+  void startDioph() {
+    emit(EquationEditorDioph(DiophStep.SelectTerms));
   }
 
-  void startInject(int eqIdx) {
-    emit(EquationEditorInject(eqIdx, InjectStep.SelectSubstitute));
+  void startInject() {
+    emit(EquationEditorInject(InjectStep.SelectSubstitute));
   }
 
-  void startReorganize(int eqIdx) {
-    emit(EquationEditorReorganize(eqIdx, ReorganizeStep.Select));
+  void startReorganize() {
+    emit(EquationEditorReorganize(ReorganizeStep.Select));
   }
 
   void cancel() {

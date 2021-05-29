@@ -174,23 +174,23 @@ class MyHomePage extends StatelessWidget {
                                   onChanged: (void Function()? newValue) => newValue?.call(),
                                   items: editorState is EquationEditorEditing ? [] : [
                                     DropdownMenuItem<void Function()>(
-                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startDevelopping(index),
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startDevelopping(),
                                       child: Container(child: Text('Develop', style: TextStyle(fontSize: 14))),
                                     ),
                                     DropdownMenuItem<void Function()>(
-                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startFactoring(index),
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startFactoring(),
                                       child: Container(child: Text('Factor', style: TextStyle(fontSize: 14))),
                                     ),
                                     DropdownMenuItem<void Function()>(
-                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startDioph(index),
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startDioph(),
                                       child: Container(child: Text('Diophantine', style: TextStyle(fontSize: 14))),
                                     ),
                                     DropdownMenuItem<void Function()>(
-                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startInject(index),
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startInject(),
                                       child: Container(child: Text('Inject', style: TextStyle(fontSize: 14))),
                                     ),
                                     DropdownMenuItem<void Function()>(
-                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startReorganize(index),
+                                      value: () => BlocProvider.of<EquationEditorCubit>(context).startReorganize(),
                                       child: Container(child: Text('Reorganize', style: TextStyle(fontSize: 14))),
                                     ),
                                   ],
