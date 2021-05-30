@@ -44,7 +44,7 @@ class InjectTransformator extends EquationTransformator {
       sourceLhs is Multiplication 
       ? Multiplication(
         sourceLhs.factors.where(
-          (factor) => identical(factor, sourceExpression)
+          (factor) => !identical(factor, sourceExpression)
         ).toList()
       )
       : LiteralConstant(BigInt.from(1))
@@ -54,7 +54,7 @@ class InjectTransformator extends EquationTransformator {
       targetLhs is Multiplication 
       ? Multiplication(
         targetLhs.factors.where(
-          (factor) => identical(factor, targetExpression)
+          (factor) => !identical(factor, targetExpression)
         ).toList()
       )
       : LiteralConstant(BigInt.from(1))
