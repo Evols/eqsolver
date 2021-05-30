@@ -5,6 +5,7 @@ import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/named_constant.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
@@ -40,8 +41,23 @@ class MyHomePage extends StatelessWidget {
     // y*(a*x+b)=c
     // y=p=7789 ; q=2281 ; c=pq=17766709, a=2^7=128 ; b=q%a=2281%128=105 ; x=(q-b)/a=17
 
+    // General formula
+    final eqNamed = Equation(
+      Multiplication([
+        Variable('y'),
+        Addition([
+          Multiplication([
+            NamedConstant('a'),
+            Variable('x'),
+          ]),
+          NamedConstant('b'),
+        ]),
+      ]),
+      NamedConstant('c'),
+    );
+
     // Right one
-    final eq1 = Equation(
+    final eq1Literal = Equation(
       Multiplication([
         Variable('y'),
         Addition([
@@ -56,7 +72,7 @@ class MyHomePage extends StatelessWidget {
     );
 
     // Wrong one
-    final eq2 = Equation(
+    final eq2Literal = Equation(
       Multiplication([
         Variable('y'),
         Addition([
@@ -70,9 +86,11 @@ class MyHomePage extends StatelessWidget {
       LiteralConstant(BigInt.from(17766709)),
     );
 
+    // simplify(v2^2*b^2+a^2*k2^2+c^2*u1^2*u2^2-2*a*b*v2*k2+2*b*c*u1*v2-2*a*c*u1*u2*k2+4*b*c*u2*v1*k2+4*b*c*u1*v2)
+
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1 ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eqNamed ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
       child: Scaffold(
