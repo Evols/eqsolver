@@ -12,6 +12,8 @@ extension ExtendedIterable<E> on Iterable<E> {
     return map((e) => f(e, i++));
   }
 
+  Iterable<T> flatMap<T>(Iterable<T> f(E e)) => fold<Iterable<T>>([], (acc, e) => [ ...acc, ...f(e) ]);
+
   Iterable<E> whereIndexed(bool f(E e, int i)) {
     int i = 0;
     return where((e) => f(e, i++));

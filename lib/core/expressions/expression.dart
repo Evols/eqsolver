@@ -44,6 +44,11 @@ abstract class Expression implements Comparable {
     return getChildren().fold(null, (expression, element) => expression ?? element.findTree(recurser));
   }
 
+  T foldTree<T>(T initialValue, T Function(T, Expression) recurser) {
+    final rcsValue = recurser(initialValue, this);
+    return getChildren().fold(rcsValue, (value, element) => element.foldTree<T>(value, recurser));
+  }
+
   Expression mountAt(Expression at, Expression toMount) {
     if (identical(this, at)) {
       return toMount;

@@ -99,12 +99,12 @@ class DiophTransformator extends EquationTransformator {
               Multiplication([
                 LiteralConstant(aLiteral),
                 ...aNonLiteral,
-                Variable(uId),
+                NamedConstant(uId),
               ]),
               Multiplication([
                 LiteralConstant(bLiteral),
                 ...bNonLiteral,
-                Variable(vId),
+                NamedConstant(vId),
               ]),
             ]),
             LiteralConstant(BigInt.from(1))
