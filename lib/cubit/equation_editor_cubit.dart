@@ -2,6 +2,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
+import 'package:formula_transformator/cubit/editors/equation_editor_var_compute.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/cubit/editors/equation_editor_develop.dart';
 import 'package:formula_transformator/cubit/editors/equation_editor_dioph.dart';
@@ -53,6 +54,10 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
     if (inState is EquationEditorEditing) {
       emit(inState.onSelect(equation, expression));
     }
+  }
+
+  void openVarComputeEditor() {
+    emit(EquationEditorVarCompute());
   }
 
 }
