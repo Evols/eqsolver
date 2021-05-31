@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eqNamed ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1Literal ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
       child: MaterialApp(

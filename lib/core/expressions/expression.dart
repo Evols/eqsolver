@@ -62,4 +62,18 @@ abstract class Expression implements Comparable {
     ).toList());
   }
 
+  Expression mountWithGenerator(Expression? Function(Expression) generator) {
+    final generated = generator(this);
+    if (generated != null) {
+      return generated;
+    }
+    final children = getChildren();
+    if (children.isEmpty) {
+      return this;
+    }
+    return deepCloneWithChildren(children.map(
+      (e) => e.mountWithGenerator(generator)
+    ).toList());
+  }
+
 }
