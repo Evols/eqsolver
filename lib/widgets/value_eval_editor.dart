@@ -11,27 +11,24 @@ import 'package:formula_transformator/core/trivializers/trivializers_applier.dar
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/cubit/value_evaluator_cubit.dart';
 import 'package:formula_transformator/extensions.dart';
+import 'package:formula_transformator/widgets/equation_widget.dart';
 
 class ValueEvalEditor extends StatelessWidget {
 
   const ValueEvalEditor({Key? key}) : super(key: key);
 
-  static int getVarsCount(List<Expression> expressions) => expressions.flatMap(
+  static Set<String> getVars(List<Expression> expressions) => expressions.flatMap(
     (part) => part.foldTree<Set<String>>(
       {},
       (accumulator, expression) => expression is Variable ? { ...accumulator, expression.name } : accumulator
     )
-  ).toSet().length;
+  ).toSet();
+
+  static int getVarsCount(List<Expression> expressions) => getVars(expressions).length;
 
   static Map<String, BigInt> trySolveEquation(Equation equation) {
 
     if (getVarsCount(equation.parts) != 1) {
-      final s = equation.parts.flatMap(
-        (part) => part.foldTree<Set<String>>(
-          {},
-          (accumulator, expression) => expression is Variable ? { ...accumulator, expression.name } : accumulator
-        )
-      ).toSet();
       return <String, BigInt>{};
     }
 
@@ -107,7 +104,7 @@ class ValueEvalEditor extends StatelessWidget {
       child: BlocBuilder<ValueEvaluatorCubit, ValueEvaluatorState>(
         builder: (context, editorState) {
 
-          var solutions = <String, BigInt>{ 'x' : BigInt.from(17)};
+          var solutions = <String, BigInt>{ ...editorState.values };
           var solvedEquations = injectVarValues(equationsState.equations, solutions);
           var justChanged = true;
           while (justChanged) {
@@ -119,16 +116,45 @@ class ValueEvalEditor extends StatelessWidget {
             solvedEquations = injectVarValues(solvedEquations, solutions);
           }
 
-          print('solvedEquations: $solvedEquations');
+          final varIds = getVars(equationsState.equations.flatMap(
+            (equation) => equation.parts
+          ).toList());
+
+          // print('solvedEquations: $solvedEquations');
           print('solutions: $solutions');
+          print('vars: $varIds');
 
           return AlertDialog(
             title: const Text('Value evaluator'),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                const Text('Evaluate values'),
+                ...varIds.map(
+                  (varId) => (
+                    solutions.containsKey(varId)
+                    ? LatexWidget(varId + '=' + solutions[varId].toString())
+                    : Row(children: [
+                      Spacer(),
+                      LatexWidget(varId + '='),
+                      Container(width: 8),
+                      Container(
+                        height: 40,
+                        width: 100,
+                        padding: EdgeInsets.only(bottom: 4.0),
+                        child: TextField(
+                          decoration: const InputDecoration(
+                            border: const OutlineInputBorder(gapPadding: 1),
+                            labelText: 'Valeur',
+                          ),
+                          onSubmitted: (value) => BlocProvider.of<ValueEvaluatorCubit>(context).setValue(varId, BigInt.parse(value)),
+                        ),
+                      ),
+                      Spacer(),
+                    ])
+                  )
+                )
+                // const Text('Evaluate values'),
               ],
             ),
             actions: <Widget>[
