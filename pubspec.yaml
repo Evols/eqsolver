@@ -31,6 +31,7 @@ dependencies:
   flutter_math_fork: ^0.3.3
   bloc: ^7.0.0
   flutter_bloc: ^7.0.0
+  tuple: ^2.0.0
 
 dev_dependencies:
   flutter_test:

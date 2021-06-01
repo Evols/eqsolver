@@ -216,6 +216,10 @@ class MyHomePage extends StatelessWidget {
                                   value: () => BlocProvider.of<EquationEditorCubit>(context).startReorganize(),
                                   child: Container(child: Text('Reorganize', style: TextStyle(fontSize: 14))),
                                 ),
+                                DropdownMenuItem<void Function()>(
+                                  value: () => BlocProvider.of<EquationEditorCubit>(context).startDelta2ndDeg(),
+                                  child: Container(child: Text('Delta 2nd deg', style: TextStyle(fontSize: 14))),
+                                ),
                               ],
                             ),
                           ],

@@ -2,6 +2,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
+import 'package:formula_transformator/cubit/editors/equation_editor_delta_2nd_deg.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/cubit/editors/equation_editor_develop.dart';
 import 'package:formula_transformator/cubit/editors/equation_editor_dioph.dart';
@@ -35,6 +36,10 @@ class EquationEditorCubit extends Cubit<EquationEditorState> {
 
   void startReorganize() {
     emit(EquationEditorReorganize(ReorganizeStep.Select));
+  }
+
+  void startDelta2ndDeg() {
+    emit(EquationEditorDelta2ndDeg(Delta2ndDegStep.SelectVar));
   }
 
   void cancel() {
