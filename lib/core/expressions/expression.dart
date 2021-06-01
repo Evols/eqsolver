@@ -25,7 +25,7 @@ abstract class Expression implements Comparable {
   // ignore: hash_and_equals
   bool operator==(Object other) {
     if (!(other is Expression)) {
-      return true;
+      return false;
     }
     return compareTo(other) == 0;
   }
