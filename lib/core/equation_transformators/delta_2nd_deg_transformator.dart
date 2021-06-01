@@ -47,9 +47,6 @@ class Delta2ndDegTransformator extends EquationTransformator {
       }
     );
 
-    print('termsDegs: $termsDegs');
-    print('termsByDegs: $termsByDegs');
-
     if (!termsByDegs.containsKey(2)) {
       return [];
     }
