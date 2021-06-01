@@ -120,9 +120,7 @@ class ValueEvalEditor extends StatelessWidget {
             (equation) => equation.parts
           ).toList());
 
-          // print('solvedEquations: $solvedEquations');
           print('solutions: $solutions');
-          print('vars: $varIds');
 
           return AlertDialog(
             title: const Text('Value evaluator'),
@@ -133,7 +131,9 @@ class ValueEvalEditor extends StatelessWidget {
                 ...varIds.map(
                   (varId) => (
                     solutions.containsKey(varId)
-                    ? LatexWidget(varId + '=' + solutions[varId].toString())
+                    ? LatexWidget(
+                      varId + '=' + solutions[varId].toString()
+                    )
                     : Row(children: [
                       Spacer(),
                       LatexWidget(varId + '='),
@@ -154,7 +154,6 @@ class ValueEvalEditor extends StatelessWidget {
                     ])
                   )
                 )
-                // const Text('Evaluate values'),
               ],
             ),
             actions: <Widget>[

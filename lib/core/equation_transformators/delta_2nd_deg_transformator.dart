@@ -54,7 +54,7 @@ class Delta2ndDegTransformator extends EquationTransformator {
       return [];
     }
 
-    final deltaVarId = '\delta_$solvingIdx';
+    final deltaVarId = r'\Delta' + '_$solvingIdx';
     solvingIdx++;
 
     final a = Addition(termsByDegs[0] ?? []);
