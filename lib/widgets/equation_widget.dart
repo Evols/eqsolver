@@ -20,7 +20,7 @@ class LatexWidget extends StatelessWidget {
     return Container(
       height: 22.0,
       alignment: Alignment.center,
-      child: Math.tex(
+      child: SelectableMath.tex(
         latex,
         mathStyle: MathStyle.display,
         textScaleFactor: 1.4 * sizeFactor,

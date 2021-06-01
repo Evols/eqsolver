@@ -7,6 +7,8 @@ class Equation {
   final Expression leftPart;
   final Expression rightPart;
 
+  Equation.fromParts(List<Expression> parts) : leftPart = parts[0], rightPart = parts[1];
+
   List<Expression> get parts => [leftPart, rightPart];
 
   Expression? findTree(bool Function(Expression) recurser) => leftPart.findTree(recurser) ?? rightPart.findTree(recurser) ?? null;
@@ -15,5 +17,11 @@ class Equation {
 
   Equation deepClone() => Equation(leftPart.deepClone(), rightPart.deepClone());
 
-  Equation(this.leftPart, this.rightPart);
+  const Equation(this.leftPart, this.rightPart);
+
+  
+  @override
+  String toString() {
+    return 'Equation( $leftPart, $rightPart )';
+  }
 }

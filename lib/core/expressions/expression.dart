@@ -44,6 +44,11 @@ abstract class Expression implements Comparable {
     return getChildren().fold(null, (expression, element) => expression ?? element.findTree(recurser));
   }
 
+  T foldTree<T>(T initialValue, T Function(T, Expression) recurser) {
+    final rcsValue = recurser(initialValue, this);
+    return getChildren().fold(rcsValue, (value, element) => element.foldTree<T>(value, recurser));
+  }
+
   Expression mountAt(Expression at, Expression toMount) {
     if (identical(this, at)) {
       return toMount;
@@ -54,6 +59,20 @@ abstract class Expression implements Comparable {
     }
     return deepCloneWithChildren(children.map(
       (e) => e.mountAt(at, toMount)
+    ).toList());
+  }
+
+  Expression mountWithGenerator(Expression? Function(Expression) generator) {
+    final generated = generator(this);
+    if (generated != null) {
+      return generated;
+    }
+    final children = getChildren();
+    if (children.isEmpty) {
+      return this;
+    }
+    return deepCloneWithChildren(children.map(
+      (e) => e.mountWithGenerator(generator)
     ).toList());
   }
 
