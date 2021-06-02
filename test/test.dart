@@ -2,6 +2,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expression_transformators/develop_transformator.dart';
+import 'package:formula_transformator/core/expression_transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
@@ -10,6 +11,7 @@ import 'package:formula_transformator/core/expressions/utils.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/core/trivializers/constant_computation_trivializer.dart';
 import 'package:formula_transformator/core/trivializers/empty_trivializer.dart';
+import 'package:formula_transformator/core/trivializers/single_child_trivializer.dart';
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/utils.dart';
@@ -48,6 +50,7 @@ final solutionSets = <Map<String, BigInt>>[]
 
 const trivializers = <Trivializer>{
   ConstantComputationTrivializer(),
+  SingleChildTrivializer(),
   EmptyTrivializer(),
 };
 
@@ -80,7 +83,7 @@ void main() {
 
   test('Test value trivializers', () {
 
-    final raw = Addition([
+    final expression = Addition([
       Multiplication([
         LiteralConstant(BigInt.zero),
         Variable('z'),
@@ -99,7 +102,7 @@ void main() {
       Variable('y'),
     ]);
 
-    final result = applyTrivializers(raw);
+    final result = applyTrivializers(expression);
     final expected = Addition([
       Variable('y'),
       Variable('x'),
@@ -108,7 +111,7 @@ void main() {
 
     expect(result, equals(expected));
 
-    compareExpressionsWithValues(result, expected);
+    compareExpressionsWithValues(expression, result);
 
   });
 
@@ -161,7 +164,7 @@ void main() {
 
     expect(result, equals(expected));
 
-    compareExpressionsWithValues(result, expected);
+    compareExpressionsWithValues(expression, result);
 
   });
 
