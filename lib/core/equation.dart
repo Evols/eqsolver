@@ -19,7 +19,6 @@ class Equation {
 
   const Equation(this.leftPart, this.rightPart);
 
-  
   @override
   String toString() {
     return 'Equation( $leftPart, $rightPart )';

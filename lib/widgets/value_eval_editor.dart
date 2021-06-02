@@ -6,6 +6,7 @@ import 'package:formula_transformator/core/expressions/addition.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/utils.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
@@ -85,18 +86,6 @@ class ValueEvalEditor extends StatelessWidget {
     return <String, BigInt>{ nonConstantFactor.name: (-constantTermSum ~/ constantFactorProduct) };
   }
 
-  static List<Equation> injectVarValues(List<Equation> equations, Map<String, BigInt> values) => equations.map(
-    (equation) => Equation.fromParts(equation.parts.map(
-      (part) => applyTrivializers(part.mountWithGenerator(
-        (expression) => (
-          (expression is Variable && values.containsKey(expression.name)) 
-          ? LiteralConstant(values[expression.name]!)
-          : null
-        )
-      ))
-    ).toList())
-  ).toList();
-
   @override
   Widget build(BuildContext context) => BlocBuilder<EquationsCubit, EquationsState>(
     builder: (context, equationsState) => BlocProvider<ValueEvaluatorCubit>(
@@ -105,7 +94,7 @@ class ValueEvalEditor extends StatelessWidget {
         builder: (context, editorState) {
 
           var solutions = <String, BigInt>{ ...editorState.values };
-          var solvedEquations = injectVarValues(equationsState.equations, solutions);
+          var solvedEquations = equationsState.equations.map((equation) => injectVarSolutionsEquation(equation, solutions)).toList();
           var justChanged = true;
           while (justChanged) {
             final newSolutions = solvedEquations.flatMap(
@@ -113,7 +102,7 @@ class ValueEvalEditor extends StatelessWidget {
             ).toList();
             justChanged = newSolutions.isNotEmpty;
             solutions.addAll(Map.fromEntries(newSolutions));
-            solvedEquations = injectVarValues(solvedEquations, solutions);
+            solvedEquations = solvedEquations.map((equation) => injectVarSolutionsEquation(equation, solutions)).toList();
           }
 
           final varIds = getVars(equationsState.equations.flatMap(

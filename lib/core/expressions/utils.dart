@@ -1,4 +1,5 @@
 
+import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
@@ -20,3 +21,16 @@ int getExpressionClassId(Expression val) {
   }
   return 0;
 }
+
+Expression injectVarSolutionsExpression(Expression expression, Map<String, BigInt> solutions) => expression.mountWithGenerator(
+  (expression) => (
+    (expression is Variable && solutions.containsKey(expression.name)) 
+    ? LiteralConstant(solutions[expression.name]!)
+    : null
+  )
+);
+
+
+Equation injectVarSolutionsEquation(Equation equation, Map<String, BigInt> solutions) => Equation.fromParts(equation.parts.map(
+  (part) => injectVarSolutionsExpression(part, solutions)
+).toList());
