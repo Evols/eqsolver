@@ -3,10 +3,78 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expression_transformators/develop_transformator.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/utils.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
+import 'package:formula_transformator/core/trivializers/constant_computation_trivializer.dart';
+import 'package:formula_transformator/core/trivializers/empty_trivializer.dart';
+import 'package:formula_transformator/core/trivializers/trivializer.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
+import 'package:formula_transformator/core/utils.dart';
+
+import 'utils.dart';
+
+const varNames = [ 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' ];
+
+final solutionSets = <Map<String, BigInt>>[]
+..add(
+  varNames.asMap().map(
+    (idx, varName) => MapEntry(varName, BigInt.from(primes[idx]))
+  )
+)
+..add(
+  varNames.asMap().map(
+    (idx, varName) => MapEntry(varName, BigInt.from(primes[100 + 10 * idx]))
+  )
+)
+..add(
+  varNames.asMap().map(
+    (idx, varName) => MapEntry(varName, BigInt.from(primes[105 + 7 * idx]))
+  )
+)
+..add(
+  varNames.asMap().map(
+    (idx, varName) => MapEntry(varName, BigInt.from(primes[51 + 11 * idx]))
+  )
+)
+..add(
+  varNames.asMap().map(
+    (idx, varName) => MapEntry(varName, BigInt.from(primes[13 + 17 * idx]))
+  )
+)
+;
+
+const trivializers = <Trivializer>{
+  ConstantComputationTrivializer(),
+  EmptyTrivializer(),
+};
+
+Expression applyConstantLitteralsTrivializers(Expression expression, [bool isEquation = false]) {
+  var tempExpression = expression;
+  var applied = true;
+  while (applied) {
+    applied = false;
+    for (var trivializer in trivializers) {
+      var transformed = mountExpressionAt(tempExpression, (elem, depth) => trivializer.transform(elem, depth == 0 && isEquation));
+      if (transformed != null) {
+        tempExpression = transformed;
+        applied = true;
+        break;
+      }
+    }
+  }
+  return tempExpression;
+}
+
+void compareExpressionsWithValues(Expression exp1, Expression exp2) {
+  for (var solutionSet in solutionSets) {
+    final exp1inject = applyConstantLitteralsTrivializers(injectVarSolutionsExpression(exp1, solutionSet));
+    final exp2inject = applyConstantLitteralsTrivializers(injectVarSolutionsExpression(exp2, solutionSet));
+    expect(exp1inject, equals(exp2inject));
+  }
+}
 
 void main() {
 
@@ -32,14 +100,15 @@ void main() {
     ]);
 
     final result = applyTrivializers(raw);
+    final expected = Addition([
+      Variable('y'),
+      Variable('x'),
+      LiteralConstant(BigInt.from(20)),
+    ]);
 
-    expect(result, equals(
-      Addition([
-        Variable('y'),
-        Variable('x'),
-        LiteralConstant(BigInt.from(20)),
-      ])
-    ));
+    expect(result, equals(expected));
+
+    compareExpressionsWithValues(result, expected);
 
   });
 
@@ -61,36 +130,38 @@ void main() {
       ])
     ]);
 
-    final result = DevelopTransformator([term2, term3]).transformExpression(expression).map((e) => applyTrivializers((e))).toList();
+    final results = DevelopTransformator([term2, term3]).transformExpression(expression).map((e) => applyTrivializers((e))).toList();
+    expect(results.length, equals(1));
 
-    expect(result, equals(
-      [
+    final result = results.first;
+    final expected = Addition([
+      Multiplication([
+        LiteralConstant(BigInt.from(10)),
+        Variable('y'),
+        Variable('t'),
+        Variable('w'),
+      ]),
+      Multiplication([
+        LiteralConstant(BigInt.from(10)),
+        Variable('y'),
+        Variable('y'),
+      ]),
+      Multiplication([
+        LiteralConstant(BigInt.from(10)),
+        Variable('y'),
         Addition([
           Multiplication([
-            LiteralConstant(BigInt.from(10)),
-            Variable('y'),
-            Variable('t'),
-            Variable('w'),
+            LiteralConstant(BigInt.from(50)),
+            Variable('x'),
           ]),
-          Multiplication([
-            LiteralConstant(BigInt.from(10)),
-            Variable('y'),
-            Variable('y'),
-          ]),
-          Multiplication([
-            LiteralConstant(BigInt.from(10)),
-            Variable('y'),
-            Addition([
-              Multiplication([
-                LiteralConstant(BigInt.from(50)),
-                Variable('x'),
-              ]),
-              Variable('z'),
-            ]),
-          ])
+          Variable('z'),
         ]),
-      ]
-    ));
+      ])
+    ]);
+
+    expect(result, equals(expected));
+
+    compareExpressionsWithValues(result, expected);
 
   });
 
