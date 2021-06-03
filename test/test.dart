@@ -1,6 +1,5 @@
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expression_transformators/develop_transformator.dart';
 import 'package:formula_transformator/core/expression_transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
@@ -165,6 +164,61 @@ void main() {
     expect(result, equals(expected));
 
     compareExpressionsWithValues(expression, result);
+
+  });
+
+  test('Test factorization', () {
+
+    final term1 = Multiplication([ LiteralConstant(BigInt.from(50)), Variable('x') ]);
+    final term2 = Multiplication([ LiteralConstant(BigInt.from(10)), Variable('x'), Variable('y') ]);
+    final term3 = Variable('x');
+    final term4 = Variable('z');
+
+    final expression = Multiplication([
+      LiteralConstant(BigInt.from(10)),
+      Variable('y'),
+      Addition([
+        term1,
+        term2,
+        term3,
+        term4,
+      ])
+    ]);
+
+    final results = FactorizeTransformator([Variable('x')], [term1, term2, term3]).transformExpression(expression).map((e) => applyTrivializers((e))).toList();
+    print('results: $results');
+    expect(results.length, equals(1));
+
+    final result = results.first;
+    print('result: $result');
+    // final expected = Addition([
+    //   Multiplication([
+    //     LiteralConstant(BigInt.from(10)),
+    //     Variable('y'),
+    //     Variable('t'),
+    //     Variable('w'),
+    //   ]),
+    //   Multiplication([
+    //     LiteralConstant(BigInt.from(10)),
+    //     Variable('y'),
+    //     Variable('y'),
+    //   ]),
+    //   Multiplication([
+    //     LiteralConstant(BigInt.from(10)),
+    //     Variable('y'),
+    //     Addition([
+    //       Multiplication([
+    //         LiteralConstant(BigInt.from(50)),
+    //         Variable('x'),
+    //       ]),
+    //       Variable('z'),
+    //     ]),
+    //   ])
+    // ]);
+
+    // expect(result, equals(expected));
+
+    // compareExpressionsWithValues(result, expected);
 
   });
 

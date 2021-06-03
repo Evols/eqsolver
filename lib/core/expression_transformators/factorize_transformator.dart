@@ -24,14 +24,16 @@ class FactorizeTransformator extends ExpressionTransformator {
 
     final multiplicationsToFactor = expression.terms.where(
       (multiplication) => multiplication is Multiplication && termsToFactor.where(
-        (term2) => identical(multiplication, term2)
+        (term) => identical(multiplication, term)
       ).isNotEmpty
     ).map(
       (multiplication) => multiplication as Multiplication
     ).toList();
 
+    // TODO: move this to the selection part
+
     // The greatest common deminator. Will be 1 even if the returned expression is 0
-    final _gcd = multiplicationsToFactor.map(
+    final rawGcd = multiplicationsToFactor.map(
       (e) => e.factors.fold<BigInt>(
         BigInt.from(1),
         (previousValue, element) => element is LiteralConstant ? previousValue * element.number : previousValue,
@@ -41,7 +43,7 @@ class FactorizeTransformator extends ExpressionTransformator {
       (previousValue, element) => element.gcd(previousValue),
     );
 
-    final gcd = _gcd < BigInt.from(1) ? BigInt.from(1) : _gcd;
+    final gcd = rawGcd < BigInt.from(1) ? BigInt.from(1) : rawGcd;
 
     // Factors to divide by, without the constants, that will be handled differently
     final actualFactorsToDivi = <Expression>[
