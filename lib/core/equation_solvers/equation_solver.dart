@@ -4,9 +4,17 @@ import 'package:formula_transformator/core/equation.dart';
 
 abstract class EquationSolver {
 
+  const EquationSolver();
+
   @nonVirtual
-  Equation? solveEquation(Equation equation) => solveEquationImpl(equation) ?? solveEquationImpl(Equation(equation.rightPart, equation.leftPart));
+  Map<String, BigInt> solveEquation(Equation equation) {
+    final resDirect = solveEquationImpl(equation);
+    if (resDirect.isNotEmpty) {
+      return resDirect;
+    }
+    return solveEquationImpl(Equation(equation.rightPart, equation.leftPart));
+  }
 
   @protected
-  Equation? solveEquationImpl(Equation equation);
+  Map<String, BigInt> solveEquationImpl(Equation equation);
 }
