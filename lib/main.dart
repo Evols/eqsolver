@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
           Variable('v'),
         ]),
       ]),
-      Gcd([ NamedConstant('a'), NamedConstant('b') ]),
+      Gcd([ LiteralConstant(BigInt.from(6)), LiteralConstant(BigInt.from(4)), NamedConstant('b') ]),
     );
 
     // simplify(v2^2*b^2+a^2*k2^2+c^2*u1^2*u2^2-2*a*b*v2*k2+2*b*c*u1*v2-2*a*c*u1*u2*k2+4*b*c*u2*v1*k2+4*b*c*u1*v2)
