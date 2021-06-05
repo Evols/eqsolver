@@ -1,12 +1,12 @@
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:formula_transformator/core/equation_solvers/utils.dart';
 import 'package:formula_transformator/core/expression_transformators/develop_transformator.dart';
 import 'package:formula_transformator/core/expression_transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
-import 'package:formula_transformator/core/expressions/utils.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/core/trivializers/constant_computation_trivializer.dart';
 import 'package:formula_transformator/core/trivializers/empty_trivializer.dart';

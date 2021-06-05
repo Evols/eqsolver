@@ -2,7 +2,7 @@
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_solvers/ax_b_solver.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
-import 'package:formula_transformator/core/expressions/utils.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/extensions.dart';
 
@@ -23,6 +23,18 @@ Map<String, BigInt> trySolveEquation(Equation equation) => solvers.fold<Map<Stri
   {},
   (acc, elem) => acc.isEmpty ? elem.solveEquation(equation) : acc,
 );
+
+Expression injectVarSolutionsExpression(Expression expression, Map<String, BigInt> solutions) => expression.mountWithGenerator(
+  (expression) => (
+    (expression is Variable && solutions.containsKey(expression.name)) 
+    ? LiteralConstant(solutions[expression.name]!)
+    : null
+  )
+);
+
+Equation injectVarSolutionsEquation(Equation equation, Map<String, BigInt> solutions) => Equation.fromParts(equation.parts.map(
+  (part) => injectVarSolutionsExpression(part, solutions)
+).toList());
 
 Map<String, BigInt> solveEquationSystem(List<Equation> equations, Map<String, BigInt> inSolutions) {
 
