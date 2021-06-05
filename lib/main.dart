@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/gcd.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
 import 'package:formula_transformator/core/expressions/named_constant.dart';
@@ -69,11 +70,26 @@ class MyApp extends StatelessWidget {
       LiteralConstant(BigInt.from(17766709)),
     );
 
+    // Wrong one
+    final gcdEq = Equation(
+      Addition([
+        Multiplication([
+          NamedConstant('a'),
+          Variable('u'),
+        ]),
+        Multiplication([
+          NamedConstant('b'),
+          Variable('v'),
+        ]),
+      ]),
+      Gcd([ NamedConstant('a'), NamedConstant('b') ]),
+    );
+
     // simplify(v2^2*b^2+a^2*k2^2+c^2*u1^2*u2^2-2*a*b*v2*k2+2*b*c*u1*v2-2*a*c*u1*u2*k2+4*b*c*u2*v1*k2+4*b*c*u1*v2)
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1Literal ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ gcdEq ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
       child: MaterialApp(
