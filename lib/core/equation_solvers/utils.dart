@@ -3,17 +3,26 @@ import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_solvers/ax_b_solver.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/named_constant.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/extensions.dart';
 
-Set<String> getVars(List<Expression> expressions) => expressions.flatMap(
+Set<String> getVariables(List<Expression> expressions) => expressions.flatMap(
   (part) => part.foldTree<Set<String>>(
     {},
     (accumulator, expression) => expression is Variable ? { ...accumulator, expression.name } : accumulator
   )
 ).toSet();
 
-int getVarsCount(List<Expression> expressions) => getVars(expressions).length;
+Set<String> getNamedConstants(List<Expression> expressions) => expressions.flatMap(
+  (part) => part.foldTree<Set<String>>(
+    {},
+    (accumulator, expression) => expression is NamedConstant ? { ...accumulator, expression.name } : accumulator
+  )
+).toSet();
+
+int getVarsCount(List<Expression> expressions) => getVariables(expressions).length;
+int getUnsolvedCount(List<Expression> expressions) => getVariables(expressions).length + getNamedConstants(expressions).length;
 
 const solvers = <AxBEquationSolver>[
   AxBEquationSolver(),

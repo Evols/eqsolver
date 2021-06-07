@@ -9,14 +9,22 @@ class ValueEvaluatorCubit extends Cubit<ValueEvaluatorState> {
 
   final EquationsCubit equationsCubit;
 
-  ValueEvaluatorCubit(this.equationsCubit) : super(ValueEvaluatorState({}));
+  ValueEvaluatorCubit(this.equationsCubit) : super(ValueEvaluatorState({}, {}));
 
-  void setValue(String varId, BigInt value) => emit(ValueEvaluatorState({ ...state.values, varId: value }));
+  void setVariableValue(String varId, BigInt value) => emit(ValueEvaluatorState({ ...state.variableValues, varId: value }, state.constantValues));
 
-  void unsetValue(String varId) {
-    final newMap = { ...state.values };
+  void unsetVariableValue(String varId) {
+    final newMap = { ...state.variableValues };
     newMap.removeWhere((key, value) => key == varId);
-    emit(ValueEvaluatorState(newMap));
+    emit(ValueEvaluatorState(newMap, state.constantValues));
+  }
+
+  void setConstantValue(String constId, BigInt value) => emit(ValueEvaluatorState(state.variableValues, { ...state.constantValues, constId: value }));
+
+  void unsetConstantValue(String constId) {
+    final newMap = { ...state.constantValues };
+    newMap.removeWhere((key, value) => key == constId);
+    emit(ValueEvaluatorState(state.variableValues, newMap));
   }
 
 }
