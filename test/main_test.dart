@@ -185,7 +185,9 @@ void main() {
       ])
     ]);
 
-    final results = FactorizeTransformator([Variable('x')], [term1, term2, term3]).transformExpression(expression).map((e) => applyTrivializers((e))).toList();
+    final results = FactorizeTransformator([Variable('x')], [term1, term2, term3]).transformExpression(expression).map(
+      (e) => applyTrivializers(e)
+    ).toList();
     print('results: $results');
     expect(results.length, equals(1));
 
