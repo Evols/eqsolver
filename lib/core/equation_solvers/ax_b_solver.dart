@@ -1,6 +1,7 @@
 
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_solvers/equation_solver.dart';
+import 'package:formula_transformator/core/equation_solvers/solutions.dart';
 import 'package:formula_transformator/core/equation_solvers/utils.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
@@ -13,9 +14,9 @@ class AxBEquationSolver extends EquationSolver{
 
   const AxBEquationSolver();
 
-  Map<String, BigInt> solveEquationImpl(Equation equation) {
+  Solutions solveEquationImpl(Equation equation) {
     if (getVarsCount(equation.parts) != 1) {
-      return <String, BigInt>{};
+      return Solutions();
     }
 
     final asSinglePart = applyTrivializers(Addition([
@@ -35,7 +36,7 @@ class AxBEquationSolver extends EquationSolver{
         } else if ((term is Multiplication || term is Variable) && nonConstantTerm == null) {
           nonConstantTerm = term;
         } else {
-          return <String, BigInt>{};
+          return Solutions();
         }
       }
     } else if (asSinglePart is Multiplication || asSinglePart is Variable) {
@@ -43,7 +44,7 @@ class AxBEquationSolver extends EquationSolver{
     }
 
     if (nonConstantTerm == null) {
-      return <String, BigInt>{};
+      return Solutions();
     }
 
     var constantFactorProduct = BigInt.one;
@@ -55,19 +56,19 @@ class AxBEquationSolver extends EquationSolver{
         } else if ((factor is Variable) && nonConstantFactor == null) {
           nonConstantFactor = factor;
         } else {
-          return <String, BigInt>{};
+          return Solutions();
         }
       }
     }
 
     if (nonConstantFactor == null) {
-      return <String, BigInt>{};
+      return Solutions();
     }
 
     if (constantTermSum % constantFactorProduct != BigInt.zero) {
-      return <String, BigInt>{};
+      return Solutions();
     }
 
-    return <String, BigInt>{ nonConstantFactor.name: (-constantTermSum ~/ constantFactorProduct) };
+    return Solutions({}, { nonConstantFactor.name: (-constantTermSum ~/ constantFactorProduct) });
   }
 }

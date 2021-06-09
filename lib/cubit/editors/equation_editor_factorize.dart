@@ -45,7 +45,7 @@ class EquationEditorFactorize extends EquationEditorEditing {
   }
 
   List<Tuple2<Expression, int>> computeCardinality(List<Expression> expressions) {
-    List<Tuple2<Expression, int>> cardinalityList = [];
+    var cardinalityList = <Tuple2<Expression, int>>[];
     for (var elem in expressions) {
       final firstWhere = (cardinalityList as List<Tuple2<Expression, int>?>).firstWhere(
         (cardinalityElem) => cardinalityElem!.item1 == elem,

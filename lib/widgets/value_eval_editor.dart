@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formula_transformator/core/equation_solvers/utils.dart';
+import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/cubit/value_evaluator_cubit.dart';
 import 'package:formula_transformator/extensions.dart';
@@ -16,13 +17,17 @@ class ValueEvalEditor extends StatelessWidget {
     builder: (context, equationsState) => BlocBuilder<ValueEvaluatorCubit, ValueEvaluatorState>(
       builder: (context, editorState) {
 
-        final solutions = solveEquationSystem(equationsState.equations, editorState.variableValues);
+        final equationsWithConstants = equationsState.equations.map(
+          (equation) => applyTrivializersToEq(injectConstValuesEquation(equation, editorState.solutions.constants))
+        ).toList();
+
+        final solutions = solveEquationSystem(equationsWithConstants, editorState.solutions);
         final allParts = equationsState.equations.flatMap(
           (equation) => equation.parts
         ).toList();
         final constIds = getNamedConstants(allParts);
         final varIds = getVariables(allParts);
-        final constValues = editorState.constantValues;
+        final constValues = editorState.solutions.constants;
 
         print('solutions: $solutions');
 
@@ -81,9 +86,9 @@ class ValueEvalEditor extends StatelessWidget {
                   children: <Widget>[
                     ...varIds.map(
                       (varId) => (
-                        solutions.containsKey(varId)
+                        solutions.variables.containsKey(varId)
                         ? LatexWidget(
-                          varId + '=' + solutions[varId].toString()
+                          varId + '=' + solutions.variables[varId].toString()
                         )
                         : Row(children: [
                           Spacer(),

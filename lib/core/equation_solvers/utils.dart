@@ -1,6 +1,7 @@
 
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_solvers/ax_b_solver.dart';
+import 'package:formula_transformator/core/equation_solvers/solutions.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/named_constant.dart';
@@ -28,9 +29,9 @@ const solvers = <AxBEquationSolver>[
   AxBEquationSolver(),
 ];
 
-Map<String, BigInt> trySolveEquation(Equation equation) => solvers.fold<Map<String, BigInt>>(
-  {},
-  (acc, elem) => acc.isEmpty ? elem.solveEquation(equation) : acc,
+Solutions trySolveEquation(Equation equation) => solvers.fold<Solutions>(
+  Solutions(),
+  (acc, elem) => (acc.constants.isEmpty && acc.variables.isEmpty) ? elem.solveEquation(equation) : acc,
 );
 
 Expression injectVarSolutionsExpression(Expression expression, Map<String, BigInt> solutions) => expression.mountWithGenerator(
@@ -45,19 +46,38 @@ Equation injectVarSolutionsEquation(Equation equation, Map<String, BigInt> solut
   (part) => injectVarSolutionsExpression(part, solutions)
 ).toList());
 
-Map<String, BigInt> solveEquationSystem(List<Equation> equations, Map<String, BigInt> inSolutions) {
+Expression injectConstValuesExpression(Expression expression, Map<String, BigInt> values) => expression.mountWithGenerator(
+  (expression) => (
+    (expression is NamedConstant && values.containsKey(expression.name)) 
+    ? LiteralConstant(values[expression.name]!)
+    : null
+  )
+);
 
-  var solutions = <String, BigInt>{ ...inSolutions };
-  var solvedEquations = equations.map((equation) => injectVarSolutionsEquation(equation, solutions)).toList();
+Equation injectConstValuesEquation(Equation equation, Map<String, BigInt> values) => Equation.fromParts(equation.parts.map(
+  (part) => injectConstValuesExpression(part, values)
+).toList());
+
+Equation injectSolutionsEquation(Equation equation, Solutions solutions) => Equation.fromParts(equation.parts.map(
+  (part) => injectVarSolutionsExpression(injectConstValuesExpression(part, solutions.constants), solutions.variables)
+).toList());
+
+Solutions solveEquationSystem(List<Equation> equations, Solutions inSolutions) {
+
+  var solutions = inSolutions.copy();
+  var solvedEquations = equations.map((equation) => injectSolutionsEquation(equation, solutions)).toList();
   var justChanged = true;
   while (justChanged) {
-    final newSolutions = solvedEquations.flatMap(
-      (equation) => trySolveEquation(equation).entries
+    final newSolutions = solvedEquations.map(
+      (equation) => trySolveEquation(equation)
     ).toList();
-    justChanged = newSolutions.isNotEmpty;
-    solutions.addAll(Map.fromEntries(newSolutions));
-    solvedEquations = solvedEquations.map((equation) => injectVarSolutionsEquation(equation, solutions)).toList();
+    final newSolution = Solutions.fromArray(newSolutions);
+    justChanged = newSolution.constants.isNotEmpty || newSolution.variables.isNotEmpty;
+    solutions = Solutions.fromArray([ solutions, ...newSolutions ]);
+    solvedEquations = solvedEquations.map((equation) => injectSolutionsEquation(equation, solutions)).toList();
   }
+
+  print('solvedEquations: $solvedEquations');
 
   return solutions;
 
