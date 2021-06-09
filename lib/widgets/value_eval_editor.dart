@@ -27,7 +27,7 @@ class ValueEvalEditor extends StatelessWidget {
         ).toList();
         final constIds = getNamedConstants(allParts);
         final varIds = getVariables(allParts);
-        final constValues = editorState.solutions.constants;
+        final constValues = solutions.constants;
 
         print('solutions: $solutions');
 

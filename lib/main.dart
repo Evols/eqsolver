@@ -71,26 +71,11 @@ class MyApp extends StatelessWidget {
       LiteralConstant(BigInt.from(17766709)),
     );
 
-    // Wrong one
-    final gcdEq = Equation(
-      Addition([
-        Multiplication([
-          NamedConstant('a'),
-          NamedConstant('u_0'),
-        ]),
-        Multiplication([
-          NamedConstant('b'),
-          NamedConstant('v_0'),
-        ]),
-      ]),
-      Gcd([ LiteralConstant(BigInt.from(8)), LiteralConstant(BigInt.from(12)), NamedConstant('b') ]),
-    );
-
     // simplify(v2^2*b^2+a^2*k2^2+c^2*u1^2*u2^2-2*a*b*v2*k2+2*b*c*u1*v2-2*a*c*u1*u2*k2+4*b*c*u2*v1*k2+4*b*c*u1*v2)
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ gcdEq ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eqNamed ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
         BlocProvider<ValueEvaluatorCubit>(create: (context) => ValueEvaluatorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
