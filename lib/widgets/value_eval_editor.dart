@@ -49,9 +49,26 @@ class ValueEvalEditor extends StatelessWidget {
                     ...constIds.map(
                       (constId) => (
                         constValues.containsKey(constId)
-                        ? LatexWidget(
-                          constId + '=' + constValues[constId].toString()
-                        )
+                        ? Row(children: [
+                          Spacer(),
+                          LatexWidget(
+                            constId + '=' + constValues[constId].toString()
+                          ),
+                          ...(
+                            editorState.solutions.constants.containsKey(constId)
+                            ? [
+                              IconButton(
+                                icon: const Icon(Icons.delete, ),
+                                iconSize: 20,
+                                splashRadius: 18,
+                                color: Colors.black,
+                                onPressed: () => BlocProvider.of<ValueEvaluatorCubit>(context).unsetConstantValue(constId),
+                              )
+                            ]
+                            : []
+                          ),
+                          Spacer(),
+                        ])
                         : Row(children: [
                           Spacer(),
                           LatexWidget(constId + '='),
@@ -87,9 +104,26 @@ class ValueEvalEditor extends StatelessWidget {
                     ...varIds.map(
                       (varId) => (
                         solutions.variables.containsKey(varId)
-                        ? LatexWidget(
-                          varId + '=' + solutions.variables[varId].toString()
-                        )
+                        ? Row(children: [
+                          Spacer(),
+                          LatexWidget(
+                            varId + '=' + solutions.variables[varId].toString()
+                          ),
+                          ...(
+                            editorState.solutions.variables.containsKey(varId)
+                            ? [
+                              IconButton(
+                                icon: const Icon(Icons.delete, ),
+                                iconSize: 20,
+                                splashRadius: 18,
+                                color: Colors.black,
+                                onPressed: () => BlocProvider.of<ValueEvaluatorCubit>(context).unsetVariableValue(varId),
+                              )
+                            ]
+                            : []
+                          ),
+                          Spacer(),
+                        ])
                         : Row(children: [
                           Spacer(),
                           LatexWidget(varId + '='),
