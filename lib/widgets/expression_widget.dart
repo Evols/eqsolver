@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/gcd.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
 import 'package:formula_transformator/core/expressions/named_constant.dart';
@@ -74,6 +75,30 @@ class ExpressionWidget extends StatelessWidget {
             ...previousValue,
             ...(idx == 0 ? [ element ] : [ Container(width: 2.0), element ])])
         .toList()
+      );
+    }
+    // Widget for a gcd
+    else if (inExpression is Gcd) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          LatexWidget(r'\gcd('),
+          ...inExpression.args
+          .map((e) => ExpressionWidget(e, bottomWidgetBuilder: this.bottomWidgetBuilder))
+          .foldIndexed<List<Widget>>(
+            [],
+            (previousValue, element, idx) => [
+              ...previousValue,
+              ...(
+                idx == 0
+                ? [ element ]
+                : [ Padding(padding: EdgeInsets.only(left: 2.0, right: 4.0), child: SizedBox(height: 30, child: LatexWidget(','))), element ]
+              ),
+            ]
+          )
+          .toList(),
+          LatexWidget(r')'),
+        ],
       );
     }
     throw UnimplementedError();

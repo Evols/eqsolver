@@ -4,8 +4,8 @@ part of 'value_evaluator_cubit.dart';
 @immutable
 class ValueEvaluatorState {
 
-  final Map<String, BigInt> values;
+  final Solutions solutions;
 
-  ValueEvaluatorState(this.values);
+  ValueEvaluatorState(this.solutions);
 
 }

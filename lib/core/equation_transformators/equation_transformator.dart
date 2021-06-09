@@ -4,6 +4,7 @@ import 'package:formula_transformator/core/equation.dart';
 
 abstract class EquationTransformator {
 
+  @nonVirtual
   List<Equation> transformEquation(Equation equation) {
     final res1 = transformEquationImpl(equation);
     if (res1.isNotEmpty) {

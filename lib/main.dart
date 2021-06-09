@@ -3,12 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/gcd.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
 import 'package:formula_transformator/core/expressions/named_constant.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
+import 'package:formula_transformator/cubit/value_evaluator_cubit.dart';
 import 'package:formula_transformator/widgets/button.dart';
 import 'package:formula_transformator/widgets/equation_widget.dart';
 import 'package:formula_transformator/widgets/value_eval_editor.dart';
@@ -73,8 +75,9 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eq1Literal ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eqNamed ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
+        BlocProvider<ValueEvaluatorCubit>(create: (context) => ValueEvaluatorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
       child: MaterialApp(
         title: 'Formula transformator',
