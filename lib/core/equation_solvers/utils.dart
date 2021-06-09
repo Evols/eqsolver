@@ -1,6 +1,8 @@
 
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/equation_solvers/ax_b_solver.dart';
+import 'package:formula_transformator/core/equation_solvers/bezout_solver.dart';
+import 'package:formula_transformator/core/equation_solvers/equation_solver.dart';
 import 'package:formula_transformator/core/equation_solvers/solutions.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
@@ -25,8 +27,9 @@ Set<String> getNamedConstants(List<Expression> expressions) => expressions.flatM
 int getVarsCount(List<Expression> expressions) => getVariables(expressions).length;
 int getUnsolvedCount(List<Expression> expressions) => getVariables(expressions).length + getNamedConstants(expressions).length;
 
-const solvers = <AxBEquationSolver>[
+const solvers = <EquationSolver>[
   AxBEquationSolver(),
+  BezoutEquationSolver(),
 ];
 
 Solutions trySolveEquation(Equation equation) => solvers.fold<Solutions>(
