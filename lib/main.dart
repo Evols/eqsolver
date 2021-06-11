@@ -71,11 +71,34 @@ class MyApp extends StatelessWidget {
       LiteralConstant(BigInt.from(17766709)),
     );
 
+    // Wrong one
+    final eqFactor = Equation(
+      Addition([
+        Multiplication([
+          LiteralConstant(BigInt.from(5*7*13)),
+          const NamedConstant('a'),
+          const Variable('y'),
+        ]),
+        Multiplication([
+          LiteralConstant(BigInt.from(5*7)),
+          const NamedConstant('a'),
+          const Variable('x'),
+        ]),
+        Multiplication([
+          LiteralConstant(BigInt.from(7*13)),
+          const NamedConstant('b'),
+          const Variable('x'),
+          const Variable('z'),
+        ]),
+      ]),
+      LiteralConstant(BigInt.zero),
+    );
+
     // simplify(v2^2*b^2+a^2*k2^2+c^2*u1^2*u2^2-2*a*b*v2*k2+2*b*c*u1*v2-2*a*c*u1*u2*k2+4*b*c*u2*v1*k2+4*b*c*u1*v2)
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eqNamed ])),
+        BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eqFactor ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
         BlocProvider<ValueEvaluatorCubit>(create: (context) => ValueEvaluatorCubit(BlocProvider.of<EquationsCubit>(context))),
       ],

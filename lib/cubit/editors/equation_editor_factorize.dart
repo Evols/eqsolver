@@ -1,4 +1,6 @@
 
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/core/expression_transformators/factorize_transformator.dart';
@@ -9,6 +11,7 @@ import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/utils.dart';
+import 'package:formula_transformator/extensions.dart';
 import 'package:tuple/tuple.dart';
 
 enum FactorizeStep { SelectFactor, SelectTerms, Finished }
@@ -44,10 +47,10 @@ class EquationEditorFactorize extends EquationEditorEditing {
     return v1.isEquivalentTo(v2) ? v1 : null;
   }
 
-  List<Tuple2<Expression, int>> computeCardinality(List<Expression> expressions) {
-    var cardinalityList = <Tuple2<Expression, int>>[];
+  static List<Tuple2<Expression, int>> computeCardinality(List<Expression> expressions) {
+    var cardinalityList = <Tuple2<Expression, int>?>[];
     for (var elem in expressions) {
-      final firstWhere = (cardinalityList as List<Tuple2<Expression, int>?>).firstWhere(
+      final firstWhere = cardinalityList.firstWhere(
         (cardinalityElem) => cardinalityElem!.item1 == elem,
         orElse: () => null,
       );
@@ -59,42 +62,57 @@ class EquationEditorFactorize extends EquationEditorEditing {
         cardinalityList.add(Tuple2(firstWhere.item1, newCardinality));
       }
     }
-    return cardinalityList;
+    return cardinalityList.map((element) => element!).toList();
   }
 
   static List<Expression> getCommonFactors(List<List<Expression>> termsFactors) {
 
     // Not good for cache
 
-    final constantCommonFactor = termsFactors.fold<BigInt>(
+    final constantPartTerm = termsFactors.map((term) => term.fold<BigInt>(
+      BigInt.one,
+      (factorProduct, factor) => factor is LiteralConstant ? factorProduct * factor.number : factorProduct,
+    ));
+
+    final constantCommonFactorAbs = constantPartTerm.fold<BigInt>(
       BigInt.zero,
-      (commonFactor, term) => term.fold<BigInt>(
-        BigInt.one,
-        (factorProduct, factor) => factor is LiteralConstant ? factorProduct * factor.number : factorProduct,
-      ).gcd(commonFactor),
+      (commonFactor, term) => term.abs().gcd(commonFactor),
     );
 
-    // final nonConstantCommonFactor = termsFactors.map(
-    //   (term) => term.where((factor) => !(factor is LiteralConstant)).toList()
-    // ).map((ele) => null)
+    final negativeCommonFactor = constantPartTerm.where(
+      (term) => term >= BigInt.zero,
+    ).isEmpty ? -BigInt.one : BigInt.one;
 
-    var termsFactorsCopy = termsFactors.map((factors) => [...factors]).toList();
-    var nonConstantCommonFactor = <Expression>[];
+    final constantCommonFactor = constantCommonFactorAbs * negativeCommonFactor;
 
-    // for (var v1index = v1copy.length - 1; v1index >= 0; v1index--) {
-    //   for (var v2index = v2copy.length - 1; v2index >= 0; v2index--) {
-    //     final commonFactor = getCommonFactor(v1copy[v1index], v2copy[v2index]);
-    //     if (commonFactor != null) {
-    //       commonFactors.add(commonFactor);
-    //       v1copy.removeAt(v1index);
-    //       v2copy.removeAt(v2index);
-    //       break;
-    //     }
-    //   }
-    // }
+    final termsCardinalityMap = termsFactors.map(
+      (term) => term.where((factor) => !(factor is LiteralConstant)).toList()
+    ).map(
+      (term) => computeCardinality(term)
+    ).toList();
 
-    // return commonFactors;
-    return [];
+    final commonFactors = termsCardinalityMap.fold<List<Tuple2<Expression, int>>>(
+      termsCardinalityMap[0],
+      (commonFactors, term) => commonFactors.map(
+        (commonFactor) => Tuple2<Expression, int>(
+          commonFactor.item1,
+          min(
+            commonFactor.item2,
+            term.firstWhere(
+              (termFactor) => termFactor.item1 == commonFactor.item1,
+              orElse: () => Tuple2<Expression, int>(LiteralConstant(BigInt.one), 0),
+            ).item2,
+          ),
+        )
+      ).toList()
+    );
+
+    return [
+      ...(constantCommonFactor != BigInt.one ? [LiteralConstant(constantCommonFactor)] : []),
+      ...commonFactors.flatMap<Expression>(
+        (element) => List.filled(element.item2, element.item1),
+      ).toList(),
+    ];
   }
 
   static bool hasAllFactors(List<Expression> factorsToLookFor, List<Expression> inMultiplication) {

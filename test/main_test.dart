@@ -7,6 +7,7 @@ import 'package:formula_transformator/core/expressions/addition.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/named_constant.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/core/trivializers/constant_computation_trivializer.dart';
 import 'package:formula_transformator/core/trivializers/empty_trivializer.dart';
@@ -14,6 +15,8 @@ import 'package:formula_transformator/core/trivializers/single_child_trivializer
 import 'package:formula_transformator/core/trivializers/trivializer.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:formula_transformator/core/utils.dart';
+import 'package:formula_transformator/cubit/editors/equation_editor_factorize.dart';
+import 'package:tuple/tuple.dart';
 
 import 'utils.dart';
 
@@ -167,60 +170,115 @@ void main() {
 
   });
 
+  test('Test factorization editor', () {
+
+    // EquationEditorFactorize.computeCardinality
+    {
+      final result = EquationEditorFactorize.computeCardinality([
+        const Variable('x'),
+        const Addition([ const NamedConstant('a'), const NamedConstant('b'), ]),
+        const Variable('y'),
+        const Addition([ const NamedConstant('a'), const NamedConstant('b'), ]),
+        const Variable('x'),
+        const Addition([const NamedConstant('a'), const NamedConstant('b'), ]),
+      ]);
+      expect(result, equals([
+        Tuple2(const Variable('y'), 1),
+        Tuple2(const Variable('x'), 2),
+        Tuple2(const Addition([const NamedConstant('a'), const NamedConstant('b'), ]), 3),
+      ]));
+    }
+
+    // EquationEditorFactorize.getCommonFactors
+    {
+      final result = EquationEditorFactorize.getCommonFactors([
+        [
+          LiteralConstant(BigInt.from(-5*7*13)),
+          const NamedConstant('a'),
+          const NamedConstant('a'),
+          const Variable('y'),
+        ],
+        [
+          LiteralConstant(BigInt.from(-5*7)),
+          const NamedConstant('a'),
+          const NamedConstant('a'),
+          const Variable('y'),
+          const Variable('y'),
+          const Variable('x'),
+        ],
+        [
+          LiteralConstant(BigInt.from(-7*13)),
+          const NamedConstant('a'),
+          const NamedConstant('a'),
+          const NamedConstant('b'),
+          const Variable('y'),
+          const Variable('x'),
+          const Variable('z'),
+        ],
+      ]);
+      expect(result, equals([
+        LiteralConstant(BigInt.from(-7)),
+        NamedConstant('a'),
+        NamedConstant('a'),
+        Variable('y'),
+      ]));
+    }
+  });
+
   test('Test factorization', () {
 
-    final term1 = Multiplication([ LiteralConstant(BigInt.from(50)), Variable('x') ]);
-    final term2 = Multiplication([ LiteralConstant(BigInt.from(10)), Variable('x'), Variable('y') ]);
-    final term3 = Variable('x');
-    final term4 = Variable('z');
+    // final term1 = Multiplication([ LiteralConstant(BigInt.from(50)), Variable('x') ]);
+    // final term2 = Multiplication([ LiteralConstant(BigInt.from(10)), Variable('x'), Variable('y') ]);
+    // final term3 = Variable('x');
+    // final term4 = Variable('z');
 
-    final expression = Multiplication([
-      LiteralConstant(BigInt.from(10)),
-      Variable('y'),
-      Addition([
-        term1,
-        term2,
-        term3,
-        term4,
-      ])
-    ]);
-
-    final results = FactorizeTransformator([Variable('x')], [term1, term2, term3]).transformExpression(expression).map(
-      (e) => applyTrivializers(e)
-    ).toList();
-    print('results: $results');
-    expect(results.length, equals(1));
-
-    final result = results.first;
-    print('result: $result');
-    // final expected = Addition([
-    //   Multiplication([
-    //     LiteralConstant(BigInt.from(10)),
-    //     Variable('y'),
-    //     Variable('t'),
-    //     Variable('w'),
-    //   ]),
-    //   Multiplication([
-    //     LiteralConstant(BigInt.from(10)),
-    //     Variable('y'),
-    //     Variable('y'),
-    //   ]),
-    //   Multiplication([
-    //     LiteralConstant(BigInt.from(10)),
-    //     Variable('y'),
-    //     Addition([
-    //       Multiplication([
-    //         LiteralConstant(BigInt.from(50)),
-    //         Variable('x'),
-    //       ]),
-    //       Variable('z'),
-    //     ]),
+    // final expression = Multiplication([
+    //   LiteralConstant(BigInt.from(10)),
+    //   Variable('y'),
+    //   Addition([
+    //     term1,
+    //     term2,
+    //     term3,
+    //     term4,
     //   ])
     // ]);
 
-    // expect(result, equals(expected));
+    // final results = FactorizeTransformator([Variable('x')], [term1, term2, term3]).transformExpression(expression).map(
+    //   (e) => applyTrivializers(e)
+    // ).toList();
+    // print('results: $results');
+    // expect(results.length, equals(1));
 
-    // compareExpressionsWithValues(result, expected);
+    // final result = results.first;
+    // print('result: $result');
+    // // final expected = Addition([
+    // //   Multiplication([
+    // //     LiteralConstant(BigInt.from(10)),
+    // //     Variable('y'),
+    // //     Variable('t'),
+    // //     Variable('w'),
+    // //   ]),
+    // //   Multiplication([
+    // //     LiteralConstant(BigInt.from(10)),
+    // //     Variable('y'),
+    // //     Variable('y'),
+    // //   ]),
+    // //   Multiplication([
+    // //     LiteralConstant(BigInt.from(10)),
+    // //     Variable('y'),
+    // //     Addition([
+    // //       Multiplication([
+    // //         LiteralConstant(BigInt.from(50)),
+    // //         Variable('x'),
+    // //       ]),
+    // //       Variable('z'),
+    // //     ]),
+    // //   ])
+    // // ]);
+
+    // // expect(result, equals(expected));
+
+    // // compareExpressionsWithValues(result, expected);
 
   });
 
