@@ -52,6 +52,7 @@ class Delta2ndDegTransformator extends EquationTransformator {
     }
 
     final deltaVarId = r'\Delta' + '_$solvingIdx';
+    final deltasqVarId = r'\delta' + '_$solvingIdx';
     solvingIdx++;
 
     final a = Addition(termsByDegs[0] ?? []);
@@ -64,6 +65,13 @@ class Delta2ndDegTransformator extends EquationTransformator {
         Addition([
           Multiplication([ b, b ]),
           Multiplication([ LiteralConstant(BigInt.from(-4)), a, c ]),
+        ]),
+      ),
+      Equation(
+        Variable(deltaVarId),
+        Multiplication([
+          Variable(deltasqVarId),
+          Variable(deltasqVarId),
         ]),
       ),
     ];
