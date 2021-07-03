@@ -2,7 +2,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:formula_transformator/core/equation_solvers/utils.dart';
 import 'package:formula_transformator/core/expression_transformators/develop_transformator.dart';
-import 'package:formula_transformator/core/expression_transformators/factorize_transformator.dart';
 import 'package:formula_transformator/core/expressions/addition.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 import 'package:formula_transformator/core/expressions/literal_constant.dart';
