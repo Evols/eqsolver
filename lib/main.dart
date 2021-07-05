@@ -6,6 +6,7 @@ import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
 import 'package:formula_transformator/core/expressions/named_constant.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
+import 'package:formula_transformator/core/parser.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/cubit/value_evaluator_cubit.dart';

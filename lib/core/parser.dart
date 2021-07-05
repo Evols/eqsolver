@@ -1,64 +1,50 @@
 
-import 'package:flutter/foundation.dart';
-import 'package:tuple/tuple.dart';
+import 'package:formula_transformator/core/equation.dart';
+import 'package:formula_transformator/core/expressions/addition.dart';
+import 'package:formula_transformator/core/expressions/expression.dart';
+import 'package:formula_transformator/core/expressions/literal_constant.dart';
+import 'package:formula_transformator/core/expressions/multiplication.dart';
+import 'package:formula_transformator/core/expressions/variable.dart';
+import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
+import 'package:math_expressions/math_expressions.dart' as MathExp;
 
-@immutable
-abstract class FormulaToken {}
+Equation parse(String string) => applyTrivializersToEq(
+  Equation.fromParts(
+    string.split('=').map(
+      (e) => MathExp.Parser().parse(e)
+    ).map(
+      (e) => mathExpToFt(e)
+    ).toList()
+  )
+);
 
-class ParenthesisToken extends FormulaToken {
-  final bool opening;
-  ParenthesisToken({ required this.opening });
-}
-
-class ParenthesisContainer extends FormulaToken {
-  final List<FormulaToken> children;
-  ParenthesisContainer(this.children);
-}
-
-class ExpressionToken extends FormulaToken {
-  final String expression;
-  ExpressionToken(this.expression);
-}
-
-class AlphaExpressionToken extends FormulaToken {
-  final String expression;
-  AlphaExpressionToken(this.expression);
-}
-
-class NumericExpressionToken extends FormulaToken {
-  final BigInt expression;
-  NumericExpressionToken(this.expression);
-}
-
-enum OperatorTokenEnum {
-  Addition,
-  Substraction,
-  Multiplication,
-}
-
-class OperatorToken extends FormulaToken {
-  final OperatorTokenEnum operator;
-  OperatorToken(this.operator);
-}
-
-void tokenize(String string) {
-  var tempString = string.replaceAll(' ', '');
-
-  var tokens = <FormulaToken>[];
-
-  final tokenizers = <Tuple2<FormulaToken, int>? Function(String)>{
-    // Literal number
-    (String str) {
-      final match = RegExp(r'\-?[0-9]+').firstMatch(str);
-      if (match != null && match.start == 0 && (tokens.isEmpty || tokens.last is OperatorToken || tokens.last is ParenthesisToken)) {
-        return Tuple2(NumericExpressionToken(BigInt.parse(match.group(0)!)), match.end);
-      }
-    },
-  };
-
-  bool justAdded = true;
-  while (justAdded) {
-    justAdded = false;
-
+Expression mathExpToFt(MathExp.Expression mathExp) {
+  if (mathExp is MathExp.Plus) {
+    return Addition([
+      mathExpToFt(mathExp.first),
+      mathExpToFt(mathExp.second),
+    ]);
   }
+  if (mathExp is MathExp.Minus) {
+    return Addition([
+      mathExpToFt(mathExp.first),
+      Multiplication([
+        LiteralConstant(BigInt.from(-1)),
+        mathExpToFt(mathExp.second),
+      ]),
+    ]);
+  }
+  if (mathExp is MathExp.Times) {
+    return Multiplication([
+      mathExpToFt(mathExp.first),
+      mathExpToFt(mathExp.second),
+    ]);
+  }
+  if (mathExp is MathExp.Number) {
+    return LiteralConstant(BigInt.from(mathExp.value));
+  }
+  if (mathExp is MathExp.Variable) {
+    return Variable(mathExp.name);
+  }
+  throw Exception('Unable to use the parsed expression');
 }
