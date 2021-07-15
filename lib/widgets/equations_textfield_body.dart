@@ -14,12 +14,12 @@ class EquationsTextfieldBody extends StatelessWidget {
     child: Row(children: [
       Expanded(
         child: TextField(
-          onChanged: (tempEq) => BlocProvider.of<EquationAdderCubit>(context).updateEq(tempEq),
-          onSubmitted: (_) => BlocProvider.of<EquationAdderCubit>(context).validate(),
+          onChanged: (tempEq) => BlocProvider.of<EquationAdderCubit>(context).updateTextfield(tempEq),
+          onSubmitted: (_) => BlocProvider.of<EquationAdderCubit>(context).validateTextfield(context),
         ),
       ),
       IconButton(
-        onPressed: () => BlocProvider.of<EquationAdderCubit>(context).validate(),
+        onPressed: () => BlocProvider.of<EquationAdderCubit>(context).validateTextfield(context),
         icon: Icon(Icons.send),
       )
     ]),

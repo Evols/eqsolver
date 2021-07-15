@@ -101,7 +101,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<EquationsCubit>(create: (context) => EquationsCubit([ eqNamed ])),
         BlocProvider<EquationEditorCubit>(create: (context) => EquationEditorCubit(BlocProvider.of<EquationsCubit>(context))),
         BlocProvider<ValueEvaluatorCubit>(create: (context) => ValueEvaluatorCubit(BlocProvider.of<EquationsCubit>(context))),
-        BlocProvider<EquationAdderCubit>(create: (context) => EquationAdderCubit()),
+        BlocProvider<EquationAdderCubit>(create: (context) => EquationAdderCubit(BlocProvider.of<EquationsCubit>(context))),
       ],
       child: MaterialApp(
         title: 'Formula transformator',

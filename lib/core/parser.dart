@@ -8,6 +8,7 @@ import 'package:formula_transformator/core/expressions/variable.dart';
 import 'package:formula_transformator/core/trivializers/trivializers_applier.dart';
 import 'package:math_expressions/math_expressions.dart' as MathExp;
 
+// Returns parsed equation, with all alphabetical expressions as variables
 Equation parse(String string) => applyTrivializersToEq(
   Equation.fromParts(
     string.split('=').map(
