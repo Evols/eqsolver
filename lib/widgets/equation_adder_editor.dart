@@ -23,7 +23,7 @@ class EquationAdderEditor extends StatelessWidget {
                   LatexWidget(entry.key + ':'),
                   Spacer(),
                   const Text('Variable'),
-                  Switch(value: true, onChanged: null),
+                  const Switch(value: true, onChanged: null),
                   const Text('Constant'),
                 ],
               ),
