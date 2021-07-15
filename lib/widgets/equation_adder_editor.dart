@@ -19,9 +19,9 @@ class EquationAdderEditor extends StatelessWidget {
             ...equationAdderState.computedAlphaExprTypes.entries.map(
               (entry) => Row(
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   LatexWidget(entry.key + ':'),
-                  Spacer(),
+                  const Spacer(),
                   const Text('Variable'),
                   const Switch(value: true, onChanged: null),
                   const Text('Constant'),
@@ -31,9 +31,9 @@ class EquationAdderEditor extends StatelessWidget {
             ...equationAdderState.editedAlphaExprTypes.entries.map(
               (entry) => Row(
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   LatexWidget(entry.key + ':'),
-                  Spacer(),
+                  const Spacer(),
                   const Text('Variable'),
                   Switch(value: true, onChanged: (_) {}),
                   const Text('Constant'),
