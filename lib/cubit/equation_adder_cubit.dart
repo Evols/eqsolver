@@ -64,12 +64,32 @@ class EquationAdderCubit extends Cubit<EquationAdderState> {
   }
 
   void closeValidation(BuildContext context) {
-    emit(EquationAdderTextfield(''));
-    Navigator.pop(context);
+    if (state is EquationAdderValidating) {
+      emit(EquationAdderTextfield(''));
+      Navigator.pop(context);
+    }
   }
 
   void addValidatedEquation(BuildContext context) {
-    closeValidation(context);
+    final state = this.state;
+    if (state is EquationAdderValidating) {
+      equationsCubit.addEquations([
+        Equation.fromParts(state.equation.parts.map(
+          (part) => part.mountWithGenerator(
+            (expression) {
+              if (expression is Variable) {
+                final found = { ...state.editedAlphaExprTypes, ...state.computedAlphaExprTypes }[expression.name];
+                if (found == AlphaExprType.Constant) {
+                  return NamedConstant(expression.name);
+                }
+              }
+              return null;
+            }
+          )
+        ).toList()),
+      ]);
+      closeValidation(context);
+    }
   }
 }
 
