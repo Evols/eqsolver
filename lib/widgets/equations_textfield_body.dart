@@ -14,6 +14,7 @@ class EquationsTextfieldBody extends StatelessWidget {
     child: Row(children: [
       Expanded(
         child: TextField(
+          controller: BlocProvider.of<EquationAdderCubit>(context).textFieldController,
           onChanged: (tempEq) => BlocProvider.of<EquationAdderCubit>(context).updateTextfield(tempEq),
           onSubmitted: (_) => BlocProvider.of<EquationAdderCubit>(context).validateTextfield(context),
         ),

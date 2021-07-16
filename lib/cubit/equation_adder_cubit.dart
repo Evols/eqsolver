@@ -15,8 +15,9 @@ part 'equation_adder_state.dart';
 class EquationAdderCubit extends Cubit<EquationAdderState> {
 
   final EquationsCubit equationsCubit;
+  final TextEditingController textFieldController;
 
-  EquationAdderCubit(this.equationsCubit) : super(EquationAdderTextfield(''));
+  EquationAdderCubit(this.equationsCubit) : textFieldController = TextEditingController(), super(EquationAdderTextfield(''));
 
   void updateTextfield(String tempEq) {
     if (state is EquationAdderTextfield) {
@@ -27,6 +28,7 @@ class EquationAdderCubit extends Cubit<EquationAdderState> {
   void validateTextfield(BuildContext context) {
     final state = this.state;
     if (state is EquationAdderTextfield) {
+      textFieldController.clear();
       showDialog(
         context: context,
         builder: (_) => EquationAdderEditor(),
@@ -45,6 +47,29 @@ class EquationAdderCubit extends Cubit<EquationAdderState> {
       );
       emit(EquationAdderValidating(parsedEq, computedExprTypes, editedExprTypes));
     }
+  }
+
+  void updateAlphaExprType(String alphaExpr, AlphaExprType type) {
+    final state = this.state;
+    if (state is EquationAdderValidating) {
+      emit(EquationAdderValidating(
+        state.equation,
+        state.computedAlphaExprTypes,
+        {
+          ...state.editedAlphaExprTypes,
+          alphaExpr: type,
+        },
+      ));
+    }
+  }
+
+  void closeValidation(BuildContext context) {
+    emit(EquationAdderTextfield(''));
+    Navigator.pop(context);
+  }
+
+  void addValidatedEquation(BuildContext context) {
+    closeValidation(context);
   }
 }
 

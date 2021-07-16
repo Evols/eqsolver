@@ -4,9 +4,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formula_transformator/cubit/equation_adder_cubit.dart';
 import 'package:formula_transformator/widgets/equation_widget.dart';
 
-class EquationAdderEditor extends StatelessWidget {
+class EquationAdderEditor extends StatefulWidget {
+  EquationAdderEditor({Key? key}) : super(key: key);
 
-  const EquationAdderEditor({Key? key}) : super(key: key);
+  @override
+  _EquationAdderEditorState createState() => _EquationAdderEditorState();
+}
+
+class _EquationAdderEditorState extends State<EquationAdderEditor> {
+
+  @override
+  void deactivate() {
+    BlocProvider.of<EquationAdderCubit>(context).closeValidation(context);
+    super.deactivate();
+  }
 
   @override
   Widget build(BuildContext context) => BlocBuilder<EquationAdderCubit, EquationAdderState>(
@@ -23,7 +34,7 @@ class EquationAdderEditor extends StatelessWidget {
                   LatexWidget(entry.key + ':'),
                   const Spacer(),
                   const Text('Variable'),
-                  const Switch(value: true, onChanged: null),
+                  Switch(value: equationAdderState.computedAlphaExprTypes[entry.key] == AlphaExprType.Constant, onChanged: null),
                   const Text('Constant'),
                 ],
               ),
@@ -35,7 +46,12 @@ class EquationAdderEditor extends StatelessWidget {
                   LatexWidget(entry.key + ':'),
                   const Spacer(),
                   const Text('Variable'),
-                  Switch(value: true, onChanged: (_) {}),
+                  Switch(value: equationAdderState.editedAlphaExprTypes[entry.key] == AlphaExprType.Constant, onChanged: (isConst) {
+                    final oldType = equationAdderState.editedAlphaExprTypes[entry.key];
+                    if (oldType != null) {
+                      BlocProvider.of<EquationAdderCubit>(context).updateAlphaExprType(entry.key, isConst ? AlphaExprType.Constant : AlphaExprType.Variable);
+                    }
+                  }),
                   const Text('Constant'),
                 ],
               ),
@@ -46,11 +62,11 @@ class EquationAdderEditor extends StatelessWidget {
       ),
       actions: <Widget>[
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => BlocProvider.of<EquationAdderCubit>(context).addValidatedEquation(context),
           child: const Text('Validate'),
         ),
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => BlocProvider.of<EquationAdderCubit>(context).closeValidation(context),
           child: const Text('Cancel'),
         ),
       ],
