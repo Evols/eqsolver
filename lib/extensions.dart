@@ -19,3 +19,7 @@ extension ExtendedIterable<E> on Iterable<E> {
     return where((e) => f(e, i++));
   }
 }
+
+extension ExtendedMap<K, V> on Map<K, V> {
+  Map<K, V> where(bool test(K key, V value)) => Map.fromEntries(this.entries.where((element) => test(element.key, element.value)));
+}
