@@ -14,6 +14,7 @@ import 'package:formula_transformator/cubit/value_evaluator_cubit.dart';
 import 'package:formula_transformator/widgets/appbar.dart';
 import 'package:formula_transformator/widgets/equations_list_body.dart';
 import 'package:formula_transformator/widgets/equations_textfield_body.dart';
+import 'package:formula_transformator/widgets/value_eval_editor.dart';
 
 void main() {
   runApp(MyApp());
@@ -130,6 +131,31 @@ class HomePage extends StatelessWidget {
         ),
         EquationsTextfieldBody(),
       ],
+    ),
+    drawer: Drawer(
+      child: BlocBuilder<EquationEditorCubit, EquationEditorState>(
+        builder: (context, editorState) => ListView(
+          padding: EdgeInsets.only(top: 10.0),
+          children: [
+            ...(
+              editorState is EquationEditorIdle
+              ? [
+                ListTile(
+                  title: const Text('Compute the values of variables'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    showDialog(
+                      context: context,
+                      builder: (_) => ValueEvalEditor(),
+                    );
+                  },
+                ),
+              ]
+              : []
+            ),
+          ],
+        ),
+      ),
     ),
   );
 }
