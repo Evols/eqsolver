@@ -41,7 +41,7 @@ class EquationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final trivializedEq = Equation(applyTrivializers(equation.leftPart), applyTrivializers(equation.rightPart));
-    return Row(
+    return Row( // TODO: use wrap instead
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ExpressionWidget(trivializedEq.leftPart, bottomWidgetBuilder: bottomWidgetBuilder),
