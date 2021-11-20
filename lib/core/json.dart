@@ -26,7 +26,43 @@ Equation? parseEquation(dynamic json) {
   }
 }
 
-Expression? parseExpression(dynamic json) {
+Expression parseExpression(dynamic json) {
+  if (json is Map<String, dynamic>) {
+    final type = json["type"];
+    if (type == 'named_constant') {
+      final name = json["name"] as String;
+      return NamedConstant(name);
+    }
+    else if (type == 'literal_constant') {
+      final numberString = json["number"] as String;
+      final number = BigInt.tryParse(numberString)!;
+      return LiteralConstant(number);
+    }
+    else if (type == 'variable') {
+      final name = json["name"] as String;
+      return Variable(name);
+    }
+    else if (type == 'addition') {
+      final terms = json["terms"] as List<dynamic>;
+      return Addition(terms.map(
+        (term) => parseExpression(term)
+      ).whereType<Expression>().toList());
+    }
+    else if (type == 'multiplication') {
+      final factors = json["factors"] as List<dynamic>;
+      return Multiplication(factors.map(
+        (factor) => parseExpression(factor)
+      ).whereType<Expression>().toList());
+    }
+    else if (type == 'gcd') {
+      final args = json["args"] as List<dynamic>;
+      return Gcd(args.map(
+        (arg) => parseExpression(arg)
+      ).whereType<Expression>().toList());
+    }
+  }
+
+  throw Exception('Unknown expression type for $json');
 }
 
 dynamic jsonifyEquations(List<Equation> equations) {
@@ -50,7 +86,7 @@ dynamic jsonifyExpression(Expression expression) {
   if (expression is LiteralConstant) {
     return {
       'type': 'literal_constant',
-      'name': expression.number.toString(),
+      'number': expression.number.toString(),
     };
   }
   if (expression is Variable) {
@@ -70,8 +106,8 @@ dynamic jsonifyExpression(Expression expression) {
   if (expression is Multiplication) {
     return {
       'type': 'multiplication',
-      'terms': expression.factors.map(
-        (term) => jsonifyExpression(term)
+      'factors': expression.factors.map(
+        (factor) => jsonifyExpression(factor)
       ).toList(),
     };
   }
@@ -79,7 +115,7 @@ dynamic jsonifyExpression(Expression expression) {
     return {
       'type': 'gcd',
       'args': expression.args.map(
-        (term) => jsonifyExpression(term)
+        (arg) => jsonifyExpression(arg)
       ).toList(),
     };
   }
