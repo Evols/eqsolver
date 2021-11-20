@@ -1,4 +1,5 @@
 
+import 'package:flutter/services.dart';
 import 'package:formula_transformator/core/expressions/expression.dart';
 
 int compareLists<E extends Comparable>(List<E> first, List<E> second) {
@@ -32,4 +33,8 @@ Expression? mountExpressionAt(Expression baseExpression, Expression? Function(Ex
   }
 
   return null;
+}
+
+void downloadFile(ByteData data, String filename) {
+  
 }

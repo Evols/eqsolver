@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formula_transformator/core/equation.dart';
@@ -6,7 +10,7 @@ import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
 import 'package:formula_transformator/core/expressions/named_constant.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
-import 'package:formula_transformator/core/parser.dart';
+import 'package:formula_transformator/core/json.dart';
 import 'package:formula_transformator/cubit/equation_adder_cubit.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
@@ -152,6 +156,27 @@ class HomePage extends StatelessWidget {
                 ),
               ]
               : []
+            ),
+            ListTile(
+              title: const Text('Save as...'),
+              onTap: () async {
+                Navigator.pop(context);
+
+                final equationsCubit = BlocProvider.of<EquationsCubit>(context);
+                final output = JsonEncoder.withIndent('  ').convert(jsonifyEquations(equationsCubit.state.equations));
+
+                String? outputFile = await FilePicker.platform.saveFile(
+                  dialogTitle: 'Please select an output file:',
+                  fileName: 'formula_workspace.json',
+                  type: FileType.custom,
+                  allowedExtensions: [ 'json' ],
+                );
+                if (outputFile != null) {
+                  print('outputFile: $outputFile');
+                  var file = File(outputFile);
+                  await file.writeAsString(output);
+                }
+              },
             ),
           ],
         ),
