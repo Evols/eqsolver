@@ -10,10 +10,9 @@ class EquationsCubit extends Cubit<EquationsState> {
 
   EquationsCubit(List<Equation> equations) : super(EquationsState(equations));
 
-  void addEquations(List<Equation> equations) {
+  void addEquations(List<Equation> equations, [bool removeOther = false]) {
     final trivialized = equations.map((equation) => applyTrivializersToEq(equation)).toList();
-
-    emit(EquationsState([ ...state.equations, ...trivialized ]));
+    emit(EquationsState([ ...(removeOther ? [] : state.equations), ...trivialized ]));
   }
 
 }

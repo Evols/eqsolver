@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_math_fork/flutter_math.dart';
 import 'package:formula_transformator/core/equation.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/widgets/equation_widget.dart';
@@ -55,14 +54,19 @@ class ImportEquationsModal extends HookWidget {
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            // TODO
+            BlocProvider.of<EquationsCubit>(context).addEquations(
+              newEquations.where((eq) => selectedEquations.value.lookup(eq) != null).toList(),
+            );
           },
           child: const Text('Append'),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context);
-            // TODO
+            BlocProvider.of<EquationsCubit>(context).addEquations(
+              newEquations.where((eq) => selectedEquations.value.lookup(eq) != null).toList(),
+              true,
+            );
           },
           child: const Text('Replace'),
         ),
