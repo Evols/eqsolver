@@ -1,3 +1,8 @@
+
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formula_transformator/core/equation.dart';
@@ -6,7 +11,7 @@ import 'package:formula_transformator/core/expressions/literal_constant.dart';
 import 'package:formula_transformator/core/expressions/multiplication.dart';
 import 'package:formula_transformator/core/expressions/named_constant.dart';
 import 'package:formula_transformator/core/expressions/variable.dart';
-import 'package:formula_transformator/core/parser.dart';
+import 'package:formula_transformator/core/json.dart';
 import 'package:formula_transformator/cubit/equation_adder_cubit.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
@@ -14,6 +19,8 @@ import 'package:formula_transformator/cubit/value_evaluator_cubit.dart';
 import 'package:formula_transformator/widgets/appbar.dart';
 import 'package:formula_transformator/widgets/equations_list_body.dart';
 import 'package:formula_transformator/widgets/equations_textfield_body.dart';
+import 'package:formula_transformator/widgets/import_eqs_modal.dart';
+import 'package:formula_transformator/widgets/value_eval_modal.dart';
 
 void main() {
   runApp(MyApp());
@@ -130,6 +137,74 @@ class HomePage extends StatelessWidget {
         ),
         EquationsTextfieldBody(),
       ],
+    ),
+    drawer: Drawer(
+      child: BlocBuilder<EquationEditorCubit, EquationEditorState>(
+        builder: (context, editorState) => ListView(
+          padding: EdgeInsets.only(top: 10.0),
+          children: [
+            ...(
+              editorState is EquationEditorIdle
+              ? [
+                ListTile(
+                  title: const Text('Compute the values of variables'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    showDialog(
+                      context: context,
+                      builder: (_) => ValueEvalModal(),
+                    );
+                  },
+                ),
+              ]
+              : []
+            ),
+            ListTile(
+              title: const Text('Save as...'),
+              onTap: () async {
+                Navigator.pop(context);
+
+                final equationsCubit = BlocProvider.of<EquationsCubit>(context);
+                final output = JsonEncoder.withIndent('  ').convert(jsonifyEquations(equationsCubit.state.equations));
+
+                var outputFile = await FilePicker.platform.saveFile(
+                  dialogTitle: 'Please select an output file:',
+                  fileName: 'formula_workspace.json',
+                  type: FileType.custom,
+                  allowedExtensions: [ 'json' ],
+                );
+                if (outputFile != null) {
+                  var file = File(outputFile);
+                  await file.writeAsString(output);
+                }
+              },
+            ),
+            ListTile(
+              title: const Text('Open file'),
+              onTap: () async {
+                Navigator.pop(context);
+
+                var result = await FilePicker.platform.pickFiles(
+                  dialogTitle: 'Please select an input file:',
+                  type: FileType.custom,
+                  allowedExtensions: [ 'json' ],
+                );
+                if (result != null && result.files.length == 1) {
+                  File file = File(result.files.single.path!);
+                  final fileContent = await file.readAsString();
+                  final newEquations = parseEquations(JsonDecoder().convert(fileContent));
+                  if (newEquations != null) {
+                    showDialog(
+                      context: context,
+                      builder: (_) => ImportEquationsModal(newEquations),
+                    );
+                  }
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     ),
   );
 }

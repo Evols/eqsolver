@@ -8,9 +8,9 @@ import 'package:formula_transformator/cubit/value_evaluator_cubit.dart';
 import 'package:formula_transformator/extensions.dart';
 import 'package:formula_transformator/widgets/equation_widget.dart';
 
-class ValueEvalEditor extends StatelessWidget {
+class ValueEvalModal extends StatelessWidget {
 
-  const ValueEvalEditor({Key? key}) : super(key: key);
+  const ValueEvalModal({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => BlocBuilder<EquationsCubit, EquationsState>(

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formula_transformator/cubit/equation_editor_cubit.dart';
 import 'package:formula_transformator/cubit/equations_cubit.dart';
 import 'package:formula_transformator/widgets/button.dart';
-import 'package:formula_transformator/widgets/value_eval_editor.dart';
 
 class MainAppbar extends AppBar {
 
@@ -14,44 +13,33 @@ class MainAppbar extends AppBar {
     key: key,
     title: BlocBuilder<EquationsCubit, EquationsState>(
       builder: (context, state) => BlocBuilder<EquationEditorCubit, EquationEditorState>(
-        builder: (context, editorState) => Row(
+        builder: (context, editorState) => Flex(
+          direction: MediaQuery.of(context).size.width > 900 ? Axis.horizontal : Axis.vertical,
           children: [
             Text(titleName + (editorState is EquationEditorEditing ? ' - ' + editorState.getStepName() : '')),
             ...(
-              editorState is EquationEditorIdle
-              ? [
-                Container(width: 8),
-                Button(
-                  'Compute the values of variables',
-                  onPressed: () => showDialog(
-                    context: context,
-                    builder: (_) => ValueEvalEditor(),
-                  ),
-                ),
-              ]
-              : []
+              MediaQuery.of(context).size.width > 900 ? [Spacer()] : []
             ),
-            Spacer(),
             BlocBuilder<EquationEditorCubit, EquationEditorState>(
-              builder: (context, editorState) {
-                return Row(
-                  children: [
-                    ...(editorState is EquationEditorEditing ? [
-                      Button(
-                        'Cancel',
-                        onPressed: () => BlocProvider.of<EquationEditorCubit>(context).cancel(),
-                      ),
-                      Text(' '),
-                      Button(
-                        'Validate',
-                        onPressed: !editorState.canValidate() ? null : () => BlocProvider.of<EquationEditorCubit>(context).nextStep(),
-                      ),
-                    ] : []),
-                  ],
-                );
-              }
-            )
-          ]
+              builder: (context, editorState) => Row(
+                children: (
+                  editorState is EquationEditorEditing
+                  ? [
+                    Button(
+                      'Cancel',
+                      onPressed: () => BlocProvider.of<EquationEditorCubit>(context).cancel(),
+                    ),
+                    Text(' '),
+                    Button(
+                      'Validate',
+                      onPressed: !editorState.canValidate() ? null : () => BlocProvider.of<EquationEditorCubit>(context).nextStep(),
+                    ),
+                  ]
+                  : []
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     ),
