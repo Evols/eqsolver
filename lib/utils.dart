@@ -15,6 +15,9 @@ class Ref<T> {
 
 BigInt extEuclidAlgo(BigInt a, BigInt b, Ref<BigInt> u0, Ref<BigInt> v0) {
 
+  final aSign = BigInt.from(a.sign);
+  final bSign = BigInt.from(b.sign);
+
   a = a.abs();
   b = b.abs();
 
@@ -37,6 +40,9 @@ BigInt extEuclidAlgo(BigInt a, BigInt b, Ref<BigInt> u0, Ref<BigInt> v0) {
     t = v0.value - q * t;
     v0.value = tmp;
   }
+
+  u0.value *= aSign;
+  v0.value *= bSign;
 
   return a;
 }
